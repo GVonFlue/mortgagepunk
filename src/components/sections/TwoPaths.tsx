@@ -10,6 +10,7 @@ export default function TwoPaths() {
   return (
     <section className={s.paths} aria-label="Choose your path">
       <Link href="/get-approved" className={`${s.path} ${s.red}`}>
+        <span className={s.ghost} aria-hidden="true">01</span>
         <div>
           <div className={s.num}>Path 01</div>
           <h3>Get approved<br />the right way</h3>
@@ -22,6 +23,7 @@ export default function TwoPaths() {
       </Link>
 
       <Link href="/movement" className={`${s.path} ${s.dark}`}>
+        <span className={s.ghost} aria-hidden="true">02</span>
         <div>
           <div className={s.num}>Path 02</div>
           <h3>Follow the<br />movement</h3>

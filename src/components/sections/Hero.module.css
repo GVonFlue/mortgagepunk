@@ -26,50 +26,71 @@
    Composition authored once at 1512x900. --u is one authored pixel, scaled to
    cover the viewport. Every length is calc(N * var(--u)), so nothing inherits
    and nothing compounds: the layout is pixel-identical at any screen size. */
-.hero{position:relative;width:100%;min-height:100svh;height:100svh;font-family:var(--font-body),sans-serif;overflow:hidden;background:var(--mp-black);
+.hero{position:relative;width:100vw;height:100vh;overflow:hidden;background:var(--mp-black);
   --u:min(calc(100vw / 1512), calc(100vh / 900))}
 .stage{position:absolute;top:50%;left:50%;
   width:calc(1512*var(--u));height:calc(900*var(--u));
   margin-top:calc(-450*var(--u));margin-left:calc(-756*var(--u))}
 
 .plate{position:absolute;inset:0;z-index:1}
-.plateImg{width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(1.85)}
+.plate img{width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(1.85)}
 .plate::after{content:'';position:absolute;inset:0;
   background:linear-gradient(100deg,rgba(10,10,10,.60) 0%,rgba(10,10,10,.28) 38%,rgba(10,10,10,.08) 62%,rgba(10,10,10,.38) 100%)}
 
 .type{position:absolute;z-index:2;left:calc(45*var(--u));top:calc(112*var(--u));
-  font-family:var(--font-display),sans-serif;color:var(--mp-bone);
+  font-family:'Anton',sans-serif;color:var(--mp-bone);
   text-transform:uppercase;line-height:.80;letter-spacing:-.028em;white-space:nowrap}
-.reimagining{display:block;font-size:calc(63*var(--u));letter-spacing:.20em;line-height:1;
+.reimag{display:block;font-size:calc(63*var(--u));letter-spacing:.20em;line-height:1;
   margin-bottom:calc(6*var(--u))}
 .strike{display:block;width:calc(479*var(--u));height:calc(4.7*var(--u));background:var(--mp-red);
   border-radius:calc(2*var(--u));margin-bottom:calc(18*var(--u));transform-origin:left center}
 .the,.american,.dream{
-  -webkit-text-stroke:calc(4*var(--u)) var(--mp-black);
+  -webkit-text-stroke:calc(2.6*var(--u)) var(--mp-black);
   paint-order:stroke fill;
-  text-shadow:0 calc(2.4*var(--u)) 0 rgba(0,0,0,.34),
-              calc(1.4*var(--u)) calc(6*var(--u)) calc(7.6*var(--u)) rgba(0,0,0,.46)}
+  text-shadow:
+    calc(3*var(--u)) calc(4*var(--u)) 0 rgba(0,0,0,.92),
+    calc(6*var(--u)) calc(8*var(--u)) calc(14*var(--u)) rgba(0,0,0,.55)}
+.the,.american,.dream,.reimag{
+  padding-top:calc(22*var(--u));margin-top:calc(-22*var(--u))}
 .the{display:block;font-size:calc(115*var(--u));line-height:.86}
 .american{display:block;font-size:calc(268*var(--u))}
 .dream{display:block;font-size:calc(268*var(--u));color:var(--mp-red)}
+.dream > span{
+  position:relative;display:block;
+  /* the real text carries the OUTLINE. background-clip:text renders at the
+     element's background layer, so anything painted in the same element covers
+     it — the gradient has to live on an overlay instead. */
+  color:var(--mp-black);
+  -webkit-text-stroke:calc(3.2*var(--u)) var(--mp-black);
+  paint-order:stroke fill;
+  text-shadow:calc(5*var(--u)) calc(6*var(--u)) 0 rgba(0,0,0,.85),
+              calc(10*var(--u)) calc(12*var(--u)) calc(18*var(--u)) rgba(0,0,0,.5)}
+.dream > span::after{
+  content:attr(data-text);position:absolute;left:0;top:0;
+  background:linear-gradient(174deg,#FF7A5E 0%,#FF3B36 24%,#EB2933 50%,#B5161F 84%,#8E0E17 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  /* must reset — both inherit and would repaint black over the gradient */
+  -webkit-text-stroke:0;text-shadow:none;
+  pointer-events:none}
 
-.shadowGround{position:absolute;z-index:3;right:calc(264*var(--u));bottom:calc(9*var(--u));
+.shadow-ground{position:absolute;z-index:3;right:calc(264*var(--u));bottom:calc(9*var(--u));
   width:calc(483*var(--u));height:calc(99*var(--u));
   background:radial-gradient(ellipse at 50% 66%,rgba(0,0,0,.88) 0%,rgba(0,0,0,.60) 30%,rgba(0,0,0,.24) 55%,rgba(0,0,0,0) 76%);
   filter:blur(calc(11*var(--u)));pointer-events:none}
-.shadowWall{position:absolute;z-index:3;right:calc(284*var(--u));bottom:0;
+.shadow-wall{position:absolute;z-index:3;right:calc(284*var(--u));bottom:0;
   width:calc(503*var(--u));height:calc(588*var(--u));
   background:radial-gradient(ellipse at 47% 64%,rgba(0,0,0,.52) 0%,rgba(0,0,0,.22) 44%,rgba(0,0,0,0) 70%);
   filter:blur(calc(34*var(--u)));pointer-events:none}
 
 .chris{position:absolute;z-index:4;right:calc(234*var(--u));bottom:0;
   height:calc(639*var(--u));width:calc(503*var(--u))}
-.chrisImg{height:100%;width:auto;display:block}
+.chris img{height:100%;width:auto;display:block}
 
 .rail{position:absolute;z-index:5;right:calc(45*var(--u));top:calc(261*var(--u));
   width:calc(333*var(--u));text-align:right;color:var(--mp-bone);text-transform:uppercase;
   letter-spacing:.14em;font-weight:700;font-size:calc(15.4*var(--u));line-height:1.85}
-.railHit{color:var(--mp-red);font-size:calc(21.5*var(--u));font-weight:700;line-height:1.5;
+.rail .hit{color:var(--mp-red);font-size:calc(21.5*var(--u));font-weight:700;line-height:1.5;
   border-bottom:calc(2*var(--u)) solid var(--mp-red);display:inline-block;
   padding-bottom:calc(3*var(--u));margin:calc(2*var(--u)) 0 calc(7*var(--u))}
 
@@ -78,17 +99,17 @@
 .btn{display:flex;align-items:center;justify-content:space-between;gap:calc(22*var(--u));
   padding:calc(14*var(--u)) calc(24*var(--u));font-weight:700;text-transform:uppercase;
   letter-spacing:.11em;font-size:calc(14.8*var(--u));text-decoration:none}
-.btnSolid{background:var(--mp-red);color:var(--mp-black)}
-.btnGhost{background:rgba(10,10,10,.72);color:var(--mp-bone);
+.btn.solid{background:var(--mp-red);color:var(--mp-black)}
+.btn.ghost{background:rgba(10,10,10,.72);color:var(--mp-bone);
   border:calc(1.5*var(--u)) solid var(--mp-red)}
 
 .nav{position:absolute;z-index:6;top:0;left:0;right:0;display:flex;align-items:center;
   justify-content:space-between;padding:calc(22*var(--u)) calc(48*var(--u))}
 .logo{display:block;flex:none}
 .logo img{height:calc(65*var(--u));width:auto;display:block}
-.links{display:flex;list-style:none;margin:0;padding:0;white-space:nowrap;gap:calc(33*var(--u));font-size:calc(13.3*var(--u));font-weight:700;
+.nav .links{display:flex;list-style:none;margin:0;padding:0;white-space:nowrap;gap:calc(33*var(--u));font-size:calc(13.3*var(--u));font-weight:700;
   letter-spacing:.13em;text-transform:uppercase;color:var(--mp-bone)}
-.navCta{border:calc(1.5*var(--u)) solid var(--mp-red);color:var(--mp-bone);
+.nav .cta{border:calc(1.5*var(--u)) solid var(--mp-red);color:var(--mp-bone);
   padding:calc(10*var(--u)) calc(20*var(--u));font-size:calc(12.4*var(--u));font-weight:700;
   letter-spacing:.12em;text-transform:uppercase}
 
@@ -100,33 +121,35 @@
   .hero{--u:min(calc(100vw / 390), calc(100vh / 844))}
   .stage{width:calc(390*var(--u));height:calc(844*var(--u));
     margin-top:calc(-422*var(--u));margin-left:calc(-195*var(--u))}
-  .plateImg{object-position:62% 42%}
+  .plate img{object-position:62% 42%}
   .type{left:calc(17.5*var(--u));top:calc(202*var(--u))}
-  .reimagining{font-size:calc(24*var(--u));margin-bottom:calc(2*var(--u))}
+  .reimag{font-size:calc(24*var(--u));margin-bottom:calc(2*var(--u))}
   .strike{width:calc(154*var(--u));height:calc(2*var(--u));margin-bottom:calc(7*var(--u))}
   .the{font-size:calc(45*var(--u))}
   .american,.dream{font-size:calc(92*var(--u))}
-  .the,.american,.dream{-webkit-text-stroke:calc(1.5*var(--u)) var(--mp-black);
-    text-shadow:0 calc(.9*var(--u)) 0 rgba(0,0,0,.34),
-                calc(.5*var(--u)) calc(2.2*var(--u)) calc(2.8*var(--u)) rgba(0,0,0,.46)}
+  .the,.american,.dream,.reimag{padding-top:calc(8*var(--u));margin-top:calc(-8*var(--u))}
+  .the,.american,.dream{-webkit-text-stroke:calc(1.2*var(--u)) var(--mp-black);
+    text-shadow:calc(1.2*var(--u)) calc(1.6*var(--u)) 0 rgba(0,0,0,.92),
+                calc(2.4*var(--u)) calc(3.2*var(--u)) calc(5*var(--u)) rgba(0,0,0,.55)}
+  .dream > span::before{-webkit-text-stroke:calc(2.4*var(--u)) var(--mp-black)}
+  .dream > span{filter:drop-shadow(calc(2*var(--u)) calc(2.6*var(--u)) 0 rgba(0,0,0,.9))}
   .chris{height:calc(422*var(--u));width:calc(332*var(--u));
     right:calc(-58*var(--u));bottom:calc(93*var(--u))}
-  .shadowGround{right:calc(-38*var(--u));bottom:calc(99*var(--u));
+  .shadow-ground{right:calc(-38*var(--u));bottom:calc(99*var(--u));
     width:calc(299*var(--u));height:calc(59*var(--u));filter:blur(calc(6*var(--u)))}
-  .shadowWall{right:calc(-25*var(--u));bottom:calc(93*var(--u));
+  .shadow-wall{right:calc(-25*var(--u));bottom:calc(93*var(--u));
     width:calc(332*var(--u));height:calc(388*var(--u));filter:blur(calc(16*var(--u)))}
   .rail{display:none}
   .nav{padding:calc(17*var(--u)) calc(17.5*var(--u))}
-  .logo img{height:calc(46*var(--u))}
-  .links{display:none}
-  .navCta{font-size:calc(11*var(--u));padding:calc(8*var(--u)) calc(14*var(--u));
+  .nav .logo img{height:calc(46*var(--u))}
+  .nav .links{display:none}
+  .nav .cta{font-size:calc(11*var(--u));padding:calc(8*var(--u)) calc(14*var(--u));
     border-width:calc(1*var(--u))}
   .ctas{left:calc(17.5*var(--u));right:calc(17.5*var(--u));width:auto;
     bottom:calc(25*var(--u));gap:calc(9*var(--u))}
   .btn{font-size:calc(13*var(--u));padding:calc(14*var(--u)) calc(16*var(--u));
     letter-spacing:.09em;gap:calc(10*var(--u));border-width:calc(1*var(--u))}
 }
-
 
 /* ================= load choreography =================
    A poster assembling itself. Heavy, deliberate, no bounce.

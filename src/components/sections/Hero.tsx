@@ -59,7 +59,7 @@ export default function Hero() {
             <span>American</span>
           </span>
           <span className={styles.dream}>
-            <span>Dream</span>
+            <span data-text="Dream">Dream</span>
           </span>
         </h1>
 
