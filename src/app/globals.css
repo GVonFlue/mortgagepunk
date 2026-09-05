@@ -1,0 +1,109 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+/* ---------------------------------------------------------------------------
+   MORTGAGE PUNK — design tokens.
+   This block is the single source of truth. tailwind.config.ts mirrors these
+   by reference (var(--mp-*)), it does not restate the literal values.
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* Brand ------------------------------------------------------------------
+     #EB2933 is sampled from the delivered logo. It is not a starting point
+     and it is not up for reinterpretation. Do not "warm it up", do not round
+     it to a nearer named red, do not swap it for a Tailwind palette value. */
+  --mp-red: #EB2933;
+  --mp-red-deep: #B81F27;
+  --mp-black: #0A0A0A;
+  --mp-ink: #141414;
+  --mp-concrete: #C9C7C4;
+  --mp-bone: #EDEBE8;
+
+  /* Motion -----------------------------------------------------------------
+     A poster assembling itself: heavy, deliberate, arriving with weight.
+     Never bouncy. No spring easing, no overshoot, no elastic, no back. */
+  --ease-out-heavy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-heavy: cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast: 240ms;
+  --dur-base: 520ms;
+  --dur-slow: 900ms;
+
+  /* Type -------------------------------------------------------------------
+     Display locks to tight tracking and sub-single leading at every size so
+     stacked headlines read as one solid mass of ink. */
+  --mp-display-tracking: -0.03em;
+  --mp-display-leading: 0.82;
+  --mp-hero-size: clamp(2.75rem, 12vw, 15rem);
+  --mp-body-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem); /* 16px -> 18px */
+  --mp-body-leading: 1.55;
+}
+
+@theme inline {
+  --color-mp-red: var(--mp-red);
+  --color-mp-red-deep: var(--mp-red-deep);
+  --color-mp-black: var(--mp-black);
+  --color-mp-ink: var(--mp-ink);
+  --color-mp-concrete: var(--mp-concrete);
+  --color-mp-bone: var(--mp-bone);
+
+  --font-display: var(--font-display), "Impact", "Haettenschweiler", sans-serif;
+  --font-display-alt: var(--font-display-alt), "Arial Black", sans-serif;
+  --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-heavy: var(--ease-out-heavy);
+  --ease-in-heavy: var(--ease-in-heavy);
+
+  --duration-fast: var(--dur-fast);
+  --duration-base: var(--dur-base);
+  --duration-slow: var(--dur-slow);
+
+  --tracking-display: var(--mp-display-tracking);
+  --leading-display: var(--mp-display-leading);
+}
+
+html {
+  background: var(--mp-black);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--mp-black);
+  color: var(--mp-bone);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--mp-body-size);
+  line-height: var(--mp-body-leading);
+}
+
+/* Display type. Anton by default; --font-display-alt (Archivo Black) is the
+   heavier substitute for short, wide lockups where Anton reads too condensed. */
+.mp-display {
+  font-family: var(--font-display), "Impact", "Haettenschweiler", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--mp-display-tracking);
+  line-height: var(--mp-display-leading);
+}
+
+.mp-display-alt {
+  font-family: var(--font-display-alt), "Arial Black", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--mp-display-tracking);
+  line-height: var(--mp-display-leading);
+}
+
+.mp-hero {
+  font-size: var(--mp-hero-size);
+}
+
+/* Every motion in this project is opt-out. See ENGINEERING.md. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
