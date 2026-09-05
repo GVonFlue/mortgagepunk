@@ -1,20 +1,12 @@
 /*
   Hero.module.css — mortgagepunk.com
 
-  THE STAGE MODEL. Read before changing anything.
+  THE STAGE MODEL. Composition authored once at 1512x900; --u is one authored
+  pixel scaled with min() so it is contained and never crops. Every length is
+  calc(N * var(--u)). Never convert to vw, vh, rem or em — they scale on
+  different axes and the type slides out from behind Chris.
 
-  The composition is authored ONCE at 1512x900, the size it was approved at.
-  --u is one authored pixel, scaled with min() so the whole thing is contained
-  and never crops. Every length is calc(N * var(--u)).
-
-  Why not vw/vh per element: they scale on different axes, so on a wide short
-  monitor a vh-capped headline shrinks while a vh-sized portrait does not, and
-  the type slides out from behind Chris.
-
-  Why not em: em resolves against the element's OWN font-size, so nested values
-  multiply and the layout explodes.
-
-  Class names here MUST match styles.X in Hero.tsx exactly. Run verify.py.
+  Class names MUST match styles.X in Hero.tsx. Run verify-classes.py.
 */
 
 /* ============================================================
@@ -65,16 +57,22 @@
 
 /* DREAM: outline on the real text, gradient on an overlay.
    background-clip:text renders at the element's BACKGROUND layer, so anything
-   else painted in the same element buries it. This is the only way to have
-   a gradient fill and a hard outline at once. */
-.dream>span{position:relative;color:var(--mp-black);
-  -webkit-text-stroke-width:calc(4.4*var(--u));
+   painted in the same element buries it. An overlay is the only way to have a
+   gradient fill and a hard outline together.
+
+   The stroke here is THINNER than AMERICAN's and the shadow is soft, not a
+   hard offset. AMERICAN is bone on black, so a hard black shadow reads as a
+   drop shadow. Under red it merges with the black stroke into one thick smear
+   on the lower right — which is what looked wrong. */
+.dream>span{position:relative;color:var(--mp-red-deep);
+  -webkit-text-stroke-width:calc(3.1*var(--u));
   -webkit-text-stroke-color:var(--mp-black);
   paint-order:stroke fill;
-  text-shadow:calc(5*var(--u)) calc(6*var(--u)) 0 rgba(0,0,0,.9),
-              calc(11*var(--u)) calc(13*var(--u)) calc(20*var(--u)) rgba(0,0,0,.55)}
+  text-shadow:calc(4*var(--u)) calc(5*var(--u)) calc(9*var(--u)) rgba(0,0,0,.62),
+              calc(10*var(--u)) calc(12*var(--u)) calc(22*var(--u)) rgba(0,0,0,.42)}
 .dream>span::after{content:attr(data-text);position:absolute;left:0;top:0;
-  background:linear-gradient(174deg,#FF7A5E 0%,#FF3B36 24%,#EB2933 50%,#B5161F 84%,#8E0E17 100%);
+  /* the dark end stops well short of black so it never fuses with the stroke */
+  background:linear-gradient(174deg,#FF8467 0%,#FF4038 22%,#EE2B35 48%,#CB1D26 78%,#B01820 100%);
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;
   -webkit-text-stroke-width:0;text-shadow:none;pointer-events:none}
@@ -155,8 +153,10 @@
   .strike{width:calc(154*var(--u));height:calc(2.4*var(--u));margin:calc(4*var(--u)) 0 calc(6*var(--u))}
   .the{font-size:calc(45*var(--u))}
   .american,.dream{font-size:calc(92*var(--u))}
-  .the>span,.american>span,.dream>span{-webkit-text-stroke-width:calc(1.8*var(--u));
+  .the>span,.american>span{-webkit-text-stroke-width:calc(1.8*var(--u));
     text-shadow:calc(1.8*var(--u)) calc(2.2*var(--u)) 0 rgba(0,0,0,.9)}
+  .dream>span{-webkit-text-stroke-width:calc(1.3*var(--u));
+    text-shadow:calc(1.6*var(--u)) calc(2*var(--u)) calc(4*var(--u)) rgba(0,0,0,.6)}
   .dream>span::after{-webkit-text-stroke-width:0}
   .chris{height:calc(422*var(--u));width:calc(332*var(--u));
     right:calc(-58*var(--u));bottom:calc(93*var(--u))}

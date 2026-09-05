@@ -5,21 +5,20 @@ import styles from "./Hero.module.css";
 /**
  * Hero — mortgagepunk.com
  *
- * Layer order is the whole design:
- *   1. plate            the concrete, full bleed
- *   2. display type     REIMAGINING / THE AMERICAN / DREAM
- *   2.5 shadows         fall ACROSS the type, sit UNDER Chris
- *   3. Chris            the cutout, on top
+ * Matched to the client's approved reference render:
+ *   REIMAGINING            medium black, letterspaced
+ *   [red brush strike]
+ *   AMERICAN               massive black, runs behind Chris
+ *   THE  DREAM.            THE small at left, DREAM. massive and red
  *
- * The type passes BEHIND Chris — his cap interrupts the N of AMERICAN and his
- * shoes land on DREAM. If it ever reads as "text beside a photo," the stage
- * scaling in Hero.module.css has been altered.
+ * Light concrete plate, black screen-print type, no outline. The type passes
+ * BEHIND Chris — his cap interrupts the N of AMERICAN.
  *
  * Geometry is authored at 1512x900 and scaled as one unit. Read the note at
  * the top of Hero.module.css before touching any number.
  */
 
-// One-line switch if Chris picks the full-colour treatment on Sept 11.
+// One-line switch if Chris picks the full-colour treatment.
 const PORTRAIT = "/brand/chris-hero-bwred.png";
 
 const NAV = [
@@ -32,7 +31,6 @@ const NAV = [
 export default function Hero() {
   return (
     <section className={styles.hero} aria-label="Reimagining the American Dream">
-      {/* L1 — plate, full bleed */}
       <div className={styles.plate}>
         <Image
           src="/brand/hero-plate.jpg"
@@ -44,9 +42,8 @@ export default function Hero() {
         />
       </div>
 
-      {/* the contained composition */}
       <div className={styles.stage}>
-        {/* outer span masks, inner span moves */}
+        {/* outer span masks for the reveal, inner span is what animates */}
         <h1 className={styles.type}>
           <span className={styles.reimagining}>
             <span>Reimagining</span>
@@ -88,10 +85,11 @@ export default function Hero() {
           Lending Team.
         </div>
 
+
         {/* equal weight — Chris asked for two equally obvious paths */}
         <div className={styles.ctas}>
           <Link href="/get-approved" className={`${styles.btn} ${styles.btnSolid}`}>
-            <span>Get Approved the Right Way</span>
+<span>Get Approved the Right Way</span>
             <span aria-hidden="true">&rarr;</span>
           </Link>
           <Link href="/movement" className={`${styles.btn} ${styles.btnGhost}`}>
@@ -101,7 +99,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* nav at viewport level so it spans edge to edge */}
       <nav className={styles.nav} aria-label="Primary">
         <Link href="/" className={styles.logo}>
           <Image
@@ -120,7 +117,7 @@ export default function Hero() {
           ))}
         </ul>
         <Link href="/get-approved" className={styles.navCta}>
-          Get Approved <span aria-hidden="true">&rarr;</span>
+Get Approved <span aria-hidden="true">&rarr;</span>
         </Link>
       </nav>
 

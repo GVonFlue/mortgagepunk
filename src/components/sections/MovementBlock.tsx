@@ -1,5 +1,6 @@
 import Link from "next/link";
 import s from "../Site.module.css";
+import GfxNote from "../ui/GfxNote";
 
 /**
  * Mission + the American Dream Conference.
@@ -50,6 +51,7 @@ export default function MovementBlock() {
           </div>
 
           <div className={s.evt}>
+            <GfxNote where="evt" />
             <span className={s.tag}>Next &middot; October 16, 2027</span>
             <h3>
               The American

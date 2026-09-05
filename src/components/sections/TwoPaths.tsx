@@ -1,5 +1,6 @@
 import Link from "next/link";
 import s from "../Site.module.css";
+import GfxNote from "../ui/GfxNote";
 
 /**
  * Two equally weighted paths. Chris was explicit in onboarding that the
@@ -11,6 +12,7 @@ export default function TwoPaths() {
     <section className={s.paths} aria-label="Choose your path">
       <Link href="/get-approved" className={`${s.path} ${s.red}`}>
         <span className={s.ghost} aria-hidden="true">01</span>
+        <GfxNote />
         <div>
           <div className={s.num}>Path 01</div>
           <h3>Get approved<br />the right way</h3>
@@ -24,6 +26,7 @@ export default function TwoPaths() {
 
       <Link href="/movement" className={`${s.path} ${s.dk}`}>
         <span className={s.ghost} aria-hidden="true">02</span>
+        <GfxNote />
         <div>
           <div className={s.num}>Path 02</div>
           <h3>Follow the<br />movement</h3>
