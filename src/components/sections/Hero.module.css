@@ -1,206 +1,174 @@
 /*
-  Hero — mortgagepunk.com
+  Hero.module.css — mortgagepunk.com
 
-  THE STAGE MODEL. Read this before changing anything.
+  THE STAGE MODEL. Read before changing anything.
 
   The composition is authored ONCE at 1512x900, the size it was approved at.
-  --u is one authored pixel, scaled with min() so the whole composition is
-  contained and never crops. Every length is calc(N * var(--u)).
+  --u is one authored pixel, scaled with min() so the whole thing is contained
+  and never crops. Every length is calc(N * var(--u)).
 
-  Why not vw/vh per element: they scale on different axes. On a wide, short
+  Why not vw/vh per element: they scale on different axes, so on a wide short
   monitor a vh-capped headline shrinks while a vh-sized portrait does not, and
-  the type slides out from behind Chris. That is exactly what went wrong before.
-  Here nothing can drift, because everything is driven by one number.
+  the type slides out from behind Chris.
 
-  Why calc(N * var(--u)) and not em: em resolves against the element's OWN
-  font-size, so nested values multiply and the layout explodes.
+  Why not em: em resolves against the element's OWN font-size, so nested values
+  multiply and the layout explodes.
 
-  The plate, nav and grain sit at viewport level so the background bleeds edge
-  to edge while the composition stays contained.
-
-  To change the design: edit the authored pixel numbers. Do not convert
-  anything back to vw, vh, rem or em.
+  Class names here MUST match styles.X in Hero.tsx exactly. Run verify.py.
 */
 
-/* THE STAGE
-   Composition authored once at 1512x900. --u is one authored pixel, scaled to
-   cover the viewport. Every length is calc(N * var(--u)), so nothing inherits
-   and nothing compounds: the layout is pixel-identical at any screen size. */
-.hero{position:relative;width:100vw;height:100vh;overflow:hidden;background:var(--mp-black);
+/* ============================================================
+   HERO — the stage. Authored at 1512x900, scaled as one unit.
+   ============================================================ */
+.hero{position:relative;width:100%;min-height:100svh;height:100svh;overflow:hidden;
+  background:var(--mp-black);font-family:var(--font-body),sans-serif;
   --u:min(calc(100vw / 1512), calc(100vh / 900))}
 .stage{position:absolute;top:50%;left:50%;
   width:calc(1512*var(--u));height:calc(900*var(--u));
   margin-top:calc(-450*var(--u));margin-left:calc(-756*var(--u))}
 
 .plate{position:absolute;inset:0;z-index:1}
-.plate img{width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(1.85)}
+.plateImg{width:100%;height:100%;object-fit:cover;object-position:center 40%;
+  filter:brightness(1.85)}
 .plate::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(100deg,rgba(10,10,10,.60) 0%,rgba(10,10,10,.28) 38%,rgba(10,10,10,.08) 62%,rgba(10,10,10,.38) 100%)}
+  background:linear-gradient(100deg,rgba(10,10,10,.60) 0%,rgba(10,10,10,.28) 38%,
+    rgba(10,10,10,.08) 62%,rgba(10,10,10,.38) 100%)}
 
-.type{position:absolute;z-index:2;left:calc(45*var(--u));top:calc(112*var(--u));
-  font-family:'Anton',sans-serif;color:var(--mp-bone);
+.type{position:absolute;z-index:2;left:calc(45*var(--u));top:calc(94*var(--u));
+  margin:0;font-family:var(--font-display),sans-serif;font-weight:400;color:var(--mp-bone);
   text-transform:uppercase;line-height:.80;letter-spacing:-.028em;white-space:nowrap}
-.reimag{display:block;font-size:calc(63*var(--u));letter-spacing:.20em;line-height:1;
-  margin-bottom:calc(6*var(--u))}
-.strike{display:block;width:calc(479*var(--u));height:calc(4.7*var(--u));background:var(--mp-red);
-  border-radius:calc(2*var(--u));margin-bottom:calc(18*var(--u));transform-origin:left center}
-.the,.american,.dream{
-  -webkit-text-stroke:calc(2.6*var(--u)) var(--mp-black);
+
+/* mask wrappers: overflow hides the rise animation, padding stops Anton's
+   ascenders being clipped by the 0.80 line box */
+.reimagining,.the,.american,.dream{
+  display:block;overflow:hidden;
+  padding-top:calc(26*var(--u));margin-top:calc(-26*var(--u));
+  padding-bottom:calc(20*var(--u));margin-bottom:calc(-20*var(--u))}
+.reimagining>span,.the>span,.american>span,.dream>span{display:block}
+
+.reimagining{font-size:calc(58*var(--u));letter-spacing:.20em;line-height:1}
+.strike{display:block;width:calc(441*var(--u));height:calc(5*var(--u));
+  background:linear-gradient(90deg,var(--mp-red) 0%,var(--mp-red) 72%,rgba(235,41,51,0) 100%);
+  margin:calc(10*var(--u)) 0 calc(16*var(--u));transform-origin:left center}
+.the{font-size:calc(106*var(--u));line-height:.86}
+.american{font-size:calc(246*var(--u))}
+.dream{font-size:calc(246*var(--u))}
+
+/* Outline: longhand, not the shorthand. paint-order pushes the stroke outside
+   the glyph so Anton's letterforms stay true instead of being choked. */
+.the>span,.american>span{
+  -webkit-text-stroke-width:calc(4.4*var(--u));
+  -webkit-text-stroke-color:var(--mp-black);
   paint-order:stroke fill;
-  text-shadow:
-    calc(3*var(--u)) calc(4*var(--u)) 0 rgba(0,0,0,.92),
-    calc(6*var(--u)) calc(8*var(--u)) calc(14*var(--u)) rgba(0,0,0,.55)}
-.the,.american,.dream,.reimag{
-  padding-top:calc(22*var(--u));margin-top:calc(-22*var(--u))}
-.the{display:block;font-size:calc(115*var(--u));line-height:.86}
-.american{display:block;font-size:calc(268*var(--u))}
-.dream{display:block;font-size:calc(268*var(--u));color:var(--mp-red)}
-.dream > span{
-  position:relative;display:block;
-  /* the real text carries the OUTLINE. background-clip:text renders at the
-     element's background layer, so anything painted in the same element covers
-     it — the gradient has to live on an overlay instead. */
-  color:var(--mp-black);
-  -webkit-text-stroke:calc(3.2*var(--u)) var(--mp-black);
+  text-shadow:calc(5*var(--u)) calc(6*var(--u)) 0 rgba(0,0,0,.9),
+              calc(11*var(--u)) calc(13*var(--u)) calc(20*var(--u)) rgba(0,0,0,.55)}
+
+/* DREAM: outline on the real text, gradient on an overlay.
+   background-clip:text renders at the element's BACKGROUND layer, so anything
+   else painted in the same element buries it. This is the only way to have
+   a gradient fill and a hard outline at once. */
+.dream>span{position:relative;color:var(--mp-black);
+  -webkit-text-stroke-width:calc(4.4*var(--u));
+  -webkit-text-stroke-color:var(--mp-black);
   paint-order:stroke fill;
-  text-shadow:calc(5*var(--u)) calc(6*var(--u)) 0 rgba(0,0,0,.85),
-              calc(10*var(--u)) calc(12*var(--u)) calc(18*var(--u)) rgba(0,0,0,.5)}
-.dream > span::after{
-  content:attr(data-text);position:absolute;left:0;top:0;
+  text-shadow:calc(5*var(--u)) calc(6*var(--u)) 0 rgba(0,0,0,.9),
+              calc(11*var(--u)) calc(13*var(--u)) calc(20*var(--u)) rgba(0,0,0,.55)}
+.dream>span::after{content:attr(data-text);position:absolute;left:0;top:0;
   background:linear-gradient(174deg,#FF7A5E 0%,#FF3B36 24%,#EB2933 50%,#B5161F 84%,#8E0E17 100%);
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;
-  /* must reset — both inherit and would repaint black over the gradient */
-  -webkit-text-stroke:0;text-shadow:none;
-  pointer-events:none}
+  -webkit-text-stroke-width:0;text-shadow:none;pointer-events:none}
 
-.shadow-ground{position:absolute;z-index:3;right:calc(264*var(--u));bottom:calc(9*var(--u));
-  width:calc(483*var(--u));height:calc(99*var(--u));
-  background:radial-gradient(ellipse at 50% 66%,rgba(0,0,0,.88) 0%,rgba(0,0,0,.60) 30%,rgba(0,0,0,.24) 55%,rgba(0,0,0,0) 76%);
-  filter:blur(calc(11*var(--u)));pointer-events:none}
-.shadow-wall{position:absolute;z-index:3;right:calc(284*var(--u));bottom:0;
-  width:calc(503*var(--u));height:calc(588*var(--u));
-  background:radial-gradient(ellipse at 47% 64%,rgba(0,0,0,.52) 0%,rgba(0,0,0,.22) 44%,rgba(0,0,0,0) 70%);
-  filter:blur(calc(34*var(--u)));pointer-events:none}
+.shadowGround{position:absolute;z-index:3;right:calc(264*var(--u));bottom:calc(9*var(--u));
+  width:calc(483*var(--u));height:calc(99*var(--u));pointer-events:none;
+  background:radial-gradient(ellipse at 50% 66%,rgba(0,0,0,.88) 0%,rgba(0,0,0,.60) 30%,
+    rgba(0,0,0,.24) 55%,rgba(0,0,0,0) 76%);filter:blur(calc(11*var(--u)))}
+.shadowWall{position:absolute;z-index:3;right:calc(284*var(--u));bottom:0;
+  width:calc(503*var(--u));height:calc(588*var(--u));pointer-events:none;
+  background:radial-gradient(ellipse at 47% 64%,rgba(0,0,0,.52) 0%,rgba(0,0,0,.22) 44%,
+    rgba(0,0,0,0) 70%);filter:blur(calc(34*var(--u)))}
 
 .chris{position:absolute;z-index:4;right:calc(234*var(--u));bottom:0;
   height:calc(639*var(--u));width:calc(503*var(--u))}
-.chris img{height:100%;width:auto;display:block}
+.chrisImg{height:100%;width:auto;display:block}
 
 .rail{position:absolute;z-index:5;right:calc(45*var(--u));top:calc(261*var(--u));
   width:calc(333*var(--u));text-align:right;color:var(--mp-bone);text-transform:uppercase;
   letter-spacing:.14em;font-weight:700;font-size:calc(15.4*var(--u));line-height:1.85}
-.rail .hit{color:var(--mp-red);font-size:calc(21.5*var(--u));font-weight:700;line-height:1.5;
+.railHit{color:var(--mp-red);font-size:calc(21.5*var(--u));font-weight:700;line-height:1.5;
   border-bottom:calc(2*var(--u)) solid var(--mp-red);display:inline-block;
   padding-bottom:calc(3*var(--u));margin:calc(2*var(--u)) 0 calc(7*var(--u))}
 
-.ctas{position:absolute;z-index:5;left:calc(45*var(--u));bottom:calc(32*var(--u));
-  display:flex;flex-direction:column;gap:calc(9*var(--u));width:calc(408*var(--u))}
+/* CTAs — deliberately loud. These are the two actions the whole page exists
+   to drive, so they get lift, glow and weight rather than sitting flat. */
+.ctas{position:absolute;z-index:5;left:calc(45*var(--u));bottom:calc(28*var(--u));
+  display:flex;flex-direction:column;gap:calc(10*var(--u));width:calc(418*var(--u))}
 .btn{display:flex;align-items:center;justify-content:space-between;gap:calc(22*var(--u));
-  padding:calc(14*var(--u)) calc(24*var(--u));font-weight:700;text-transform:uppercase;
-  letter-spacing:.11em;font-size:calc(14.8*var(--u));text-decoration:none}
-.btn.solid{background:var(--mp-red);color:var(--mp-black)}
-.btn.ghost{background:rgba(10,10,10,.72);color:var(--mp-bone);
-  border:calc(1.5*var(--u)) solid var(--mp-red)}
+  padding:calc(16*var(--u)) calc(26*var(--u));font-weight:800;text-transform:uppercase;
+  letter-spacing:.1em;font-size:calc(14.6*var(--u));text-decoration:none;
+  border-radius:calc(4*var(--u));position:relative;overflow:hidden;
+  transition:transform .28s cubic-bezier(.16,1,.3,1),box-shadow .28s cubic-bezier(.16,1,.3,1)}
+.btnSolid{background:linear-gradient(170deg,#FF4438 0%,#EB2933 55%,#C71B24 100%);
+  color:var(--mp-black);
+  box-shadow:0 calc(6*var(--u)) calc(26*var(--u)) rgba(235,41,51,.42),
+             0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
+.btnSolid:hover{transform:translateY(calc(-2*var(--u)));
+  box-shadow:0 calc(10*var(--u)) calc(34*var(--u)) rgba(235,41,51,.55),
+             0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
+.btnGhost{background:rgba(10,10,10,.66);color:var(--mp-bone);isolation:isolate;
+  border:calc(2*var(--u)) solid var(--mp-red);backdrop-filter:blur(6px);
+  box-shadow:0 calc(4*var(--u)) calc(20*var(--u)) rgba(0,0,0,.5)}
+.btnGhost:hover{background:var(--mp-red);color:var(--mp-black);
+  transform:translateY(calc(-2*var(--u)))}
+.btn span:last-child{transition:transform .28s cubic-bezier(.16,1,.3,1)}
+.btn:hover span:last-child{transform:translateX(calc(6*var(--u)))}
 
 .nav{position:absolute;z-index:6;top:0;left:0;right:0;display:flex;align-items:center;
   justify-content:space-between;padding:calc(22*var(--u)) calc(48*var(--u))}
 .logo{display:block;flex:none}
 .logo img{height:calc(65*var(--u));width:auto;display:block}
-.nav .links{display:flex;list-style:none;margin:0;padding:0;white-space:nowrap;gap:calc(33*var(--u));font-size:calc(13.3*var(--u));font-weight:700;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--mp-bone)}
-.nav .cta{border:calc(1.5*var(--u)) solid var(--mp-red);color:var(--mp-bone);
-  padding:calc(10*var(--u)) calc(20*var(--u));font-size:calc(12.4*var(--u));font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase}
+.links{display:flex;list-style:none;margin:0;padding:0;white-space:nowrap;
+  gap:calc(33*var(--u));font-size:calc(13.3*var(--u));font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase}
+.links a{color:var(--mp-bone);text-decoration:none;position:relative;padding-bottom:4px}
+.links a::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:100%;
+  background:var(--mp-red);transform:scaleX(0);transform-origin:left center;
+  transition:transform .24s cubic-bezier(.16,1,.3,1)}
+.links a:hover::after{transform:scaleX(1)}
+.navCta{flex:none;border:calc(1.6*var(--u)) solid var(--mp-red);color:var(--mp-bone);
+  padding:calc(11*var(--u)) calc(21*var(--u));font-size:calc(12.4*var(--u));font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;text-decoration:none;
+  border-radius:calc(3*var(--u));transition:.24s}
+.navCta:hover{background:var(--mp-red);color:var(--mp-black)}
 
 .grain{position:absolute;inset:0;z-index:7;pointer-events:none;opacity:.055;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
 
-/* mobile stage, authored at 390x844 */
 @media (max-width:820px){
   .hero{--u:min(calc(100vw / 390), calc(100vh / 844))}
   .stage{width:calc(390*var(--u));height:calc(844*var(--u));
     margin-top:calc(-422*var(--u));margin-left:calc(-195*var(--u))}
-  .plate img{object-position:62% 42%}
+  .plateImg{object-position:62% 42%}
   .type{left:calc(17.5*var(--u));top:calc(202*var(--u))}
-  .reimag{font-size:calc(24*var(--u));margin-bottom:calc(2*var(--u))}
-  .strike{width:calc(154*var(--u));height:calc(2*var(--u));margin-bottom:calc(7*var(--u))}
+  .reimagining,.the,.american,.dream{padding-top:calc(9*var(--u));margin-top:calc(-9*var(--u))}
+  .reimagining{font-size:calc(24*var(--u))}
+  .strike{width:calc(154*var(--u));height:calc(2.4*var(--u));margin:calc(4*var(--u)) 0 calc(6*var(--u))}
   .the{font-size:calc(45*var(--u))}
   .american,.dream{font-size:calc(92*var(--u))}
-  .the,.american,.dream,.reimag{padding-top:calc(8*var(--u));margin-top:calc(-8*var(--u))}
-  .the,.american,.dream{-webkit-text-stroke:calc(1.2*var(--u)) var(--mp-black);
-    text-shadow:calc(1.2*var(--u)) calc(1.6*var(--u)) 0 rgba(0,0,0,.92),
-                calc(2.4*var(--u)) calc(3.2*var(--u)) calc(5*var(--u)) rgba(0,0,0,.55)}
-  .dream > span::before{-webkit-text-stroke:calc(2.4*var(--u)) var(--mp-black)}
-  .dream > span{filter:drop-shadow(calc(2*var(--u)) calc(2.6*var(--u)) 0 rgba(0,0,0,.9))}
+  .the>span,.american>span,.dream>span{-webkit-text-stroke-width:calc(1.8*var(--u));
+    text-shadow:calc(1.8*var(--u)) calc(2.2*var(--u)) 0 rgba(0,0,0,.9)}
+  .dream>span::after{-webkit-text-stroke-width:0}
   .chris{height:calc(422*var(--u));width:calc(332*var(--u));
     right:calc(-58*var(--u));bottom:calc(93*var(--u))}
-  .shadow-ground{right:calc(-38*var(--u));bottom:calc(99*var(--u));
+  .shadowGround{right:calc(-38*var(--u));bottom:calc(99*var(--u));
     width:calc(299*var(--u));height:calc(59*var(--u));filter:blur(calc(6*var(--u)))}
-  .shadow-wall{right:calc(-25*var(--u));bottom:calc(93*var(--u));
+  .shadowWall{right:calc(-25*var(--u));bottom:calc(93*var(--u));
     width:calc(332*var(--u));height:calc(388*var(--u));filter:blur(calc(16*var(--u)))}
   .rail{display:none}
   .nav{padding:calc(17*var(--u)) calc(17.5*var(--u))}
-  .nav .logo img{height:calc(46*var(--u))}
-  .nav .links{display:none}
-  .nav .cta{font-size:calc(11*var(--u));padding:calc(8*var(--u)) calc(14*var(--u));
-    border-width:calc(1*var(--u))}
-  .ctas{left:calc(17.5*var(--u));right:calc(17.5*var(--u));width:auto;
-    bottom:calc(25*var(--u));gap:calc(9*var(--u))}
-  .btn{font-size:calc(13*var(--u));padding:calc(14*var(--u)) calc(16*var(--u));
-    letter-spacing:.09em;gap:calc(10*var(--u));border-width:calc(1*var(--u))}
+  .logo img{height:calc(46*var(--u))}
+  .links{display:none}
+  .navCta{font-size:calc(11*var(--u));padding:calc(9*var(--u)) calc(15*var(--u))}
+  .ctas{left:calc(17.5*var(--u));right:calc(17.5*var(--u));width:auto;bottom:calc(26*var(--u))}
+  .btn{font-size:calc(13*var(--u));padding:calc(15*var(--u)) calc(17*var(--u))}
 }
-
-/* ================= load choreography =================
-   A poster assembling itself. Heavy, deliberate, no bounce.
-   The masked lines each have a non-moving wrapper (overflow hidden) with the
-   animated span inside — a clip on the moving element travels with it and
-   never masks anything. */
-@keyframes plateSettle { from{transform:scale(1.04)} to{transform:scale(1)} }
-@keyframes riseMask    { from{transform:translateY(105%)} to{transform:translateY(0)} }
-@keyframes drawStrike  { from{transform:scaleX(0)} to{transform:scaleX(1)} }
-@keyframes arrive      { from{opacity:0;transform:translateY(42px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeUp      { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-
-.reimagining, .the, .american, .dream {
-  overflow: hidden;
-  padding-bottom: calc(24 * var(--u));
-  margin-bottom: calc(-24 * var(--u));
-}
-.reimagining > span, .the > span, .american > span, .dream > span { display: block; }
-
-@media (prefers-reduced-motion: no-preference){
-  .plateImg          { animation: plateSettle 1400ms var(--ease-out-heavy) both }
-  .reimagining > span{ animation: riseMask var(--dur-slow) var(--ease-out-heavy) 180ms both }
-  .strike            { animation: drawStrike 420ms var(--ease-out-heavy) 380ms both }
-  .the > span        { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 440ms both }
-  .american > span   { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 480ms both }
-  .dream > span      { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 560ms both }
-  .chris             { animation: arrive var(--dur-slow) var(--ease-out-heavy) 720ms both }
-  .shadowGround,
-  .shadowWall        { animation: fadeUp var(--dur-slow) var(--ease-out-heavy) 760ms both }
-  .rail              { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 980ms both }
-  .ctas              { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 1040ms both }
-  .nav               { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 120ms both }
-}
-@media (prefers-reduced-motion: reduce){
-  .plateImg, .reimagining > span, .the > span, .american > span, .dream > span,
-  .chris, .shadowGround, .shadowWall, .rail, .ctas, .nav {
-    animation: none !important; opacity: 1 !important; transform: none !important;
-  }
-  .strike { transform: scaleX(1) !important }
-}
-
-/* hover states */
-.btn span:last-child { transition: transform var(--dur-fast) var(--ease-out-heavy) }
-.btn:hover span:last-child { transform: translateX(6px) }
-.btnSolid:hover { background: var(--mp-red-deep) }
-.btnGhost { isolation: isolate }
-.btnGhost:hover { background: var(--mp-red); color: var(--mp-black) }
-.links a { color: inherit; text-decoration: none; position: relative; padding-bottom: 4px }
-.links a::after { content:''; position:absolute; left:0; bottom:0; height:2px; width:100%;
-  background: var(--mp-red); transform: scaleX(0); transform-origin: left center;
-  transition: transform var(--dur-fast) var(--ease-out-heavy) }
-.links a:hover::after { transform: scaleX(1) }
-.navCta { text-decoration: none; transition: background var(--dur-fast) var(--ease-out-heavy) }
-.navCta:hover { background: var(--mp-red); color: var(--mp-black) }

@@ -1,7 +1,28 @@
 import Link from "next/link";
 import s from "../Site.module.css";
 
-/** Mission + the American Dream Conference. Chris's own words from onboarding. */
+/**
+ * Mission + the American Dream Conference.
+ *
+ * Conference details are taken from mortgagepunklive.com and Chris's
+ * onboarding: 3 keynotes, 15 breakouts, a live concert, and the home-upgrade
+ * giveaways. The next event is Oct 16 2027 per onboarding — the live site is
+ * still showing the April 2026 event, which has already happened.
+ */
+const STATS = [
+  ["3", "Keynotes"],
+  ["15", "Breakouts"],
+  ["1", "Live concert"],
+];
+
+const PRIZES = [
+  "Full kitchen remodel, given away live",
+  "A brand new roof",
+  "New HVAC system",
+  "Interior and exterior paint job",
+  "One month of mortgage payments",
+];
+
 export default function MovementBlock() {
   return (
     <section className={`${s.sec} ${s.ink}`} aria-label="The movement">
@@ -16,35 +37,55 @@ export default function MovementBlock() {
             </p>
             <div className={s.attrib}>Chris Waipa &middot; Founder, Mortgage Punk</div>
             <p className={s.lede}>
-              It started by challenging a broken mortgage experience. It grew into
-              a lending team, a media platform, a live event, and a community
-              built around helping people think bigger than the next transaction.
+              It started by challenging a broken mortgage experience. It grew
+              into a lending team, a media platform, a live event, and a
+              community built around helping people think bigger than the next
+              transaction.
             </p>
-            <div style={{ marginTop: 30 }}>
-              <Link href="/movement" className={`${s.btn} ${s.solid}`}>
+            <div style={{ marginTop: 32 }}>
+              <Link href="/movement" className={`${s.btn} ${s.btnSolid}`}>
                 Read the mission &rarr;
               </Link>
             </div>
           </div>
 
           <div className={s.evt}>
-            <div className={s.tag}>Live &middot; October 16, 2027</div>
+            <span className={s.tag}>Next &middot; October 16, 2027</span>
             <h3>
               The American
               <br />
               Dream Conference
             </h3>
             <div className={s.meta}>
-              Hyatt Regency &middot; Wichita, Kansas
+              <strong>Hyatt Regency &middot; Wichita, Kansas</strong>
               <br />
               Keynote: Hannah Hammond
               <br />
-              A day on the Game of Money, ownership, and building a life beyond a
-              paycheck.
+              Not a sit-in-a-chair seminar. Real education, real connections,
+              and the volume all the way up.
             </div>
+
+            <div className={s.stats}>
+              {STATS.map(([n, label]) => (
+                <div key={label} className={s.stat}>
+                  <b>{n}</b>
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className={s.prizes}>
+              {PRIZES.map((p) => (
+                <div key={p} className={s.prize}>
+                  <i aria-hidden="true" />
+                  {p}
+                </div>
+              ))}
+            </div>
+
             <a
               href="https://mortgagepunklive.com"
-              className={`${s.btn} ${s.ghost}`}
+              className={`${s.btn} ${s.btnGhost}`}
               target="_blank"
               rel="noopener noreferrer"
             >

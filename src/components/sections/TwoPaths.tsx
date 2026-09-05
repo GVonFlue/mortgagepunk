@@ -19,10 +19,10 @@ export default function TwoPaths() {
             print, and a straight answer on where you actually stand.
           </p>
         </div>
-        <span className={s.go}>Start your approval &rarr;</span>
+        <span className={s.go}>Start your approval <span aria-hidden="true">&rarr;</span></span>
       </Link>
 
-      <Link href="/movement" className={`${s.path} ${s.dark}`}>
+      <Link href="/movement" className={`${s.path} ${s.dk}`}>
         <span className={s.ghost} aria-hidden="true">02</span>
         <div>
           <div className={s.num}>Path 02</div>
@@ -32,7 +32,7 @@ export default function TwoPaths() {
             complicated. Free, always, and built to be shared.
           </p>
         </div>
-        <span className={s.go}>Join the movement &rarr;</span>
+        <span className={s.go}>Join the movement <span aria-hidden="true">&rarr;</span></span>
       </Link>
     </section>
   );

@@ -89,7 +89,7 @@ export default function LeadForm() {
           type="button"
           onClick={submit}
           disabled={status === "sending"}
-          className={`${s.btn} ${s.solid}`}
+          className={`${s.btn} ${s.btnSolid}`}
           style={{ border: 0, cursor: "pointer" }}
         >
           {status === "sending" ? "Sending..." : "Send it"} <span aria-hidden="true">&rarr;</span>
