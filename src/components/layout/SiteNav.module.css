@@ -1,0 +1,65 @@
+/* Inner-page nav. Fluid, unlike the hero's fixed stage nav. */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px clamp(20px, 4vw, 64px);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #2a2a2a;
+}
+.logo { display: block; flex: none; }
+.logo img { height: 44px; width: auto; display: block; }
+.links {
+  display: flex;
+  gap: clamp(16px, 2vw, 34px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  font-size: clamp(11px, 0.85vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.links a {
+  color: var(--mp-bone);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 4px;
+}
+.links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--mp-red);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-fast) var(--ease-out-heavy);
+}
+.links a:hover::after { transform: scaleX(1); }
+.cta {
+  flex: none;
+  border: 1px solid var(--mp-red);
+  color: var(--mp-bone);
+  padding: 11px 18px;
+  font-size: clamp(10px, 0.8vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-out-heavy);
+}
+.cta:hover { background: var(--mp-red); color: var(--mp-black); }
+
+@media (max-width: 900px) {
+  .links { display: none; }
+  .logo img { height: 36px; }
+}
