@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { COOKIE, passwordMatches, issueToken } from "@/lib/auth";
 
+// Node runtime: lib/auth.ts uses node:crypto to issue the token.
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   let body: { password?: string };
   try {
