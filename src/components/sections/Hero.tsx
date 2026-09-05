@@ -56,11 +56,19 @@ export default function Hero() {
 
       {/* L2 — display type */}
       <h1 className={styles.type} data-parallax="type">
-        <span className={styles.reimagining}>Reimagining</span>
+        <span className={styles.reimagining}>
+          <span>Reimagining</span>
+        </span>
         <span className={styles.strike} aria-hidden="true" />
-        <span className={styles.the}>The</span>
-        <span className={styles.american}>American</span>
-        <span className={styles.dream}>Dream</span>
+        <span className={styles.the}>
+          <span>The</span>
+        </span>
+        <span className={styles.american}>
+          <span>American</span>
+        </span>
+        <span className={styles.dream}>
+          <span>Dream</span>
+        </span>
       </h1>
 
       {/* L2.5 — shadows: across the type, under Chris */}

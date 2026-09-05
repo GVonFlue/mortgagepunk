@@ -17,6 +17,16 @@
   --the: min(7.6vw, 12.5vh);
   --reimag: min(4.2vw, 6.9vh);
 
+  /* Type treatment in ABSOLUTE, capped units — NOT em.
+     em-based stroke/shadow scales with font-size, so on a 2560 monitor the
+     font hits 382px and an 0.042em stroke becomes 16px: the outline inflates
+     into a WordArt slab. These clamps hold the same look from 390 to 2560. */
+  --stroke-w: clamp(2px, 0.26vw, 4.5px);
+  --sh-tight: clamp(1.5px, 0.16vw, 3px);
+  --sh-x: clamp(1px, 0.09vw, 2px);
+  --sh-y: clamp(3px, 0.4vw, 7px);
+  --sh-blur: clamp(4px, 0.5vw, 9px);
+
   /* parallax offsets, written by HeroParallax */
   --p-type: 0px;
   --p-chris: 0px;
@@ -96,11 +106,11 @@
 .the,
 .american,
 .dream {
-  -webkit-text-stroke: 0.042em var(--mp-black);
+  -webkit-text-stroke: var(--stroke-w) var(--mp-black);
   paint-order: stroke fill;
   text-shadow:
-    0 0.018em 0 rgba(0, 0, 0, 0.42),
-    0.012em 0.055em 0.045em rgba(0, 0, 0, 0.5);
+    0 var(--sh-tight) 0 rgba(0, 0, 0, 0.34),
+    var(--sh-x) var(--sh-y) var(--sh-blur) rgba(0, 0, 0, 0.46);
 }
 
 .the {
@@ -237,7 +247,7 @@
 }
 .btnSolid {
   background: var(--mp-red);
-  color: #fff;
+  color: var(--mp-black); /* 4.63:1 on #EB2933; #fff is only 4.27:1 */
 }
 .btnSolid:hover {
   background: var(--mp-red-deep);
@@ -246,6 +256,9 @@
   background: rgba(10, 10, 10, 0.72);
   color: var(--mp-bone);
   border: 1px solid var(--mp-red);
+  /* without this the z-index:-1 sweep paints BEHIND this background and
+     reads as dark maroon instead of red */
+  isolation: isolate;
 }
 .btnGhost::before {
   content: "";
@@ -328,7 +341,7 @@
 }
 .navCta:hover {
   background: var(--mp-red);
-  color: #fff;
+  color: var(--mp-black);
 }
 
 /* ---------- grain ---------- */
@@ -420,26 +433,41 @@
   from { transform: translateY(18px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
+/* shadows need their own keyframe: fadeUp's `to` would permanently pin them
+   at translateY(0) under fill:both and detach them from Chris on scroll */
+@keyframes shadowArrive {
+  from { opacity: 0; transform: translate3d(0, calc(var(--p-chris) + 18px), 0); }
+  to   { opacity: 1; transform: translate3d(0, var(--p-chris), 0); }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .plateImg {
     animation: plateSettle 1400ms var(--ease-out-heavy) both;
   }
-  /* each line rides inside its own clip so it reveals from a mask */
+  /* the clip must live on a NON-moving parent, or it travels with the element
+     and never masks anything */
   .reimagining,
   .the,
   .american,
   .dream {
-    clip-path: inset(0 0 -0.18em 0);
+    overflow: hidden;
+    padding-bottom: 0.16em;
+    margin-bottom: -0.16em;
   }
-  .reimagining { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 180ms both; }
+  .reimagining > span,
+  .the > span,
+  .american > span,
+  .dream > span {
+    display: block;
+  }
+  .reimagining > span { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 180ms both; }
   .strike      { animation: drawStrike 420ms var(--ease-out-heavy) 380ms both; }
-  .the         { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 440ms both; }
-  .american    { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 480ms both; }
-  .dream       { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 560ms both; }
+  .the > span  { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 440ms both; }
+  .american > span { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 480ms both; }
+  .dream > span { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 560ms both; }
   .chris       { animation: chrisArrive var(--dur-slow) var(--ease-out-heavy) 720ms both; }
   .shadowGround,
-  .shadowWall  { animation: fadeUp var(--dur-slow) var(--ease-out-heavy) 760ms both; }
+  .shadowWall  { animation: shadowArrive var(--dur-slow) var(--ease-out-heavy) 760ms both; }
   .rail        { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 980ms both; }
   .ctas        { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 1040ms both; }
   .nav         { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 120ms both; }
