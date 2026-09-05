@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
+import PhotoSlot from "@/components/ui/PhotoSlot";
 import a from "@/components/sections/About.module.css";
 
 export const metadata = {
@@ -41,10 +42,16 @@ const MARQUEE = [
   "Living Beyond a Paycheck",
 ];
 
+/** `pending` items render dimmed and must not publish until verified. */
 const PRESS = [
-  ["Wichita Real Producers", "Feature story on Chris Waipa and Mortgage Punk."],
-  ["Scotsman Guide", "Top Originator recognition."],
-  ["KSN", "Media coverage of Mortgage Punk and the American Dream Conference."],
+  { kind: "Feature", outlet: "Wichita Real Producers",
+    note: "Feature story on Chris Waipa and the rise of Mortgage Punk." },
+  { kind: "Recognition", outlet: "Scotsman Guide",
+    note: "Top Originator recognition." },
+  { kind: "Broadcast", outlet: "KSN",
+    note: "Coverage of Mortgage Punk and the American Dream Conference." },
+  { kind: "Pending", outlet: "The Wall Street Journal",
+    note: "Held back until the appearance is verified and linked.", pending: true },
 ];
 
 export default function About() {
@@ -77,7 +84,6 @@ export default function About() {
             <span>Creator, The American Dream Conference</span>
           </div>
         </div>
-        <div className={a.scrollCue}>Scroll</div>
       </section>
 
       {/* 2 — marquee. Duplicated once so the -50% loop is seamless. */}
@@ -186,21 +192,42 @@ export default function About() {
       {/* 5 — press */}
       <section className={a.press} id="press">
         <div className={a.pressInner}>
-          <div className={a.kick}>Press &amp; Appearances</div>
-          <h2 className={a.h2} style={{ color: "var(--mp-bone)" }}>
-            In the wild.
-          </h2>
-          <div className={a.pressGrid}>
-            {PRESS.map(([outlet, note]) => (
-              <div key={outlet} className={a.pressCell}>
-                <b>{outlet}</b>
-                <span>{note}</span>
-              </div>
+          <div className={a.pressLead}>
+            <div>
+              <div className={a.kick}>Press &amp; Appearances</div>
+              <h2 className={a.h2} style={{ color: "var(--mp-bone)" }}>
+                In the wild.
+              </h2>
+            </div>
+            <p className={a.lede} style={{ color: "#8E8E8E", margin: 0, maxWidth: "44ch" }}>
+              Features, recognition, and coverage. Only verified appearances get
+              published here.
+            </p>
+          </div>
+
+          <div className={a.pressCards}>
+            {PRESS.map((p) => (
+              <article
+                key={p.outlet}
+                className={`${a.pressCard} ${p.pending ? a.pressPending : ""}`}
+              >
+                <PhotoSlot
+                  className={a.pressCover}
+                  label="Cover image"
+                  hint="Screenshot or photo"
+                />
+                <div className={a.pressMeta}>
+                  <span className={a.pressOutlet}>{p.kind}</span>
+                  <h3 className={a.pressTitle}>{p.outlet}</h3>
+                  <p className={a.pressNote}>{p.note}</p>
+                </div>
+              </article>
             ))}
           </div>
+
           <div className={a.todo}>
-            TODO: only documented, verified appearances get published. The Wall
-            Street Journal item must be verified and linked before it goes live.
+            TODO: cover images needed for each item, and the Wall Street Journal
+            appearance must be verified before it publishes.
           </div>
         </div>
       </section>
@@ -208,25 +235,34 @@ export default function About() {
       {/* 6 — booking */}
       <section className={a.book}>
         <div className={a.bookInner}>
-          <div className={a.kick} style={{ color: "var(--mp-black)" }}>
-            Booking
-          </div>
-          <h2 className={a.h2}>
-            Get Chris
-            <br />
-            <em>in the room.</em>
-          </h2>
-          <p className={a.lede}>
-            Speaking, press, podcasts, and partnerships. Tell us the room and the
-            date and someone comes back to you.
-          </p>
-          <div className={a.bookBtns}>
-            <Link href="/contact" className={`${a.btn} ${a.btnDark}`}>
-              Book Chris to speak &rarr;
-            </Link>
-            <Link href="/contact" className={`${a.btn} ${a.btnOutline}`}>
-              Press enquiries &rarr;
-            </Link>
+          <div className={a.bookGrid}>
+            <div>
+              <div className={a.kick} style={{ color: "var(--mp-black)" }}>
+                Booking
+              </div>
+              <h2 className={a.h2}>
+                Get Chris
+                <br />
+                <em>in the room.</em>
+              </h2>
+              <p className={a.lede}>
+                Speaking, press, podcasts, and partnerships. Tell us the room and
+                the date and someone comes back to you.
+              </p>
+              <div className={a.bookBtns}>
+                <Link href="/contact" className={`${a.btn} ${a.btnDark}`}>
+                  Book Chris to speak &rarr;
+                </Link>
+                <Link href="/contact" className={`${a.btn} ${a.btnOutline}`}>
+                  Press enquiries &rarr;
+                </Link>
+              </div>
+            </div>
+            <PhotoSlot
+              className={a.bookSlot}
+              label="Chris on stage"
+              hint="Photo needed from Mortgage Punk"
+            />
           </div>
         </div>
       </section>
