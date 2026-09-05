@@ -1,490 +1,182 @@
 /*
   Hero — mortgagepunk.com
-  Geometry tuned visually against the client reference at 1920x1080, 1512x900
-  and 390x844. Re-check all three before changing any number in :root.
+
+  THE STAGE MODEL. Read this before changing anything.
+
+  The composition is authored ONCE at 1512x900, the size it was approved at.
+  --u is one authored pixel, scaled with min() so the whole composition is
+  contained and never crops. Every length is calc(N * var(--u)).
+
+  Why not vw/vh per element: they scale on different axes. On a wide, short
+  monitor a vh-capped headline shrinks while a vh-sized portrait does not, and
+  the type slides out from behind Chris. That is exactly what went wrong before.
+  Here nothing can drift, because everything is driven by one number.
+
+  Why calc(N * var(--u)) and not em: em resolves against the element's OWN
+  font-size, so nested values multiply and the layout explodes.
+
+  The plate, nav and grain sit at viewport level so the background bleeds edge
+  to edge while the composition stays contained.
+
+  To change the design: edit the authored pixel numbers. Do not convert
+  anything back to vw, vh, rem or em.
 */
 
-.hero {
-  /* ---- geometry ---- */
-  --chris-h: 71vh;
-  --chris-w: calc(var(--chris-h) * 0.7877);   /* portrait is 879x1116 */
-  --chris-right: 15.5vw;                       /* keeps the right rail clear */
-  --type-left: 3vw;
-  --type-top: 12.5vh;
+/* THE STAGE
+   Composition authored once at 1512x900. --u is one authored pixel, scaled to
+   cover the viewport. Every length is calc(N * var(--u)), so nothing inherits
+   and nothing compounds: the layout is pixel-identical at any screen size. */
+.hero{position:relative;width:100%;min-height:100svh;height:100svh;font-family:var(--font-body),sans-serif;overflow:hidden;background:var(--mp-black);
+  --u:min(calc(100vw / 1512), calc(100vh / 900))}
+.stage{position:absolute;top:50%;left:50%;
+  width:calc(1512*var(--u));height:calc(900*var(--u));
+  margin-top:calc(-450*var(--u));margin-left:calc(-756*var(--u))}
 
-  /* vh caps stop the type colliding with the CTAs on 16:9 and shorter */
-  --huge: min(17.7vw, 29vh);
-  --the: min(7.6vw, 12.5vh);
-  --reimag: min(4.2vw, 6.9vh);
+.plate{position:absolute;inset:0;z-index:1}
+.plateImg{width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(1.85)}
+.plate::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(10,10,10,.60) 0%,rgba(10,10,10,.28) 38%,rgba(10,10,10,.08) 62%,rgba(10,10,10,.38) 100%)}
 
-  /* Type treatment in ABSOLUTE, capped units — NOT em.
-     em-based stroke/shadow scales with font-size, so on a 2560 monitor the
-     font hits 382px and an 0.042em stroke becomes 16px: the outline inflates
-     into a WordArt slab. These clamps hold the same look from 390 to 2560. */
-  --stroke-w: clamp(2px, 0.26vw, 4.5px);
-  --sh-tight: clamp(1.5px, 0.16vw, 3px);
-  --sh-x: clamp(1px, 0.09vw, 2px);
-  --sh-y: clamp(3px, 0.4vw, 7px);
-  --sh-blur: clamp(4px, 0.5vw, 9px);
+.type{position:absolute;z-index:2;left:calc(45*var(--u));top:calc(112*var(--u));
+  font-family:var(--font-display),sans-serif;color:var(--mp-bone);
+  text-transform:uppercase;line-height:.80;letter-spacing:-.028em;white-space:nowrap}
+.reimagining{display:block;font-size:calc(63*var(--u));letter-spacing:.20em;line-height:1;
+  margin-bottom:calc(6*var(--u))}
+.strike{display:block;width:calc(479*var(--u));height:calc(4.7*var(--u));background:var(--mp-red);
+  border-radius:calc(2*var(--u));margin-bottom:calc(18*var(--u));transform-origin:left center}
+.the,.american,.dream{
+  -webkit-text-stroke:calc(4*var(--u)) var(--mp-black);
+  paint-order:stroke fill;
+  text-shadow:0 calc(2.4*var(--u)) 0 rgba(0,0,0,.34),
+              calc(1.4*var(--u)) calc(6*var(--u)) calc(7.6*var(--u)) rgba(0,0,0,.46)}
+.the{display:block;font-size:calc(115*var(--u));line-height:.86}
+.american{display:block;font-size:calc(268*var(--u))}
+.dream{display:block;font-size:calc(268*var(--u));color:var(--mp-red)}
 
-  /* parallax offsets, written by HeroParallax */
-  --p-type: 0px;
-  --p-chris: 0px;
-  --p-plate: 0px;
+.shadowGround{position:absolute;z-index:3;right:calc(264*var(--u));bottom:calc(9*var(--u));
+  width:calc(483*var(--u));height:calc(99*var(--u));
+  background:radial-gradient(ellipse at 50% 66%,rgba(0,0,0,.88) 0%,rgba(0,0,0,.60) 30%,rgba(0,0,0,.24) 55%,rgba(0,0,0,0) 76%);
+  filter:blur(calc(11*var(--u)));pointer-events:none}
+.shadowWall{position:absolute;z-index:3;right:calc(284*var(--u));bottom:0;
+  width:calc(503*var(--u));height:calc(588*var(--u));
+  background:radial-gradient(ellipse at 47% 64%,rgba(0,0,0,.52) 0%,rgba(0,0,0,.22) 44%,rgba(0,0,0,0) 70%);
+  filter:blur(calc(34*var(--u)));pointer-events:none}
 
-  position: relative;
-  width: 100%;
-  min-height: 100svh;
+.chris{position:absolute;z-index:4;right:calc(234*var(--u));bottom:0;
+  height:calc(639*var(--u));width:calc(503*var(--u))}
+.chrisImg{height:100%;width:auto;display:block}
+
+.rail{position:absolute;z-index:5;right:calc(45*var(--u));top:calc(261*var(--u));
+  width:calc(333*var(--u));text-align:right;color:var(--mp-bone);text-transform:uppercase;
+  letter-spacing:.14em;font-weight:700;font-size:calc(15.4*var(--u));line-height:1.85}
+.railHit{color:var(--mp-red);font-size:calc(21.5*var(--u));font-weight:700;line-height:1.5;
+  border-bottom:calc(2*var(--u)) solid var(--mp-red);display:inline-block;
+  padding-bottom:calc(3*var(--u));margin:calc(2*var(--u)) 0 calc(7*var(--u))}
+
+.ctas{position:absolute;z-index:5;left:calc(45*var(--u));bottom:calc(32*var(--u));
+  display:flex;flex-direction:column;gap:calc(9*var(--u));width:calc(408*var(--u))}
+.btn{display:flex;align-items:center;justify-content:space-between;gap:calc(22*var(--u));
+  padding:calc(14*var(--u)) calc(24*var(--u));font-weight:700;text-transform:uppercase;
+  letter-spacing:.11em;font-size:calc(14.8*var(--u));text-decoration:none}
+.btnSolid{background:var(--mp-red);color:var(--mp-black)}
+.btnGhost{background:rgba(10,10,10,.72);color:var(--mp-bone);
+  border:calc(1.5*var(--u)) solid var(--mp-red)}
+
+.nav{position:absolute;z-index:6;top:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:space-between;padding:calc(22*var(--u)) calc(48*var(--u))}
+.logo{height:calc(65*var(--u))}
+.links{display:flex;list-style:none;margin:0;padding:0;gap:calc(33*var(--u));font-size:calc(13.3*var(--u));font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--mp-bone)}
+.navCta{border:calc(1.5*var(--u)) solid var(--mp-red);color:var(--mp-bone);
+  padding:calc(10*var(--u)) calc(20*var(--u));font-size:calc(12.4*var(--u));font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase}
+
+.grain{position:absolute;inset:0;z-index:7;pointer-events:none;opacity:.055;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+
+/* mobile stage, authored at 390x844 */
+@media (max-width:820px){
+  .hero{--u:min(calc(100vw / 390), calc(100vh / 844))}
+  .stage{width:calc(390*var(--u));height:calc(844*var(--u));
+    margin-top:calc(-422*var(--u));margin-left:calc(-195*var(--u))}
+  .plateImg{object-position:62% 42%}
+  .type{left:calc(17.5*var(--u));top:calc(202*var(--u))}
+  .reimagining{font-size:calc(24*var(--u));margin-bottom:calc(2*var(--u))}
+  .strike{width:calc(154*var(--u));height:calc(2*var(--u));margin-bottom:calc(7*var(--u))}
+  .the{font-size:calc(45*var(--u))}
+  .american,.dream{font-size:calc(92*var(--u))}
+  .the,.american,.dream{-webkit-text-stroke:calc(1.5*var(--u)) var(--mp-black);
+    text-shadow:0 calc(.9*var(--u)) 0 rgba(0,0,0,.34),
+                calc(.5*var(--u)) calc(2.2*var(--u)) calc(2.8*var(--u)) rgba(0,0,0,.46)}
+  .chris{height:calc(422*var(--u));width:calc(332*var(--u));
+    right:calc(-58*var(--u));bottom:calc(93*var(--u))}
+  .shadowGround{right:calc(-38*var(--u));bottom:calc(99*var(--u));
+    width:calc(299*var(--u));height:calc(59*var(--u));filter:blur(calc(6*var(--u)))}
+  .shadowWall{right:calc(-25*var(--u));bottom:calc(93*var(--u));
+    width:calc(332*var(--u));height:calc(388*var(--u));filter:blur(calc(16*var(--u)))}
+  .rail{display:none}
+  .nav{padding:calc(17*var(--u)) calc(17.5*var(--u))}
+  .logo{height:calc(46*var(--u))}
+  .links{display:none}
+  .navCta{font-size:calc(11*var(--u));padding:calc(8*var(--u)) calc(14*var(--u));
+    border-width:calc(1*var(--u))}
+  .ctas{left:calc(17.5*var(--u));right:calc(17.5*var(--u));width:auto;
+    bottom:calc(25*var(--u));gap:calc(9*var(--u))}
+  .btn{font-size:calc(13*var(--u));padding:calc(14*var(--u)) calc(16*var(--u));
+    letter-spacing:.09em;gap:calc(10*var(--u));border-width:calc(1*var(--u))}
+}
+
+
+/* ================= load choreography =================
+   A poster assembling itself. Heavy, deliberate, no bounce.
+   The masked lines each have a non-moving wrapper (overflow hidden) with the
+   animated span inside — a clip on the moving element travels with it and
+   never masks anything. */
+@keyframes plateSettle { from{transform:scale(1.04)} to{transform:scale(1)} }
+@keyframes riseMask    { from{transform:translateY(105%)} to{transform:translateY(0)} }
+@keyframes drawStrike  { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+@keyframes arrive      { from{opacity:0;transform:translateY(42px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp      { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+.reimagining, .the, .american, .dream {
   overflow: hidden;
-  background: var(--mp-black);
-  isolation: isolate;
+  padding-bottom: calc(24 * var(--u));
+  margin-bottom: calc(-24 * var(--u));
 }
+.reimagining > span, .the > span, .american > span, .dream > span { display: block; }
 
-/* ---------- L1 plate ---------- */
-.plate {
-  position: absolute;
-  inset: -2% 0 0 0;
-  z-index: 1;
-  transform: translate3d(0, var(--p-plate), 0);
-}
-.plateImg {
-  object-fit: cover;
-  object-position: center 40%;
-  /* the source plate was built dark for white type; the outlined type carries
-     its own contrast now, so the concrete can come up and read as a place */
-  filter: brightness(1.85);
-}
-.plate::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    100deg,
-    rgba(10, 10, 10, 0.6) 0%,
-    rgba(10, 10, 10, 0.28) 38%,
-    rgba(10, 10, 10, 0.08) 62%,
-    rgba(10, 10, 10, 0.38) 100%
-  );
-}
-
-/* ---------- L2 type ---------- */
-.type {
-  position: absolute;
-  z-index: 2;
-  left: var(--type-left);
-  top: var(--type-top);
-  margin: 0;
-  font-family: var(--font-display), sans-serif;
-  font-weight: 400;
-  color: var(--mp-bone);
-  text-transform: uppercase;
-  line-height: 0.8;
-  letter-spacing: -0.028em;
-  white-space: nowrap;
-  transform: translate3d(0, var(--p-type), 0);
-}
-.reimagining {
-  display: block;
-  font-size: var(--reimag);
-  letter-spacing: 0.2em;
-  line-height: 1;
-  margin-bottom: 0.1em;
-}
-.strike {
-  display: block;
-  font-size: var(--reimag);
-  width: 7.6em;
-  height: 0.075em;
-  background: var(--mp-red);
-  border-radius: 2px;
-  margin-bottom: 0.28em;
-  transform-origin: left center;
-}
-/* black outline + soft drop shadow: lifts the type off the plate and gives it
-   the screen-printed poster edge. paint-order keeps the stroke outside the
-   glyph so the letterforms stay true. */
-.the,
-.american,
-.dream {
-  -webkit-text-stroke: var(--stroke-w) var(--mp-black);
-  paint-order: stroke fill;
-  text-shadow:
-    0 var(--sh-tight) 0 rgba(0, 0, 0, 0.34),
-    var(--sh-x) var(--sh-y) var(--sh-blur) rgba(0, 0, 0, 0.46);
-}
-
-.the {
-  display: block;
-  font-size: var(--the);
-  line-height: 0.86;
-}
-.american {
-  display: block;
-  font-size: var(--huge);
-}
-.dream {
-  display: block;
-  font-size: var(--huge);
-  color: var(--mp-red);
-}
-
-/* ---------- L2.5 shadows: across the type, under Chris ---------- */
-.shadowGround,
-.shadowWall {
-  position: absolute;
-  z-index: 3;
-  pointer-events: none;
-  transform: translate3d(0, var(--p-chris), 0);
-}
-.shadowGround {
-  right: calc(var(--chris-right) + var(--chris-w) * 0.06);
-  bottom: 1vh;
-  width: calc(var(--chris-w) * 0.96);
-  height: 11vh;
-  background: radial-gradient(
-    ellipse at 50% 66%,
-    rgba(0, 0, 0, 0.88) 0%,
-    rgba(0, 0, 0, 0.6) 30%,
-    rgba(0, 0, 0, 0.24) 55%,
-    rgba(0, 0, 0, 0) 76%
-  );
-  filter: blur(11px);
-}
-.shadowWall {
-  right: calc(var(--chris-right) + var(--chris-w) * 0.1);
-  bottom: 0;
-  width: var(--chris-w);
-  height: calc(var(--chris-h) * 0.92);
-  background: radial-gradient(
-    ellipse at 47% 64%,
-    rgba(0, 0, 0, 0.52) 0%,
-    rgba(0, 0, 0, 0.22) 44%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  filter: blur(34px);
-}
-
-/* ---------- L3 Chris ---------- */
-.chris {
-  position: absolute;
-  z-index: 4;
-  right: var(--chris-right);
-  bottom: 0;
-  height: var(--chris-h);
-  width: var(--chris-w);
-  transform: translate3d(0, var(--p-chris), 0);
-}
-.chrisImg {
-  height: 100%;
-  width: auto;
-  display: block;
-}
-
-/* ---------- right rail ---------- */
-.rail {
-  position: absolute;
-  z-index: 5;
-  right: 3vw;
-  top: 29vh;
-  width: 22vw;
-  text-align: right;
-  font-family: var(--font-body), sans-serif;
-  color: var(--mp-bone);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-weight: 700;
-  font-size: clamp(11px, 1.02vw, 16px);
-  line-height: 1.85;
-}
-.rail p {
-  margin: 0;
-}
-/* larger + heavier so #EB2933 clears AA as large text */
-.railHit {
-  color: var(--mp-red);
-  font-size: clamp(15px, 1.42vw, 23px);
-  font-weight: 700;
-  line-height: 1.5;
-  border-bottom: 0.14vw solid var(--mp-red);
-  display: inline-block;
-  padding-bottom: 0.3vh;
-  margin: 0.4vh 0 1.1vh;
-}
-
-/* ---------- CTAs ---------- */
-.ctas {
-  position: absolute;
-  z-index: 5;
-  left: var(--type-left);
-  bottom: 3.6vh;
-  display: flex;
-  flex-direction: column;
-  gap: 1vh;
-  width: 27vw;
-  min-width: 320px;
-}
-.btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5vw;
-  padding: 1.55vh 1.6vw;
-  font-family: var(--font-body), sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.11em;
-  font-size: clamp(12px, 0.98vw, 16px);
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-  transition: color var(--dur-fast) var(--ease-out-heavy);
-}
-.btn span:last-child {
-  transition: transform var(--dur-fast) var(--ease-out-heavy);
-}
-.btn:hover span:last-child {
-  transform: translateX(6px);
-}
-.btnSolid {
-  background: var(--mp-red);
-  color: var(--mp-black); /* 4.63:1 on #EB2933; #fff is only 4.27:1 */
-}
-.btnSolid:hover {
-  background: var(--mp-red-deep);
-}
-.btnGhost {
-  background: rgba(10, 10, 10, 0.72);
-  color: var(--mp-bone);
-  border: 1px solid var(--mp-red);
-  /* without this the z-index:-1 sweep paints BEHIND this background and
-     reads as dark maroon instead of red */
-  isolation: isolate;
-}
-.btnGhost::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--mp-red);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--dur-base) var(--ease-out-heavy);
-  z-index: -1;
-}
-.btnGhost:hover::before {
-  transform: scaleX(1);
-}
-.btnGhost:hover {
-  color: #fff;
-}
-
-/* ---------- nav ---------- */
-.nav {
-  position: absolute;
-  z-index: 6;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2.4vh 3.2vw;
-}
-.logo img {
-  height: 7.2vh;
-  width: auto;
-  display: block;
-}
-.links {
-  display: flex;
-  gap: 2.2vw;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-body), sans-serif;
-  font-size: clamp(11px, 0.88vw, 14px);
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-.links a {
-  color: var(--mp-bone);
-  text-decoration: none;
-  position: relative;
-  padding-bottom: 4px;
-}
-.links a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2px;
-  width: 100%;
-  background: var(--mp-red);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--dur-fast) var(--ease-out-heavy);
-}
-.links a:hover::after {
-  transform: scaleX(1);
-}
-.navCta {
-  border: 1px solid var(--mp-red);
-  color: var(--mp-bone);
-  padding: 1.1vh 1.3vw;
-  font-family: var(--font-body), sans-serif;
-  font-size: clamp(10px, 0.82vw, 13px);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background var(--dur-fast) var(--ease-out-heavy);
-}
-.navCta:hover {
-  background: var(--mp-red);
-  color: var(--mp-black);
-}
-
-/* ---------- grain ---------- */
-.grain {
-  position: absolute;
-  inset: 0;
-  z-index: 7;
-  pointer-events: none;
-  opacity: 0.055;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
-}
-
-/* ================= mobile ================= */
-@media (max-width: 820px) {
-  .hero {
-    --chris-h: 50vh;
-    --chris-right: -15vw;
-    --type-left: 4.5vw;
-    --type-top: 24vh;
-    --huge: 23.5vw;
-    --the: 11.5vw;
-    --reimag: 6.2vw;
-  }
-  .chris,
-  .shadowWall {
-    bottom: 11vh;
-  }
-  .shadowGround {
-    bottom: 11.6vh;
-    height: 7vh;
-    width: calc(var(--chris-w) * 0.9);
-  }
-  .rail {
-    display: none;
-  }
-  .nav {
-    padding: 2vh 4.5vw;
-  }
-  .logo img {
-    height: 5.4vh;
-  }
-  .links {
-    display: none;
-  }
-  .navCta {
-    font-size: 11px;
-    padding: 1vh 2.6vw;
-  }
-  .strike {
-    width: 6.4em;
-  }
-  .ctas {
-    left: 4.5vw;
-    right: 4.5vw;
-    width: auto;
-    min-width: 0;
-    bottom: 3vh;
-    gap: 1.1vh;
-  }
-  .btn {
-    font-size: 13px;
-    padding: 1.7vh 4vw;
-    letter-spacing: 0.09em;
-  }
-  .plateImg {
-    object-position: 62% 42%;
-  }
-}
-
-/* ================= load choreography ================= */
-/* A poster assembling itself. Heavy, deliberate, no bounce. */
-@keyframes plateSettle {
-  from { transform: scale(1.04); }
-  to   { transform: scale(1); }
-}
-@keyframes riseMask {
-  from { transform: translateY(105%); }
-  to   { transform: translateY(0); }
-}
-@keyframes drawStrike {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-@keyframes chrisArrive {
-  from { transform: translate3d(0, 42px, 0); opacity: 0; }
-  to   { transform: translate3d(0, var(--p-chris), 0); opacity: 1; }
-}
-@keyframes fadeUp {
-  from { transform: translateY(18px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-/* shadows need their own keyframe: fadeUp's `to` would permanently pin them
-   at translateY(0) under fill:both and detach them from Chris on scroll */
-@keyframes shadowArrive {
-  from { opacity: 0; transform: translate3d(0, calc(var(--p-chris) + 18px), 0); }
-  to   { opacity: 1; transform: translate3d(0, var(--p-chris), 0); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .plateImg {
-    animation: plateSettle 1400ms var(--ease-out-heavy) both;
-  }
-  /* the clip must live on a NON-moving parent, or it travels with the element
-     and never masks anything */
-  .reimagining,
-  .the,
-  .american,
-  .dream {
-    overflow: hidden;
-    padding-bottom: 0.16em;
-    margin-bottom: -0.16em;
-  }
-  .reimagining > span,
-  .the > span,
-  .american > span,
-  .dream > span {
-    display: block;
-  }
-  .reimagining > span { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 180ms both; }
-  .strike      { animation: drawStrike 420ms var(--ease-out-heavy) 380ms both; }
-  .the > span  { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 440ms both; }
-  .american > span { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 480ms both; }
-  .dream > span { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 560ms both; }
-  .chris       { animation: chrisArrive var(--dur-slow) var(--ease-out-heavy) 720ms both; }
+@media (prefers-reduced-motion: no-preference){
+  .plateImg          { animation: plateSettle 1400ms var(--ease-out-heavy) both }
+  .reimagining > span{ animation: riseMask var(--dur-slow) var(--ease-out-heavy) 180ms both }
+  .strike            { animation: drawStrike 420ms var(--ease-out-heavy) 380ms both }
+  .the > span        { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 440ms both }
+  .american > span   { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 480ms both }
+  .dream > span      { animation: riseMask var(--dur-slow) var(--ease-out-heavy) 560ms both }
+  .chris             { animation: arrive var(--dur-slow) var(--ease-out-heavy) 720ms both }
   .shadowGround,
-  .shadowWall  { animation: shadowArrive var(--dur-slow) var(--ease-out-heavy) 760ms both; }
-  .rail        { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 980ms both; }
-  .ctas        { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 1040ms both; }
-  .nav         { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 120ms both; }
+  .shadowWall        { animation: fadeUp var(--dur-slow) var(--ease-out-heavy) 760ms both }
+  .rail              { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 980ms both }
+  .ctas              { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 1040ms both }
+  .nav               { animation: fadeUp var(--dur-base) var(--ease-out-heavy) 120ms both }
+}
+@media (prefers-reduced-motion: reduce){
+  .plateImg, .reimagining > span, .the > span, .american > span, .dream > span,
+  .chris, .shadowGround, .shadowWall, .rail, .ctas, .nav {
+    animation: none !important; opacity: 1 !important; transform: none !important;
+  }
+  .strike { transform: scaleX(1) !important }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .plate,
-  .type,
-  .chris,
-  .rail,
-  .ctas,
-  .nav,
-  .shadowGround,
-  .shadowWall {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  .strike { transform: scaleX(1) !important; }
-}
+/* hover states */
+.btn span:last-child { transition: transform var(--dur-fast) var(--ease-out-heavy) }
+.btn:hover span:last-child { transform: translateX(6px) }
+.btnSolid:hover { background: var(--mp-red-deep) }
+.btnGhost { isolation: isolate }
+.btnGhost:hover { background: var(--mp-red); color: var(--mp-black) }
+.links a { color: inherit; text-decoration: none; position: relative; padding-bottom: 4px }
+.links a::after { content:''; position:absolute; left:0; bottom:0; height:2px; width:100%;
+  background: var(--mp-red); transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--dur-fast) var(--ease-out-heavy) }
+.links a:hover::after { transform: scaleX(1) }
+.navCta { text-decoration: none; transition: background var(--dur-fast) var(--ease-out-heavy) }
+.navCta:hover { background: var(--mp-red); color: var(--mp-black) }
