@@ -1,0 +1,153 @@
+/*
+  Backstage.module.css — the /backstage dashboard.
+
+  On brand but deliberately calmer than the marketing site: Anton for headings
+  only, red reserved for state and primary actions, everything else quiet. A
+  tool Chris uses weekly should feel steady, not loud.
+
+  Every editable field is capped in the UI (see LIMITS in lib/content.ts) so no
+  entry Chris makes can break a public layout. That constraint is the whole
+  reason this dashboard is safe to hand over.
+*/
+
+.shell{min-height:100svh;background:#0A0A0A;color:var(--mp-bone);
+  font-family:var(--font-body),sans-serif;display:grid;
+  grid-template-columns:264px 1fr}
+@media(max-width:900px){.shell{grid-template-columns:1fr}}
+
+/* ---------- sidebar ---------- */
+.side{background:#0E0E0E;border-right:1px solid #232323;
+  padding:26px 20px;display:flex;flex-direction:column;gap:28px;
+  position:sticky;top:0;height:100svh}
+@media(max-width:900px){.side{position:static;height:auto;
+  border-right:0;border-bottom:1px solid #232323}}
+.brand{display:flex;align-items:center;gap:11px}
+.brand img{height:38px;width:auto;display:block}
+.brandTag{font-family:var(--font-display),sans-serif;font-size:12px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--mp-red)}
+.navList{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+.navList a{display:flex;align-items:center;gap:11px;padding:11px 13px;
+  border-radius:8px;text-decoration:none;color:#9A9A9A;font-size:14px;
+  font-weight:600;transition:background .18s,color .18s}
+.navList a:hover{background:#161616;color:var(--mp-bone)}
+.navActive{background:var(--mp-red)!important;color:#fff!important}
+.navList svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9}
+.sideFoot{margin-top:auto;display:grid;gap:10px}
+.viewSite{font-size:12.5px;color:#7A7A7A;text-decoration:none}
+.viewSite:hover{color:var(--mp-bone)}
+.logout{background:none;border:1px solid #2A2A2A;color:#9A9A9A;border-radius:8px;
+  padding:10px 13px;font-family:inherit;font-size:12.5px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.18s}
+.logout:hover{border-color:var(--mp-red);color:var(--mp-bone)}
+
+/* ---------- main ---------- */
+.main{padding:clamp(22px,3vw,40px);max-width:1180px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.h1{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(28px,3.4vw,44px);line-height:1;text-transform:uppercase;
+  letter-spacing:-.01em}
+.sub{margin:8px 0 0;font-size:14.5px;line-height:1.6;color:#8E8E8E;max-width:62ch}
+
+.notice{display:flex;gap:11px;align-items:flex-start;
+  border:1px dashed #5A4A2A;background:#1A1610;color:#D2AE3A;
+  border-radius:10px;padding:13px 15px;font-size:13px;line-height:1.6;
+  margin-bottom:22px}
+.notice b{color:#EFC94C}
+.notice svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;
+  stroke-width:1.9;margin-top:1px}
+
+/* ---------- cards & forms ---------- */
+.card{background:#101010;border:1px solid #232323;border-radius:12px;
+  padding:clamp(16px,1.8vw,24px);margin-bottom:16px}
+.cardHead{display:flex;align-items:center;justify-content:space-between;
+  gap:14px;margin-bottom:16px}
+.cardTitle{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:19px;text-transform:uppercase;letter-spacing:.01em}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+
+.field{display:block;margin-bottom:14px}
+.label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
+  color:#8E8E8E;margin-bottom:7px}
+.count{font-weight:700;letter-spacing:.06em;color:#5E5E5E;font-size:10.5px}
+.countOver{color:var(--mp-red)}
+.input,.select,.textarea{width:100%;background:#0A0A0A;border:1px solid #262626;
+  border-radius:8px;color:var(--mp-bone);padding:11px 13px;
+  font-family:inherit;font-size:14.5px;transition:border-color .18s,box-shadow .18s}
+.textarea{min-height:88px;resize:vertical;line-height:1.6}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--mp-red);
+  box-shadow:0 0 0 3px rgba(235,41,51,.15)}
+.help{font-size:12px;line-height:1.55;color:#6E6E6E;margin-top:6px}
+
+.btn{display:inline-flex;align-items:center;gap:9px;border:1px solid transparent;
+  border-radius:8px;padding:11px 18px;font-family:inherit;font-size:13px;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  text-decoration:none;transition:.2s}
+.btnPrimary{background:var(--mp-red);color:#fff}
+.btnPrimary:hover{background:var(--mp-red-deep)}
+.btnPrimary:disabled{opacity:.5;cursor:not-allowed}
+.btnGhost{background:transparent;border-color:#2A2A2A;color:#9A9A9A}
+.btnGhost:hover{border-color:#3E3E3E;color:var(--mp-bone)}
+.btnDanger{background:transparent;border-color:#3A1E20;color:#C4585F}
+.btnDanger:hover{background:#1C1011;border-color:var(--mp-red);color:var(--mp-red)}
+.btnRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* ---------- list rows ---------- */
+.row{display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:start;
+  background:#101010;border:1px solid #232323;border-radius:12px;
+  padding:14px;margin-bottom:12px;transition:border-color .2s}
+.row:hover{border-color:#333}
+@media(max-width:700px){.row{grid-template-columns:1fr}}
+.thumb{aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#191919;
+  border:1px solid #262626;display:flex;align-items:center;justify-content:center}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumbEmpty{font-size:10px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:#4E4E4E;text-align:center;padding:6px}
+.rowTitle{margin:0 0 5px;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:18px;line-height:1.14;text-transform:uppercase}
+.rowBlurb{margin:0;font-size:13px;line-height:1.55;color:#8E8E8E}
+.rowMeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.rowActions{display:flex;flex-direction:column;gap:7px;align-items:flex-end}
+@media(max-width:700px){.rowActions{flex-direction:row;align-items:center}}
+
+.pill{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;border:1px solid #2A2A2A;color:#8E8E8E}
+.pillRed{background:var(--mp-red);border-color:var(--mp-red);color:#fff}
+.pillGreen{background:#12301F;border-color:#1E5133;color:#5FD497}
+.pillMuted{background:#191919;color:#6E6E6E}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;margin-bottom:24px}
+.stat{background:#101010;border:1px solid #232323;border-radius:12px;padding:16px 18px}
+.statVal{display:block;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:32px;line-height:1;color:var(--mp-red)}
+.statLabel{display:block;margin-top:7px;font-size:11px;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:#7A7A7A}
+
+.empty{border:1px dashed #2A2A2A;border-radius:12px;padding:34px 20px;
+  text-align:center;color:#6E6E6E;font-size:14px;line-height:1.6}
+
+.toast{position:fixed;right:20px;bottom:20px;z-index:60;
+  background:#12301F;border:1px solid #1E5133;color:#5FD497;
+  border-radius:10px;padding:13px 17px;font-size:13px;font-weight:700;
+  box-shadow:0 14px 34px rgba(0,0,0,.5)}
+
+/* ---------- login ---------- */
+.login{min-height:100svh;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:
+    radial-gradient(80% 60% at 50% 0%, rgba(235,41,51,.16) 0%, rgba(235,41,51,0) 60%),
+    #0A0A0A}
+.loginCard{width:100%;max-width:396px;background:#101010;border:1px solid #232323;
+  border-radius:16px;padding:clamp(26px,3vw,38px);
+  box-shadow:0 30px 70px -28px rgba(0,0,0,.9)}
+.loginLogo{height:46px;width:auto;display:block;margin-bottom:22px}
+.loginTitle{margin:0 0 6px;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:26px;text-transform:uppercase;letter-spacing:.01em}
+.loginSub{margin:0 0 22px;font-size:13.5px;line-height:1.6;color:#7A7A7A}
+.loginErr{background:#1C1011;border:1px solid #3A1E20;color:#E0757C;
+  border-radius:8px;padding:11px 13px;font-size:13px;margin-bottom:14px}
