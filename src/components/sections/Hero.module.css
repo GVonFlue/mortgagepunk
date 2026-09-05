@@ -1,0 +1,492 @@
+/* -----------------------------------------------------------------------------
+   HERO — a poster, not a layout.
+
+   Written as a CSS module rather than utility classes: this is a three-layer
+   absolutely-positioned composition with masked reveals, a seven-step
+   choreography and scroll-linked parallax. Utilities would bury the one thing
+   that matters here, which is the z-order.
+
+   Z-ORDER IS THE DESIGN. plate(1) < type(2) < chris(3). The type passing BEHIND
+   Chris is the entire point of the composition. Do not "fix" an overlap by
+   reordering these, moving Chris, or shrinking the display type until it clears
+   him. If the type ever stops being interrupted by his shoulder and his shins,
+   the hero is broken.
+
+   Every entrance keyframe animates FROM an offset state TO the element's
+   natural resting state, so the resting state is what the stylesheet already
+   describes. That is what makes the reduced-motion block at the bottom a
+   one-line switch-off rather than a second set of positions to maintain.
+   -------------------------------------------------------------------------- */
+
+.hero {
+  --gutter: clamp(1.25rem, 4vw, 4.5rem);
+
+  /* Display size. Sized so BOTH headline lines run past Chris's right edge and
+     re-emerge on the other side of him — that re-emergence is what reads as
+     "behind". A line that merely terminates behind him reads as cropped, which
+     is the exact failure this composition exists to avoid. The vh ceiling only
+     engages on unusually short viewports. */
+  --display: min(15vw, 30vh);
+  --eyebrow: min(4vw, 8vh);
+
+  /* Chris. Width is driven off height so the 79:100 cutout keeps its aspect at
+     every size; the vw term is what stops him overflowing on narrow screens. */
+  --chris-w: min(86vw, 63vh);
+  --chris-right: 26vw;
+  /* Lifts his feet off the viewport floor. 0 everywhere except narrow screens,
+     where the full-width CTA band becomes the surface he sits on. */
+  --chris-bottom: 0vh;
+
+  --type-bottom: 16vh;
+  --cta-bottom: 4vh;
+
+  /* Parallax offsets, written by HeroParallax. 0 is the designed resting
+     position, so no-JS and reduced-motion both land exactly on the poster. */
+  --mp-p-type: 0px;
+  --mp-p-chris: 0px;
+  --mp-p-plate: 0px;
+
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--mp-black);
+}
+
+/* --- Layer 1: the plate ---------------------------------------------------- */
+
+.plateLayer {
+  position: absolute;
+  /* Bled past the edges so the settle-in scale and the parallax drift never
+     expose a seam at the top or bottom. */
+  inset: -4%;
+  z-index: 1;
+  transform: translate3d(0, var(--mp-p-plate), 0);
+}
+
+.plateEnter {
+  position: absolute;
+  inset: 0;
+  animation: mp-plate-settle var(--dur-slow) var(--ease-out-heavy) both;
+}
+
+.plateImg {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* The plate ships already dark and vignetted, so this is a light touch: enough
+   weight bottom-left to seat the CTAs, not enough to flatten the concrete. */
+.plateWash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top right,
+      color-mix(in srgb, var(--mp-black) 72%, transparent) 0%,
+      color-mix(in srgb, var(--mp-black) 26%, transparent) 42%,
+      transparent 72%
+    ),
+    radial-gradient(
+      130% 105% at 52% 46%,
+      transparent 38%,
+      color-mix(in srgb, var(--mp-black) 58%, transparent) 100%
+    );
+}
+
+/* --- Layer 2: the type ----------------------------------------------------- */
+
+.typeLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0 var(--type-bottom) var(--gutter);
+  transform: translate3d(0, var(--mp-p-type), 0);
+  will-change: transform;
+}
+
+.headline {
+  margin: 0;
+  /* fit-content is what lets the strike track the width of REIMAGINING. */
+  width: fit-content;
+  max-width: none;
+}
+
+/* Mask wrappers. The padding/negative-margin pair widens the clip box past the
+   0.82 line-height so Anton's caps are not shaved at rest, while still leaving
+   the box short enough to hide a line parked 112% below it. */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.18em;
+  margin-block: -0.18em;
+}
+
+.maskInner {
+  display: block;
+  white-space: nowrap;
+  animation: mp-rise var(--dur-base) var(--ease-out-heavy) both;
+}
+
+.eyebrowBlock {
+  display: block;
+  width: fit-content;
+  margin-bottom: 0.55em;
+}
+
+.eyebrowBlock .eyebrowText {
+  font-size: var(--eyebrow);
+  letter-spacing: 0.26em;
+  /* Tracking adds a trailing space after the last letter; pull the block back
+     so the strike under it stays optically flush left and right. */
+  margin-right: -0.26em;
+  color: var(--mp-bone);
+  animation-delay: 180ms;
+}
+
+.strike {
+  display: block;
+  width: 100%;
+  height: 0.3em;
+  margin-top: 0.16em;
+  color: var(--mp-red);
+  transform-origin: left center;
+  animation: mp-draw var(--dur-fast) var(--ease-out-heavy) 380ms both;
+}
+
+.line {
+  font-size: var(--display);
+  color: var(--mp-bone);
+}
+
+.lineOne {
+  animation-delay: 480ms;
+}
+
+.lineTwo {
+  color: var(--mp-red);
+  animation-delay: 560ms;
+}
+
+/* --- Layer 3: Chris, on top of the type ------------------------------------ */
+
+.chrisLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding-right: var(--chris-right);
+  padding-bottom: var(--chris-bottom);
+  transform: translate3d(0, var(--mp-p-chris), 0);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.chrisEnter {
+  display: block;
+  /* He arrives last, stepping into the composition rather than already being
+     in it. Nothing else in the hero moves this far. */
+  animation: mp-arrive var(--dur-slow) var(--ease-out-heavy) 720ms both;
+}
+
+.chrisImg {
+  display: block;
+  width: var(--chris-w);
+  height: auto;
+}
+
+/* --- Layer 4: copy --------------------------------------------------------- */
+
+.meta,
+.ctas {
+  position: absolute;
+  z-index: 4;
+  animation: mp-settle var(--dur-base) var(--ease-out-heavy) 980ms both;
+}
+
+.meta {
+  top: 12vh;
+  right: var(--gutter);
+  margin: 0;
+  text-align: right;
+  font-size: clamp(0.7rem, 0.92vw, 0.95rem);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mp-bone);
+}
+
+/* One block per line: keeps each line its own run so the copy is not read out
+   as "Loan Officer.Leading a movement." with no break between them. */
+.metaLine {
+  display: block;
+}
+
+.metaAccent {
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  color: var(--mp-red);
+}
+
+.metaStrike {
+  display: block;
+  width: 100%;
+  height: 0.42em;
+  margin-top: 0.1em;
+  color: var(--mp-red);
+  transform-origin: left center;
+  animation: mp-draw var(--dur-fast) var(--ease-out-heavy) 1120ms both;
+}
+
+.ctas {
+  left: var(--gutter);
+  bottom: var(--cta-bottom);
+  display: flex;
+  /* Stacked rather than side by side: the row is wider than the gap between the
+     gutter and Chris's left shoe, and stacking is what lets both buttons take
+     the width of the longer one. Same width, same height, same type — the
+     equal weight Chris asked for is literal here. */
+  flex-direction: column;
+  align-items: stretch;
+  width: fit-content;
+  max-width: calc(100vw - var(--gutter) * 2);
+  gap: 0.6rem;
+}
+
+/* Both CTAs carry identical geometry and identical weight. Neither is a ghost:
+   Chris asked for two equally obvious paths, so there is no secondary here. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  justify-content: space-between;
+  padding: 0.9em 1.35em;
+  border: 2px solid transparent;
+  font-size: clamp(0.66rem, 0.78vw, 0.8rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-fast) var(--ease-out-heavy),
+    border-color var(--dur-fast) var(--ease-out-heavy),
+    color var(--dur-fast) var(--ease-out-heavy);
+}
+
+.ctaSolid {
+  background: var(--mp-red);
+  border-color: var(--mp-red);
+  color: var(--mp-black);
+}
+
+.ctaSolid:hover,
+.ctaSolid:focus-visible {
+  background: var(--mp-red-deep);
+  border-color: var(--mp-red-deep);
+}
+
+.ctaOutline {
+  background: var(--mp-black);
+  border-color: var(--mp-red);
+  color: var(--mp-bone);
+}
+
+.ctaOutline:hover,
+.ctaOutline:focus-visible {
+  background: var(--mp-ink);
+  border-color: var(--mp-red-deep);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--mp-bone);
+  outline-offset: 3px;
+}
+
+.ctaArrow {
+  flex: none;
+  width: 1.5em;
+  height: 0.62em;
+  transition: transform var(--dur-fast) var(--ease-out-heavy);
+}
+
+.cta:hover .ctaArrow,
+.cta:focus-visible .ctaArrow {
+  transform: translateX(0.3em);
+}
+
+/* --- Layer 5: grain -------------------------------------------------------- */
+
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  /* Normal blend, not overlay. Overlay resolves to ~2 x base x blend on dark
+     tones, so over this plate it computed to nothing at all — the grain was
+     shipping invisible. Straight alpha speckle is what actually reads on a
+     near-black ground, and it is what film grain does anyway. */
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23g)'/></svg>");
+  background-size: 220px 220px;
+  background-repeat: repeat;
+}
+
+/* --- Choreography ---------------------------------------------------------- */
+
+@keyframes mp-plate-settle {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes mp-rise {
+  from {
+    transform: translateY(112%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* The one place anything overshoots, and it is 3.5% on a marker stroke that is
+   meant to read as drawn by hand. Not a spring, not a bounce: it settles once
+   and does not come back. */
+@keyframes mp-draw {
+  from {
+    transform: scaleX(0);
+  }
+  72% {
+    transform: scaleX(1.035);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes mp-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mp-settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Responsive ------------------------------------------------------------
+   The overlap is the last thing to go. On narrow viewports the display type is
+   scaled UP relative to the viewport so it keeps poster presence, which runs
+   THE AMERICAN off the right edge behind Chris and clips DREAM. at the left.
+   Losing letters is the intended trade; losing the overlap is not.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .hero {
+    --chris-right: 8vw;
+    --display: min(16vw, 28vh);
+    --eyebrow: min(4.6vw, 7vh);
+  }
+
+  .ctas {
+    max-width: min(34rem, 62vw);
+  }
+
+  .hero {
+    --type-bottom: 17vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    --chris-right: 1vw;
+    /* Scaled well down. At full width he swallowed the whole headline, leaving
+       DREAM. reading as "DR" — the overlap survived but the word did not. The
+       spec's trade is letters over overlap, and this keeps both. */
+    --chris-w: min(64vw, 46vh);
+    /* He rests on top of the CTA band rather than behind it, so his shoes stay
+       visible and he still reads as grounded. */
+    --chris-bottom: 17vh;
+    --display: 19vw;
+    --eyebrow: 5.4vw;
+    --type-bottom: 21vh;
+    --cta-bottom: 3.5vh;
+  }
+
+  .typeLayer {
+    /* Pulled left so DREAM. is clipped by the viewport edge rather than sitting
+       politely inside it. */
+    padding-left: calc(var(--gutter) - 1.5vw);
+  }
+
+  .meta {
+    top: 4vh;
+    font-size: 0.66rem;
+    letter-spacing: 0.13em;
+  }
+
+  .ctas {
+    left: var(--gutter);
+    right: var(--gutter);
+    max-width: none;
+  }
+
+  .cta {
+    flex: 1 1 100%;
+    justify-content: space-between;
+    padding: 0.85em 1.1em;
+    font-size: 0.7rem;
+  }
+}
+
+/* --- Reduced motion --------------------------------------------------------
+   Everything is simply present at its final position. No transforms, no fades,
+   no drift. globals.css already collapses durations globally; this removes the
+   animations outright so nothing is mid-flight even for a frame. Parallax is
+   switched off in HeroParallax itself.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .plateEnter,
+  .maskInner,
+  .strike,
+  .metaStrike,
+  .chrisEnter,
+  .meta,
+  .ctas {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .plateLayer,
+  .typeLayer,
+  .chrisLayer {
+    transform: none !important;
+  }
+
+  .ctaArrow {
+    transition: none !important;
+  }
+}
