@@ -1,3 +1,4 @@
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
@@ -19,6 +20,7 @@ const STEPS = [
 export default function GetApproved() {
   return (
     <>
+      <AnnouncementBar />
       <SiteNav />
       <PageHead
         kicker="Get Approved"

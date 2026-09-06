@@ -1,3 +1,4 @@
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import Hero from "@/components/sections/Hero";
 import ProofStrip from "@/components/sections/ProofStrip";
 import TwoPaths from "@/components/sections/TwoPaths";
@@ -16,6 +17,7 @@ export const metadata = {
 export default function Home() {
   return (
     <>
+      <AnnouncementBar />
       <Hero />
       <ProofStrip />
       <TwoPaths />

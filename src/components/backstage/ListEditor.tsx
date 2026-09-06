@@ -20,10 +20,10 @@ export type Item = {
  * component covers them and there is only one place to fix a bug.
  */
 export default function ListEditor({
-  kind, initial, titleLabel, blurbLabel, titleMax, blurbMax,
+  endpoint, initial, titleLabel, blurbLabel, titleMax, blurbMax,
   tagOptions, allowPending = false, addLabel, configured,
 }: {
-  kind: string;
+  endpoint: string;
   initial: Item[];
   titleLabel: string;
   blurbLabel: string;
@@ -40,6 +40,8 @@ export default function ListEditor({
   });
   const [err, setErr] = useState("");
   const [toast, setToast] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [dirty, setDirty] = useState(false);
 
   function flash(m: string) {
     setToast(m);
@@ -51,6 +53,7 @@ export default function ListEditor({
     if (!draft.blurb.trim()) return setErr(`${blurbLabel} can't be empty.`);
     setErr("");
     setItems([...items, { ...draft, id: `tmp-${Date.now()}` }]);
+    setDirty(true);
     setDraft({ id: "", title: "", blurb: "", tag: tagOptions?.[0] ?? "", pending: false });
     flash(configured ? "Added." : "Added in preview — not saved.");
   }
@@ -61,6 +64,32 @@ export default function ListEditor({
     const next = [...items];
     [next[i], next[j]] = [next[j], next[i]];
     setItems(next);
+    setDirty(true);
+  }
+
+  /** Saved as a whole list. The order is part of the content, so a
+   *  per-row save would need a separate reorder call anyway. */
+  async function save() {
+    setBusy(true);
+    setErr("");
+    const payload = items.map((it) => ({
+      kind: it.tag, outlet: it.title, note: it.blurb, pending: it.pending,
+      title: it.title, blurb: it.blurb,
+    }));
+    try {
+      const r = await fetch(endpoint, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: payload }),
+      });
+      const j = await r.json();
+      if (!r.ok || !j.ok) throw new Error(j.error || "");
+      setDirty(false);
+      flash("Saved.");
+    } catch (e) {
+      setErr(e instanceof Error && e.message ? e.message : "Couldn't save. Try again.");
+    }
+    setBusy(false);
   }
 
   return (
@@ -141,13 +170,20 @@ export default function ListEditor({
               </div>
               {allowPending && (
                 <button type="button" className={`${s.btn} ${s.btnGhost}`}
-                  onClick={() => setItems(items.map((x) =>
-                    x.id === it.id ? { ...x, pending: !x.pending } : x))}>
+                  onClick={() => {
+                    setItems(items.map((x) =>
+                      x.id === it.id ? { ...x, pending: !x.pending } : x));
+                    setDirty(true);
+                  }}>
                   {it.pending ? "Mark verified" : "Mark unverified"}
                 </button>
               )}
               <button type="button" className={`${s.btn} ${s.btnDanger}`}
-                onClick={() => { setItems(items.filter((x) => x.id !== it.id)); flash("Removed."); }}>
+                onClick={() => {
+                  setItems(items.filter((x) => x.id !== it.id));
+                  setDirty(true);
+                  flash("Removed — hit Save to make it stick.");
+                }}>
                 Remove
               </button>
             </div>
@@ -155,8 +191,24 @@ export default function ListEditor({
         ))
       )}
 
+      <div className={s.btnRow} style={{ marginTop: 20 }}>
+        <button
+          type="button"
+          className={`${s.btn} ${s.btnPrimary}`}
+          onClick={save}
+          disabled={busy || !configured || !dirty}
+        >
+          {busy ? "Saving..." : dirty ? "Save changes" : "Saved"}
+        </button>
+        {dirty && configured && (
+          <span className={s.help}>You have unsaved changes.</span>
+        )}
+        {!configured && (
+          <span className={s.help}>Connect the database to save.</span>
+        )}
+      </div>
+
       {toast && <div className={s.toast}>{toast}</div>}
-      <input type="hidden" name="kind" value={kind} />
     </>
   );
 }

@@ -2,9 +2,13 @@ import Shell from "@/components/backstage/Shell";
 import Notice from "@/components/backstage/Notice";
 import AnnouncementEditor from "@/components/backstage/AnnouncementEditor";
 import s from "@/components/backstage/Backstage.module.css";
-import { isConfigured, SEED_ANNOUNCEMENT } from "@/lib/content";
+import { dbProbe, getAnnouncement } from "@/lib/db";
 
-export default function SettingsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SettingsPage() {
+  const probe = await dbProbe();
+  const announcement = await getAnnouncement();
   return (
     <Shell>
       <div className={s.head}>
@@ -17,8 +21,8 @@ export default function SettingsPage() {
           </p>
         </div>
       </div>
-      <Notice configured={isConfigured()} />
-      <AnnouncementEditor initial={SEED_ANNOUNCEMENT} configured={isConfigured()} />
+      <Notice configured={probe.ok} error={probe.error} />
+      <AnnouncementEditor initial={announcement} configured={probe.ok} />
     </Shell>
   );
 }

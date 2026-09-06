@@ -63,10 +63,17 @@ export default function LibraryManager({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(row),
         });
-        if (!r.ok) throw new Error();
-      } catch {
+        const j = await r.json();
+        if (!r.ok || !j.ok) throw new Error(j.error || "save failed");
+        // use the server's row so we hold the real database id
+        row.id = j.video.id;
+      } catch (e) {
         setBusy(false);
-        return setErr("Couldn't save that. Try again, or text Garrett.");
+        return setErr(
+          e instanceof Error && e.message !== "save failed"
+            ? e.message
+            : "Couldn't save that. Try again, or text Garrett."
+        );
       }
     }
 
@@ -76,22 +83,49 @@ export default function LibraryManager({
     flash(configured ? "Added." : "Added in preview — not saved.");
   }
 
-  function toggle(id: string, key: "featured" | "published") {
-    setVideos(
-      videos.map((v) => {
-        if (v.id !== id) return v;
-        if (key === "featured" && !v.featured && featuredCount >= 4) {
-          setErr("Only four videos can sit on the homepage.");
-          return v;
-        }
-        return { ...v, [key]: !v[key] };
-      })
-    );
+  async function toggle(id: string, key: "featured" | "published") {
+    const target = videos.find((v) => v.id === id);
+    if (!target) return;
+    if (key === "featured" && !target.featured && featuredCount >= 4) {
+      return setErr("Only four videos can sit on the homepage. Un-feature one first.");
+    }
+    const next = !target[key];
+
+    // optimistic: flip it now, roll back if the server disagrees
+    setVideos(videos.map((v) => (v.id === id ? { ...v, [key]: next } : v)));
+    setErr("");
+
+    if (!configured) return;
+    try {
+      const r = await fetch("/api/backstage/library", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, [key]: next }),
+      });
+      const j = await r.json();
+      if (!r.ok || !j.ok) throw new Error(j.error || "");
+    } catch (e) {
+      setVideos(videos);
+      setErr(e instanceof Error && e.message ? e.message : "Couldn't save that change.");
+    }
   }
 
-  function remove(id: string) {
+  async function remove(id: string) {
+    const before = videos;
     setVideos(videos.filter((v) => v.id !== id));
-    flash("Removed.");
+    if (!configured) return flash("Removed in preview — not saved.");
+    try {
+      const r = await fetch("/api/backstage/library", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (!r.ok) throw new Error();
+      flash("Removed.");
+    } catch {
+      setVideos(before);
+      setErr("Couldn't remove that. Try again.");
+    }
   }
 
   return (

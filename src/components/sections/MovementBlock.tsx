@@ -1,6 +1,7 @@
 import Link from "next/link";
 import s from "../Site.module.css";
 import GfxNote from "../ui/GfxNote";
+import { getConference } from "@/lib/db";
 
 /**
  * Mission + the American Dream Conference.
@@ -10,21 +11,9 @@ import GfxNote from "../ui/GfxNote";
  * giveaways. The next event is Oct 16 2027 per onboarding — the live site is
  * still showing the April 2026 event, which has already happened.
  */
-const STATS = [
-  ["3", "Keynotes"],
-  ["15", "Breakouts"],
-  ["1", "Live concert"],
-];
+export default async function MovementBlock() {
+  const conf = await getConference();
 
-const PRIZES = [
-  "Full kitchen remodel, given away live",
-  "A brand new roof",
-  "New HVAC system",
-  "Interior and exterior paint job",
-  "One month of mortgage payments",
-];
-
-export default function MovementBlock() {
   return (
     <section className={`${s.sec} ${s.ink}`} aria-label="The movement">
       <div className={s.wrap}>
@@ -52,32 +41,27 @@ export default function MovementBlock() {
 
           <div className={s.evt}>
             <GfxNote where="evt" />
-            <span className={s.tag}>Next &middot; October 16, 2027</span>
-            <h3>
-              The American
-              <br />
-              Dream Conference
-            </h3>
+            <span className={s.tag}>Next &middot; {conf.date_label}</span>
+            <h3>{conf.headline}</h3>
             <div className={s.meta}>
-              <strong>Hyatt Regency &middot; Wichita, Kansas</strong>
+              <strong>{conf.venue}</strong>
               <br />
-              Keynote: Hannah Hammond
+              Keynote: {conf.keynote}
               <br />
-              Not a sit-in-a-chair seminar. Real education, real connections,
-              and the volume all the way up.
+              {conf.blurb}
             </div>
 
             <div className={s.stats}>
-              {STATS.map(([n, label]) => (
-                <div key={label} className={s.stat}>
-                  <b>{n}</b>
-                  <span>{label}</span>
+              {conf.stats.map((st) => (
+                <div key={st.label} className={s.stat}>
+                  <b>{st.value}</b>
+                  <span>{st.label}</span>
                 </div>
               ))}
             </div>
 
             <div className={s.prizes}>
-              {PRIZES.map((p) => (
+              {conf.prizes.map((p) => (
                 <div key={p} className={s.prize}>
                   <i aria-hidden="true" />
                   {p}
@@ -86,7 +70,7 @@ export default function MovementBlock() {
             </div>
 
             <a
-              href="https://mortgagepunklive.com"
+              href={conf.url}
               className={`${s.btn} ${s.btnGhost}`}
               target="_blank"
               rel="noopener noreferrer"

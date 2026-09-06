@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createLead } from "@/lib/db";
 
 /**
  * Lead intake.
@@ -42,6 +43,18 @@ export async function POST(req: Request) {
     receivedAt: new Date().toISOString(),
     userAgent: req.headers.get("user-agent") ?? "",
   };
+
+  // Write to the database first so the lead shows in /backstage, but never
+  // let a database failure stop the sheet + inbox delivery below.
+  await createLead({
+    first,
+    last: String(body.last ?? ""),
+    email,
+    phone,
+    intent: String(body.intent ?? ""),
+    notes: String(body.notes ?? ""),
+    source: String(body.source ?? "site"),
+  });
 
   const endpoint = process.env.LEAD_ENDPOINT;
   if (!endpoint) {

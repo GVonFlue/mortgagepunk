@@ -2,9 +2,13 @@ import Shell from "@/components/backstage/Shell";
 import Notice from "@/components/backstage/Notice";
 import LibraryManager from "@/components/backstage/LibraryManager";
 import s from "@/components/backstage/Backstage.module.css";
-import { isConfigured, SEED_VIDEOS } from "@/lib/content";
+import { dbProbe, getVideos } from "@/lib/db";
 
-export default function LibraryPage() {
+export const dynamic = "force-dynamic";
+
+export default async function LibraryPage() {
+  const probe = await dbProbe();
+  const videos = await getVideos();
   return (
     <Shell>
       <div className={s.head}>
@@ -17,8 +21,8 @@ export default function LibraryPage() {
           </p>
         </div>
       </div>
-      <Notice configured={isConfigured()} />
-      <LibraryManager initial={SEED_VIDEOS} configured={isConfigured()} />
+      <Notice configured={probe.ok} error={probe.error} />
+      <LibraryManager initial={videos} configured={probe.ok} />
     </Shell>
   );
 }

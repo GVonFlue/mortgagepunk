@@ -2,9 +2,13 @@ import Shell from "@/components/backstage/Shell";
 import Notice from "@/components/backstage/Notice";
 import ConferenceEditor from "@/components/backstage/ConferenceEditor";
 import s from "@/components/backstage/Backstage.module.css";
-import { isConfigured, SEED_CONFERENCE } from "@/lib/content";
+import { dbProbe, getConference } from "@/lib/db";
 
-export default function ConferencePage() {
+export const dynamic = "force-dynamic";
+
+export default async function ConferencePage() {
+  const probe = await dbProbe();
+  const conference = await getConference();
   return (
     <Shell>
       <div className={s.head}>
@@ -16,8 +20,8 @@ export default function ConferencePage() {
           </p>
         </div>
       </div>
-      <Notice configured={isConfigured()} />
-      <ConferenceEditor initial={SEED_CONFERENCE} configured={isConfigured()} />
+      <Notice configured={probe.ok} error={probe.error} />
+      <ConferenceEditor initial={conference} configured={probe.ok} />
     </Shell>
   );
 }

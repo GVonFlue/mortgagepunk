@@ -1,3 +1,4 @@
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
@@ -44,6 +45,7 @@ const BLOCKS = [
 export default function Lending() {
   return (
     <>
+      <AnnouncementBar />
       <SiteNav />
       <PageHead
         kicker="The Lending Team"

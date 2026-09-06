@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PhotoSlot from "@/components/ui/PhotoSlot";
 import a from "@/components/sections/About.module.css";
+import { getPress, getTalks } from "@/lib/db";
 
 export const metadata = {
   title: "About Chris Waipa — Mortgage Punk",
@@ -23,19 +25,6 @@ export const metadata = {
  * Copy is Chris's own, from onboarding. Do not rewrite it without asking.
  */
 
-const TALKS = [
-  ["01", "Reimagining the American Dream",
-   "Why the American Dream isn't dead, and why today's generation needs the tools and the freedom to redefine it."],
-  ["02", "The Game of Money",
-   "The rules around money, homeownership, investing, taxes, income and wealth that most people were never taught."],
-  ["03", "Living Beyond a Paycheck",
-   "Moving past simply earning income toward ownership, assets, opportunity and freedom."],
-  ["04", "Building the Impossible",
-   "Chris's story, Mortgage Punk, and challenging people to rethink what they believe is possible."],
-  ["05", "Disrupting a Commodity Business",
-   "How personality, community, education and culture turn a commodity service into something people actually want to belong to."],
-];
-
 const MARQUEE = [
   "Reimagining the American Dream",
   "The Game of Money",
@@ -43,20 +32,17 @@ const MARQUEE = [
 ];
 
 /** `pending` items render dimmed and must not publish until verified. */
-const PRESS = [
-  { kind: "Feature", outlet: "Wichita Real Producers",
-    note: "Feature story on Chris Waipa and the rise of Mortgage Punk." },
-  { kind: "Recognition", outlet: "Scotsman Guide",
-    note: "Top Originator recognition." },
-  { kind: "Broadcast", outlet: "KSN",
-    note: "Coverage of Mortgage Punk and the American Dream Conference." },
-  { kind: "Pending", outlet: "The Wall Street Journal",
-    note: "Held back until the appearance is verified and linked.", pending: true },
-];
+export const revalidate = 300;
 
-export default function About() {
+export default async function About() {
+  const [talks, press] = await Promise.all([
+    getTalks(),
+    getPress({ publicOnly: false }),
+  ]);
+
   return (
     <>
+      <AnnouncementBar />
       <SiteNav />
 
       {/* 1 — full-bleed hero */}
@@ -174,12 +160,12 @@ export default function About() {
           </p>
         </div>
         <div className={a.dateList}>
-          {TALKS.map(([n, title, blurb]) => (
-            <Link key={n} href="/contact" className={a.dateRow}>
-              <span className={a.dateNo}>{n}</span>
+          {talks.map((t, i) => (
+            <Link key={t.id} href="/contact" className={a.dateRow}>
+              <span className={a.dateNo}>{String(i + 1).padStart(2, "0")}</span>
               <div>
-                <h3 className={a.dateTitle}>{title}</h3>
-                <p className={a.dateBlurb}>{blurb}</p>
+                <h3 className={a.dateTitle}>{t.title}</h3>
+                <p className={a.dateBlurb}>{t.blurb}</p>
               </div>
               <span className={a.dateGo}>
                 Enquire <i>&rarr;</i>
@@ -206,9 +192,9 @@ export default function About() {
           </div>
 
           <div className={a.pressCards}>
-            {PRESS.map((p) => (
+            {press.map((p) => (
               <article
-                key={p.outlet}
+                key={p.id}
                 className={`${a.pressCard} ${p.pending ? a.pressPending : ""}`}
               >
                 <PhotoSlot
@@ -217,7 +203,7 @@ export default function About() {
                   hint="Screenshot or photo"
                 />
                 <div className={a.pressMeta}>
-                  <span className={a.pressOutlet}>{p.kind}</span>
+                  <span className={a.pressOutlet}>{p.pending ? "Pending" : p.kind}</span>
                   <h3 className={a.pressTitle}>{p.outlet}</h3>
                   <p className={a.pressNote}>{p.note}</p>
                 </div>

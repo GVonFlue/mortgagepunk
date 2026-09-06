@@ -2,9 +2,14 @@ import Shell from "@/components/backstage/Shell";
 import Notice from "@/components/backstage/Notice";
 import ListEditor from "@/components/backstage/ListEditor";
 import s from "@/components/backstage/Backstage.module.css";
-import { isConfigured, SEED_PRESS, LIMITS } from "@/lib/content";
+import { dbProbe, getPress } from "@/lib/db";
+import { LIMITS } from "@/lib/content";
 
-export default function PressPage() {
+export const dynamic = "force-dynamic";
+
+export default async function PressPage() {
+  const probe = await dbProbe();
+  const press = await getPress();
   return (
     <Shell>
       <div className={s.head}>
@@ -17,10 +22,10 @@ export default function PressPage() {
           </p>
         </div>
       </div>
-      <Notice configured={isConfigured()} />
+      <Notice configured={probe.ok} error={probe.error} />
       <ListEditor
-        kind="press"
-        initial={SEED_PRESS.map((p) => ({
+        endpoint="/api/backstage/press"
+        initial={press.map((p) => ({
           id: p.id, title: p.outlet, blurb: p.note, tag: p.kind, pending: p.pending,
         }))}
         titleLabel="Outlet"
@@ -30,7 +35,7 @@ export default function PressPage() {
         tagOptions={["Feature", "Recognition", "Broadcast", "Podcast", "Interview"]}
         allowPending
         addLabel="Add a press item"
-        configured={isConfigured()}
+        configured={probe.ok}
       />
     </Shell>
   );

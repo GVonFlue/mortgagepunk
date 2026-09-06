@@ -15,13 +15,33 @@ export default function ConferenceEditor({
 }) {
   const [c, setC] = useState<Conference>(initial);
   const [toast, setToast] = useState("");
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
 
   const set = <K extends keyof Conference>(k: K, v: Conference[K]) =>
     setC({ ...c, [k]: v });
 
-  function save() {
-    setToast(configured ? "Saved." : "Preview only — not saved.");
-    setTimeout(() => setToast(""), 2600);
+  async function save() {
+    if (!configured) {
+      setToast("Preview only — not saved.");
+      return setTimeout(() => setToast(""), 2600);
+    }
+    setBusy(true);
+    setErr("");
+    try {
+      const r = await fetch("/api/backstage/conference", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(c),
+      });
+      const j = await r.json();
+      if (!r.ok || !j.ok) throw new Error(j.error || "");
+      setToast("Saved.");
+      setTimeout(() => setToast(""), 2600);
+    } catch (e) {
+      setErr(e instanceof Error && e.message ? e.message : "Couldn't save. Try again.");
+    }
+    setBusy(false);
   }
 
   return (
@@ -102,8 +122,11 @@ export default function ConferenceEditor({
         </button>
       </div>
 
-      <button type="button" className={`${s.btn} ${s.btnPrimary}`} onClick={save}>
-        Save the conference
+      {err && <div className={s.loginErr} style={{ marginBottom: 14 }}>{err}</div>}
+
+      <button type="button" className={`${s.btn} ${s.btnPrimary}`}
+        onClick={save} disabled={busy}>
+        {busy ? "Saving..." : "Save the conference"}
       </button>
 
       {toast && <div className={s.toast}>{toast}</div>}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import s from "@/components/Site.module.css";
@@ -6,6 +7,7 @@ import s from "@/components/Site.module.css";
 export default function NotFound() {
   return (
     <>
+      <AnnouncementBar />
       <SiteNav />
       <section className={`${s.sec} ${s.dark}`}>
         <div className={s.wrap}>

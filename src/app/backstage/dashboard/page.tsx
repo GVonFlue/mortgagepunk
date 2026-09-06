@@ -2,20 +2,20 @@ import Link from "next/link";
 import Shell from "@/components/backstage/Shell";
 import Notice from "@/components/backstage/Notice";
 import s from "@/components/backstage/Backstage.module.css";
-import {
-  isConfigured, SEED_VIDEOS, SEED_LEADS, SEED_PRESS, SEED_ANNOUNCEMENT,
-} from "@/lib/content";
+import { dbProbe, getVideos, getLeads, getPress, getAnnouncement } from "@/lib/db";
 
-export default function Overview() {
-  const configured = isConfigured();
-  const videos = SEED_VIDEOS;
-  const leads = SEED_LEADS;
-  const press = SEED_PRESS;
+export const dynamic = "force-dynamic";
+
+export default async function Overview() {
+  const probe = await dbProbe();
+  const [videos, leads, press, announcement] = await Promise.all([
+    getVideos(), getLeads(50), getPress(), getAnnouncement(),
+  ]);
 
   const stats = [
     { v: String(videos.filter((v) => v.published).length), l: "Videos live" },
     { v: String(videos.filter((v) => v.featured).length), l: "On the homepage" },
-    { v: String(leads.length), l: "Leads this month" },
+    { v: String(leads.length), l: "Leads captured" },
     { v: String(press.filter((p) => !p.pending).length), l: "Press items live" },
   ];
 
@@ -31,7 +31,7 @@ export default function Overview() {
         </div>
       </div>
 
-      <Notice configured={configured} />
+      <Notice configured={probe.ok} error={probe.error} />
 
       <div className={s.stats}>
         {stats.map((x) => (
@@ -57,7 +57,7 @@ export default function Overview() {
             Update the conference
           </Link>
           <Link href="/backstage/settings" className={`${s.btn} ${s.btnGhost}`}>
-            {SEED_ANNOUNCEMENT.enabled ? "Edit the banner" : "Turn on the banner"}
+            {announcement.enabled ? "Edit the banner" : "Turn on the banner"}
           </Link>
         </div>
       </div>

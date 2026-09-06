@@ -24,23 +24,20 @@ export const TOPICS = [
 
 export type Topic = (typeof TOPICS)[number];
 
-export type Video = {
-  id: string;          // row id
-  youtubeId: string;   // extracted from whatever URL was pasted
-  title: string;       // auto-fetched from YouTube, editable
-  blurb: string;       // 2-3 sentences, capped in the dashboard
-  topic: Topic;
-  featured: boolean;   // max 4 on the homepage
-  published: boolean;
-  sort: number;
-};
+/**
+ * NOTE: video records and all reads now live in lib/db.ts, backed by Supabase.
+ * This file keeps only the shared constants and pure helpers so both the
+ * public pages and the dashboard import the same topic list and the same
+ * YouTube-id parsing.
+ */
 
 /** Any YouTube URL shape -> the 11-char id. */
 export function youtubeId(url: string): string | null {
   const m = url.match(
     /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/
   );
-  return m ? m[1] : url.match(/^[\w-]{11}$/) ? url : null;
+  if (m) return m[1];
+  return /^[\w-]{11}$/.test(url.trim()) ? url.trim() : null;
 }
 
 export function thumbnail(youtubeId: string): string {
@@ -50,26 +47,3 @@ export function thumbnail(youtubeId: string): string {
 export function topicSlug(t: string): string {
   return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
-
-/**
- * PLACEHOLDER CONTENT — replace with the Supabase query once the dashboard is
- * built. Real videos come from Chris's channel; these exist so the layout can
- * be reviewed on Sept 11 without waiting on his content pass.
- */
-export const PLACEHOLDER: Video[] = [
-  {
-    id: "1", youtubeId: "", topic: "Lender Lies", featured: true, published: true, sort: 1,
-    title: "The rate is not the deal",
-    blurb: "Why the number everyone shops for is the one that matters least, and what to look at instead.",
-  },
-  {
-    id: "2", youtubeId: "", topic: "Buying a Home", featured: true, published: true, sort: 2,
-    title: "What you actually need to close",
-    blurb: "Down payment myths, what underwriting really looks at, and the timeline nobody explains up front.",
-  },
-  {
-    id: "3", youtubeId: "", topic: "Building Wealth", featured: true, published: true, sort: 3,
-    title: "Your house is not your plan",
-    blurb: "Equity, leverage, and the difference between owning something and building something.",
-  },
-];

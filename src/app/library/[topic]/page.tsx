@@ -4,7 +4,10 @@ import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import s from "@/components/Site.module.css";
-import { TOPICS, PLACEHOLDER, thumbnail, topicSlug } from "@/lib/library";
+import { TOPICS, thumbnail, topicSlug } from "@/lib/library";
+import { getVideos } from "@/lib/db";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return TOPICS.map((t) => ({ topic: topicSlug(t) }));
@@ -32,7 +35,8 @@ export default async function TopicPage({
   const name = TOPICS.find((t) => topicSlug(t) === topic);
   if (!name) notFound();
 
-  const videos = PLACEHOLDER.filter((v) => v.published && v.topic === name);
+  const all = await getVideos({ publishedOnly: true });
+  const videos = all.filter((v) => v.topic === name);
 
   return (
     <>
@@ -59,11 +63,17 @@ export default async function TopicPage({
           ) : (
             <div className={s.vids}>
               {videos.map((v) => (
-                <div key={v.id} className={s.vid}>
+                <a
+                  key={v.id}
+                  href={`https://www.youtube.com/watch?v=${v.youtube_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={s.vid}
+                >
                   <div className={s.thumb}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={v.youtubeId ? thumbnail(v.youtubeId) : "/brand/hero-plate.jpg"}
+                      src={v.youtube_id ? thumbnail(v.youtube_id) : "/brand/hero-plate.jpg"}
                       alt=""
                     />
                     <span className={s.play} aria-hidden="true" />
@@ -71,7 +81,7 @@ export default async function TopicPage({
                   <div className={s.tp}>{v.topic}</div>
                   <h4>{v.title}</h4>
                   <p>{v.blurb}</p>
-                </div>
+                </a>
               ))}
             </div>
           )}

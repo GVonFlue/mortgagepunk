@@ -2,9 +2,14 @@ import Shell from "@/components/backstage/Shell";
 import Notice from "@/components/backstage/Notice";
 import ListEditor from "@/components/backstage/ListEditor";
 import s from "@/components/backstage/Backstage.module.css";
-import { isConfigured, SEED_TALKS, LIMITS } from "@/lib/content";
+import { dbProbe, getTalks } from "@/lib/db";
+import { LIMITS } from "@/lib/content";
 
-export default function SpeakingPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SpeakingPage() {
+  const probe = await dbProbe();
+  const talks = await getTalks();
   return (
     <Shell>
       <div className={s.head}>
@@ -16,10 +21,10 @@ export default function SpeakingPage() {
           </p>
         </div>
       </div>
-      <Notice configured={isConfigured()} />
+      <Notice configured={probe.ok} error={probe.error} />
       <ListEditor
-        kind="speaking"
-        initial={SEED_TALKS.map((t) => ({
+        endpoint="/api/backstage/speaking"
+        initial={talks.map((t) => ({
           id: t.id, title: t.title, blurb: t.blurb, tag: "", pending: false,
         }))}
         titleLabel="Talk title"
@@ -27,7 +32,7 @@ export default function SpeakingPage() {
         titleMax={LIMITS.talkTitle}
         blurbMax={LIMITS.talkBlurb}
         addLabel="Add a talk"
-        configured={isConfigured()}
+        configured={probe.ok}
       />
     </Shell>
   );

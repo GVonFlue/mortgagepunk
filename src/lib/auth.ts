@@ -59,3 +59,16 @@ export function tokenIsValid(token: string | undefined): boolean {
   if (!timingSafeEqual(a, b)) return false;
   return Number(exp) > Date.now();
 }
+
+/**
+ * Guard for /api/backstage/* route handlers.
+ *
+ * middleware.ts only matches /backstage/:path*, so the API routes are not
+ * behind it. Without this check the endpoints would be open to anyone who
+ * guessed the URL, and the password gate on the UI would be decorative.
+ */
+export async function requireSession(): Promise<boolean> {
+  const { cookies } = await import("next/headers");
+  const jar = await cookies();
+  return tokenIsValid(jar.get(COOKIE)?.value);
+}

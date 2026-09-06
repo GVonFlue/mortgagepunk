@@ -1,3 +1,4 @@
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
@@ -17,6 +18,7 @@ export const metadata = {
 export default function Merch() {
   return (
     <>
+      <AnnouncementBar />
       <SiteNav />
       <PageHead
         kicker="Merch"
