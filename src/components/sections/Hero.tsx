@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
+import { getHero } from "@/lib/db";
+import { HERO_FIT } from "@/lib/content";
 
 /**
  * Hero — mortgagepunk.com
@@ -29,9 +31,53 @@ const NAV = [
   { label: "About Chris", href: "/about" },
 ];
 
-export default function Hero() {
+/**
+ * Auto-fit.
+ *
+ * The stage is fixed at 1512x900 with white-space:nowrap, so a longer word
+ * does not wrap — it runs off the edge. Rather than trap Chris inside a
+ * character limit, each line scales down once it passes the reference length.
+ * "AMERICAN" is 8 characters and fills the width by design; a 12-character
+ * word renders at two thirds the size and still lands inside the composition.
+ *
+ * This is why the copy can be editable at all. Without it, one long word from
+ * a designer breaks the hero on every screen.
+ */
+function fit(text: string, base: number, reference: number): number {
+  const len = text.trim().length || 1;
+  if (len <= reference) return base;
+  return Math.round(base * (reference / len) * 10) / 10;
+}
+
+export default async function Hero() {
+  const h = await getHero();
+
+  const art = h.art_url ? { url: h.art_url, w: h.art_w, h: h.art_h } : null;
+
+  // one unit variable per line, consumed by the CSS as calc(N * var(--u))
+  const sizes = {
+    "--fit-eyebrow": fit(h.eyebrow, 58, HERO_FIT.eyebrow),
+    "--fit-small": fit(h.line_small, 106, HERO_FIT.line_small),
+    "--fit-big": fit(h.line_big, 246, HERO_FIT.line_big),
+    "--fit-accent": fit(h.line_accent, 246, HERO_FIT.line_accent),
+    // artwork sizing, in stage units so it scales with everything else
+    "--art-w": h.art_width_units ?? 1030,
+    "--art-top": h.art_top_units ?? 96,
+    // hold the aspect ratio so the art never stretches
+    "--art-ratio":
+      art?.w && art?.h ? `${art.w} / ${art.h}` : "auto",
+    "--art-ratio-m":
+      h.art_mobile_w && h.art_mobile_h
+        ? `${h.art_mobile_w} / ${h.art_mobile_h}`
+        : "auto",
+  } as React.CSSProperties;
+
   return (
-    <section className={styles.hero} aria-label="Reimagining the American Dream">
+    <section
+      className={styles.hero}
+      aria-label={`${h.eyebrow} ${h.line_small} ${h.line_big} ${h.line_accent}`}
+      style={sizes}
+    >
       <div className={styles.plate}>
         <Image
           src="/brand/hero-plate.jpg"
@@ -44,22 +90,47 @@ export default function Hero() {
       </div>
 
       <div className={styles.stage}>
-        {/* outer span masks for the reveal, inner span is what animates */}
-        <h1 className={styles.type}>
-          <span className={styles.reimagining}>
-            <span>Reimagining</span>
-          </span>
-          <span className={styles.strike} aria-hidden="true" />
-          <span className={styles.the}>
-            <span>The</span>
-          </span>
-          <span className={styles.american}>
-            <span>American</span>
-          </span>
-          <span className={styles.dream}>
-            <span data-text="Dream">Dream</span>
-          </span>
-        </h1>
+        {/* THE HEADLINE.
+            When Chris has uploaded artwork it renders instead of the type
+            lines — same slot in the stage, same z-index, so it still sits
+            BEHIND Chris. The layering is code; only the artwork swaps.
+
+            The <h1> stays in the DOM either way, visually hidden when art is
+            showing. An image headline with no text would leave the page with
+            no H1 for search engines and nothing for a screen reader to read. */}
+        {art ? (
+          <>
+            <h1 className={styles.srOnly}>
+              {`${h.eyebrow} ${h.line_small} ${h.line_big} ${h.line_accent}`}
+            </h1>
+            <div className={styles.artWrap} aria-hidden="true">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={styles.artDesktop} src={art.url} alt="" />
+              {h.art_mobile_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className={styles.artMobile} src={h.art_mobile_url} alt="" />
+              )}
+            </div>
+          </>
+        ) : (
+          <h1 className={styles.type}>
+            <span className={styles.reimagining}>
+              <span>{h.eyebrow}</span>
+            </span>
+            <span className={styles.strike} aria-hidden="true" />
+            <span className={styles.the}>
+              <span>{h.line_small}</span>
+            </span>
+            <span className={styles.american}>
+              <span>{h.line_big}</span>
+            </span>
+            <span className={styles.dream}>
+              {/* data-text drives the gradient overlay — it must match the
+                  visible text or the fill and the outline drift apart */}
+              <span data-text={h.line_accent}>{h.line_accent}</span>
+            </span>
+          </h1>
+        )}
 
         <div className={styles.shadowWall} aria-hidden="true" />
         <div className={styles.shadowGround} aria-hidden="true" />
@@ -77,13 +148,11 @@ export default function Hero() {
         </div>
 
         <div className={styles.rail}>
-          Loan Officer.
+          {h.rail_top}
           <br />
-          <span className={styles.railHit}>Leading a Movement.</span>
+          <span className={styles.railHit}>{h.rail_hit}</span>
           <br />
-          Building a World-Class
-          <br />
-          Lending Team.
+          {h.rail_bottom}
         </div>
 
 
@@ -93,8 +162,8 @@ export default function Hero() {
 <span>Get Approved the Right Way</span>
             <span aria-hidden="true">&rarr;</span>
           </Link>
-          <Link href="/movement" className={`${styles.btn} ${styles.btnGhost}`}>
-            <span>Follow the Movement</span>
+          <Link href={h.cta2_href} className={`${styles.btn} ${styles.btnGhost}`}>
+            <span>{h.cta2_label}</span>
             <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>

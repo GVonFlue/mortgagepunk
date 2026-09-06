@@ -151,3 +151,46 @@
 .loginSub{margin:0 0 22px;font-size:13.5px;line-height:1.6;color:#7A7A7A}
 .loginErr{background:#1C1011;border:1px solid #3A1E20;color:#E0757C;
   border-radius:8px;padding:11px 13px;font-size:13px;margin-bottom:14px}
+
+/* ---------- hero copy preview ----------
+   Chris and the concrete are omitted so the text stays readable. The type
+   scaling here mirrors fit() in Hero.tsx exactly, so what shows in this box is
+   the real result rather than an approximation. */
+.heroPrev{position:relative;background:linear-gradient(120deg,#1A1A1A 0%,#0C0C0C 100%);
+  border:1px solid #232323;border-radius:14px;overflow:hidden;
+  padding:26px 24px;min-height:300px;display:flex;flex-direction:column;
+  justify-content:space-between}
+.heroPrevType{font-family:var(--font-display),sans-serif;color:var(--mp-bone);
+  text-transform:uppercase;letter-spacing:-.028em;white-space:nowrap;
+  overflow:hidden}
+.heroPrevRule{display:block;width:150px;height:2px;background:var(--mp-red);
+  margin:5px 0 8px}
+.heroPrevCtas{display:flex;flex-direction:column;gap:7px;align-items:flex-start;
+  margin-top:22px}
+.heroPrevBtn{display:inline-block;background:var(--mp-red);color:#0A0A0A;
+  padding:8px 14px;border-radius:4px;font-family:var(--font-body),sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.heroPrevBtnGhost{background:#0A0A0A;color:var(--mp-bone);
+  border:1px solid var(--mp-red)}
+
+/* ---------- artwork uploader ---------- */
+.artDrop{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:32px 20px;border:2px dashed #2E2E2E;border-radius:12px;
+  background:#0C0C0C;cursor:pointer;transition:.2s;
+  font-family:var(--font-body),sans-serif;text-align:center}
+.artDrop:hover{border-color:var(--mp-red);background:#111}
+.artDrop:disabled{opacity:.5;cursor:not-allowed}
+.artDrop svg{width:28px;height:28px;stroke:var(--mp-red);fill:none;stroke-width:1.7}
+.artDrop strong{font-size:14px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--mp-bone)}
+.artDrop span{font-size:12px;line-height:1.5;color:#6E6E6E;max-width:44ch}
+
+.artPreview{border:1px solid #232323;border-radius:12px;overflow:hidden;
+  background:repeating-conic-gradient(#161616 0% 25%, #101010 0% 50%) 50%/18px 18px}
+.artPreview img{display:block;width:100%;height:auto;max-height:230px;
+  object-fit:contain}
+.artPreviewMeta{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;padding:12px 14px;background:#0E0E0E;
+  border-top:1px solid #232323}
+.artErr{margin:9px 0 0;font-size:12.5px;line-height:1.55;color:#E0757C}

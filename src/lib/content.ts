@@ -80,6 +80,34 @@ export type Testimonial = {
   sort: number;
 };
 
+export type Hero = {
+  /** Uploaded headline artwork. When art_url is set it replaces the type
+   *  lines entirely — same position, same scale, still behind Chris. */
+  art_url?: string | null;
+  art_w?: number | null;
+  art_h?: number | null;
+  art_mobile_url?: string | null;
+  art_mobile_w?: number | null;
+  art_mobile_h?: number | null;
+  /** Width on the 1512-wide stage. 1030 matches the current headline. */
+  art_width_units?: number | null;
+  art_top_units?: number | null;
+
+  eyebrow: string;
+  line_small: string;
+  line_big: string;
+  line_accent: string;
+  rail_top: string;
+  rail_hit: string;
+  rail_bottom: string;
+  cta1_label: string;
+  cta1_href: string;
+  cta2_label: string;
+  cta2_href: string;
+  nav_cta_label: string;
+  nav_cta_href: string;
+};
+
 export type Lead = {
   id: string;
   first: string;
@@ -115,7 +143,25 @@ export function topicSlug(t: string): string {
 }
 
 /** Field caps. Enforced in the UI so no entry can break a layout. */
+/**
+ * Hero fit reference.
+ *
+ * The hero is a fixed 1512x900 stage with white-space:nowrap, so a long word
+ * doesn't wrap — it runs off the edge and breaks the composition. Hero.tsx
+ * scales each line down when it exceeds these lengths, so nothing can overflow;
+ * these are the point past which the type starts getting visibly smaller.
+ */
+export const HERO_FIT = {
+  eyebrow: 13,
+  line_small: 5,
+  line_big: 8,
+  line_accent: 6,
+};
+
 export const LIMITS = {
+  heroLine: 16,
+  heroRail: 44,
+  ctaLabel: 34,
   topicName: 46,
   testimonialName: 48,
   testimonialRole: 60,
@@ -192,6 +238,30 @@ export const SEED_ANNOUNCEMENT: Announcement = {
   enabled: false,
   text: "Tickets for the American Dream Conference are on sale now.",
   href: "https://mortgagepunklive.com",
+};
+
+export const SEED_HERO: Hero = {
+  art_url: null,
+  art_w: null,
+  art_h: null,
+  art_mobile_url: null,
+  art_mobile_w: null,
+  art_mobile_h: null,
+  art_width_units: 1030,
+  art_top_units: 96,
+  eyebrow: "Reimagining",
+  line_small: "The",
+  line_big: "American",
+  line_accent: "Dream",
+  rail_top: "Loan Officer.",
+  rail_hit: "Leading a Movement.",
+  rail_bottom: "Building a World-Class Lending Team.",
+  cta1_label: "Get Approved the Right Way",
+  cta1_href: "/get-approved",
+  cta2_label: "Follow the Movement",
+  cta2_href: "/movement",
+  nav_cta_label: "Get Approved",
+  nav_cta_href: "/get-approved",
 };
 
 export const SEED_TESTIMONIALS: Testimonial[] = [];
