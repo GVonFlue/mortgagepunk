@@ -1,11 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
-import LoudLead from "@/components/sections/LoudLead";
 import GfxNote from "@/components/ui/GfxNote";
-import Statement, { Kicker, Punch } from "@/components/brand/Statement";
-import s from "@/components/Site.module.css";
+import c from "@/components/sections/Conference.module.css";
 import { getConference } from "@/lib/db";
 
 export const metadata = {
@@ -17,176 +16,202 @@ export const metadata = {
 export const revalidate = 300;
 
 /**
- * /movement — rebuilt as a CONFERENCE page.
+ * /movement — the American Dream Conference.
  *
- * The previous version led with the mission and mentioned the event in a card,
- * which had it backwards: the conference is the thing with a date, a venue and
- * tickets, and it is what mortgagepunklive.com exists to sell. The mission is
- * why it exists, so it now sits underneath rather than in front.
+ * Rebuilt LIGHT and rebuilt around its own logo.
  *
- * Date, venue, keynote, stats and giveaways all come from Backstage →
- * Conference, so Chris updates them once a year without a rebuild.
+ * Two decisions drive the whole page. First, this is a sibling brand, not
+ * Mortgage Punk: it sells tickets to people who may never take a mortgage from
+ * Chris, so it has to be approachable and easy to scan rather than another
+ * wall of black. The logo already carries the punk energy — the page does not
+ * need to shout on top of it.
  *
- * Reference for the running order and giveaways is the live site. Everything
- * marked TODO needs confirming with Ashley before launch — the current live
- * site is still promoting an event that has already happened.
+ * Second, the order answers questions in the order somebody actually asks
+ * them: what is this, is it for me, what happens, what could I win, where and
+ * when, how do I get in.
+ *
+ * Date, venue, keynote, stats and prizes all come from Backstage → Conference.
  */
 
-const RUN_ORDER = [
+const WHO = [
+  {
+    h: "First-time buyers",
+    p: "You have never done this and everyone talks to you in acronyms. Start here and leave knowing how it actually works.",
+  },
+  {
+    h: "Homeowners",
+    p: "You already own. The question now is what that asset is supposed to be doing for you, and whether it is doing it.",
+  },
+  {
+    h: "Investors",
+    p: "Second door or twentieth. Financing, taxes, and the maths behind buying the next one.",
+  },
+  {
+    h: "Anyone tired of guessing",
+    p: "Nobody taught most of us the rules around money. A day of straight answers, no upsell at the end.",
+  },
+];
+
+const DAY = [
   {
     when: "Morning",
     what: "Doors and the opening keynote",
-    body: "It starts loud. No welcome-to-the-conference housekeeping for twenty minutes — the first session is the reason you came.",
+    p: "It starts loud. No twenty minutes of housekeeping — the first session is the reason you came.",
   },
   {
     when: "Late morning",
     what: "Breakout sessions",
-    body: "Smaller rooms, specific problems. Buying your first place, financing a rental, what to do about debt, keeping more of what you earn.",
+    p: "Smaller rooms, specific problems. Buying your first place, financing a rental, dealing with debt, keeping more of what you earn.",
   },
   {
     when: "Midday",
     what: "Lunch and the floor",
-    body: "The part most people say they got the most out of. A room full of people solving the same problems you are.",
+    p: "The part most people say they got the most from. A room full of people solving the same problems you are.",
   },
   {
     when: "Afternoon",
     what: "Keynotes two and three",
-    body: "The big-picture sessions. What the American Dream looks like now, and what it takes to build one.",
+    p: "The big-picture sessions. What the American Dream looks like now, and what it takes to build one.",
   },
   {
     when: "Late afternoon",
     what: "The giveaways",
-    body: "Given away live, on stage, to people in the room. Not a raffle you hear about later.",
+    p: "Given away live, on stage, to people in the room. Not a raffle you hear about in an email a week later.",
   },
   {
     when: "Evening",
     what: "Live music",
-    body: "It closes with a concert, because of course it does.",
+    p: "It closes with a concert, because of course it does.",
   },
 ];
+
+function Icon({ d }: { d: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d={d} />
+    </svg>
+  );
+}
 
 export default async function Movement() {
   const conf = await getConference();
 
   return (
-    <>
+    <div className={c.page}>
       <AnnouncementBar />
       <SiteNav />
 
-      {/* ---------- conference hero ---------- */}
-      <section className={s.confHero}>
-        <div className={s.confWrap}>
-          <span className={s.confDate}>{conf.date_label}</span>
-          {/* Ransom-note lockup, matching the conference's own logo: white
-              letters knocked out of torn red blocks, each one tilted its own
-              way. It is a sibling brand to Mortgage Punk, not the same one. */}
-          <h1 className={s.ransom}>
-            <span>American</span>
-            <span>Dream!</span>
-            <em>Home Buying Conference</em>
-          </h1>
-          <div className={s.confMeta}>
-            <span>{conf.venue}</span>
-            <span>Keynote: {conf.keynote}</span>
+      {/* ---------- hero ---------- */}
+      <section className={c.hero}>
+        <div className={c.heroWrap}>
+          <Image
+            src="/brand/adc-logo.png"
+            alt="American Dream! Conference"
+            width={1400}
+            height={718}
+            className={c.logo}
+            priority
+          />
+
+          <div className={c.when}>
+            <span className={c.whenItem}>
+              <Icon d="M3 5.5h18v15H3zM3 10h18M8 3v4M16 3v4" />
+              {conf.date_label}
+            </span>
+            <span className={c.whenItem}>
+              <Icon d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11z" />
+              {conf.venue}
+            </span>
           </div>
-          <div className={s.confBtns}>
+
+          <p className={c.tagline}>
+            One day. <em>Everything they never taught you</em> about money.
+          </p>
+
+          <div className={c.heroBtns}>
             <a
               href={conf.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${s.btn} ${s.btnDark}`}
+              className={`${c.btn} ${c.btnRed}`}
             >
               Get tickets &rarr;
             </a>
-            <Link href="#what" className={`${s.btn} ${s.btnOutline}`}>
-              What happens &rarr;
+            <Link href="#day" className={`${c.btn} ${c.btnLine}`}>
+              See the day &rarr;
             </Link>
           </div>
         </div>
       </section>
 
       {/* ---------- what it is ---------- */}
-      <section className={`${s.sec} ${s.dark}`} id="what">
-        <div className={s.wrap}>
-          <Kicker>What it is</Kicker>
-          <Statement
-            lines={[
-              { t: "Not a", size: "md" },
-              { t: "sit-in-a-chair", size: "lg" },
-              { t: "seminar.", size: "xl", tone: "red" },
-            ]}
-          />
-          <Punch>{conf.blurb}</Punch>
+      <section className={`${c.sec} ${c.secWhite}`}>
+        <div className={c.wrap}>
+          <span className={c.kick}>What it is</span>
+          <h2 className={c.h2}>
+            Not a sit-in-a-chair
+            <em>seminar.</em>
+          </h2>
+          <p className={c.lede}>{conf.blurb}</p>
 
-          <div className={s.confStats}>
-            {conf.stats.map((st) => (
-              <div key={st.label} className={s.confStat}>
-                <b>{st.value}</b>
-                <span>{st.label}</span>
+          <div className={c.stats}>
+            {conf.stats.map((s) => (
+              <div key={s.label} className={c.stat}>
+                <b>{s.value}</b>
+                <span>{s.label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ---------- the giveaways ---------- */}
-      <section className={`${s.sec} ${s.ink}`}>
-        <div className={s.wrap}>
-          <Kicker>Given away live</Kicker>
-          <Statement
-            lines={[
-              { t: "Somebody in that room", size: "sm" },
-              { t: "goes home", size: "xl" },
-              { t: "with this.", size: "xl", tone: "red" },
-            ]}
-          />
-          <Punch>
-            On stage, on the day, to people in the seats. Not a raffle you hear
-            about in an email a week later.
-          </Punch>
+      {/* ---------- who it's for ---------- */}
+      <section className={`${c.sec} ${c.secPaper}`}>
+        <div className={c.wrap}>
+          <span className={c.kick}>Who it&rsquo;s for</span>
+          <h2 className={c.h2}>
+            You don&rsquo;t need to know
+            <em>anything yet.</em>
+          </h2>
+          <p className={c.lede}>
+            There is no prerequisite and no assumed knowledge. Come with the
+            questions you have been too embarrassed to ask.
+          </p>
 
-          <div className={s.prizeGrid}>
-            {conf.prizes.map((p, i) => (
-              <div key={p} className={s.prizeCard}>
-                <span className={s.prizeNo}>{String(i + 1).padStart(2, "0")}</span>
-                <h3>{p}</h3>
+          <div className={c.who}>
+            {WHO.map((w) => (
+              <div key={w.h} className={c.whoCard}>
+                <h3>{w.h}</h3>
+                <p>{w.p}</p>
               </div>
             ))}
-          </div>
-
-          <div className={s.todo} style={{ marginTop: 26 }}>
-            TODO: sponsor logos and prize artwork needed. The current live site
-            has images for each of these — worth pulling them across before the
-            domain redirect goes in, because they disappear when it does.
           </div>
         </div>
       </section>
 
       {/* ---------- the day ---------- */}
-      <section className={`${s.sec} ${s.dark}`}>
-        <div className={s.wrap} style={{ position: "relative" }}>
+      <section className={`${c.sec} ${c.secWhite}`} id="day">
+        <div className={c.wrap} style={{ position: "relative" }}>
           <GfxNote where="evt" />
-          <Kicker>The day</Kicker>
-          <Statement
-            lines={[
-              { t: "How it", size: "md" },
-              { t: "actually runs.", size: "xl", tone: "red" },
-            ]}
-          />
+          <span className={c.kick}>The day</span>
+          <h2 className={c.h2}>
+            How it
+            <em>actually runs.</em>
+          </h2>
 
-          <div className={s.runOrder}>
-            {RUN_ORDER.map((r) => (
-              <div key={r.when} className={s.runRow}>
-                <span className={s.runWhen}>{r.when}</span>
-                <div className={s.runWhat}>
-                  <h3>{r.what}</h3>
-                  <p>{r.body}</p>
+          <div className={c.day}>
+            {DAY.map((d) => (
+              <div key={d.when} className={c.dayRow}>
+                <span className={c.dayWhen}>{d.when}</span>
+                <div className={c.dayWhat}>
+                  <h3>{d.what}</h3>
+                  <p>{d.p}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className={s.todo} style={{ marginTop: 26 }}>
+          <div className={c.todo}>
             TODO: this running order is a reasonable draft, not confirmed. Ashley
             needs to supply the real schedule, the other two keynote speakers,
             and the breakout titles.
@@ -194,44 +219,132 @@ export default async function Movement() {
         </div>
       </section>
 
-      {/* ---------- the mission, now underneath ---------- */}
-      <section className={`${s.sec} ${s.bone}`}>
-        <div className={s.wrap}>
-          <div className={s.kick}>Why it exists</div>
-          <h2 className={s.h2}>
+      {/* ---------- giveaways, the one dark band ---------- */}
+      <section className={`${c.sec} ${c.secInk}`}>
+        <div className={c.wrap}>
+          <span className={c.kick}>Given away live</span>
+          <h2 className={c.h2} style={{ color: "var(--mp-bone)" }}>
+            Somebody in that room
+            <em>goes home with this.</em>
+          </h2>
+          <p className={c.lede}>
+            On stage, on the day, to people in the seats. Not a raffle you hear
+            about in an email a week later.
+          </p>
+
+          <div className={c.prizes}>
+            {conf.prizes.map((p, i) => (
+              <div key={p} className={c.prize}>
+                <span className={c.prizeNo}>{String(i + 1).padStart(2, "0")}</span>
+                <h3>{p}</h3>
+              </div>
+            ))}
+          </div>
+
+          <div className={c.todo}>
+            TODO: sponsor logos and prize artwork needed. The current live site
+            has images for each of these — pull them across before the domain
+            redirect goes in, because they disappear when it does.
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- venue ---------- */}
+      <section className={`${c.sec} ${c.secPaper}`}>
+        <div className={c.wrap}>
+          <div className={c.venue}>
+            <div>
+              <span className={c.kick}>Where and when</span>
+              <h2 className={c.h2}>
+                Wichita.
+                <em>One day only.</em>
+              </h2>
+              <p className={c.lede}>
+                Everything happens in one building, so there is no running
+                between venues and nothing missed because you were in the wrong
+                room.
+              </p>
+            </div>
+
+            <dl className={c.venueFacts}>
+              <div className={c.venueFact}>
+                <dt>Date</dt>
+                <dd>{conf.date_label}</dd>
+              </div>
+              <div className={c.venueFact}>
+                <dt>Venue</dt>
+                <dd>{conf.venue}</dd>
+              </div>
+              <div className={c.venueFact}>
+                <dt>Keynote</dt>
+                <dd>{conf.keynote}</dd>
+              </div>
+              <div className={c.venueFact}>
+                <dt>Host</dt>
+                <dd>Chris Waipa</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- tickets ---------- */}
+      <section className={c.tickets}>
+        <Image
+          src="/brand/adc-logo.png"
+          alt=""
+          width={1400}
+          height={718}
+          className={c.ticketsLogo}
+        />
+        <h2>Be in the room.</h2>
+        <p>
+          Tickets, sponsorship, or tell us to shout when the next date lands.
+          Either way you hear from a person.
+        </p>
+        <div className={c.heroBtns}>
+          <a
+            href={conf.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${c.btn} ${c.btnInk}`}
+          >
+            Get tickets &rarr;
+          </a>
+          <Link href="/contact" className={`${c.btn} ${c.btnLine}`}>
+            Sponsor the event &rarr;
+          </Link>
+        </div>
+      </section>
+
+      {/* ---------- the mission, underneath ---------- */}
+      <section className={`${c.sec} ${c.secWhite}`}>
+        <div className={c.wrap}>
+          <span className={c.kick}>Why it exists</span>
+          <h2 className={c.h2}>
             The American Dream
-            <br />
             <em>isn&rsquo;t a checklist.</em>
           </h2>
-          <p className={s.lede}>
-            It&rsquo;s the freedom and the opportunity to rewrite your story.
-            That sentence is why the conference exists, and it is the same reason
-            Mortgage Punk does.
+          <p className={c.lede}>
+            It is the freedom and the opportunity to rewrite your story. That
+            sentence is why the conference exists, and it is the same reason
+            Mortgage Punk does. It started by challenging a broken mortgage
+            experience and grew into a lending team, a media platform, an
+            education community, a live event, and a movement built around
+            helping people think bigger than the next transaction.
           </p>
-          <p className={`${s.lede} ${s.prose}`}>
-            It started by challenging a broken mortgage experience. It grew into
-            a lending team, a media platform, an education community, a live
-            event, and a movement built around helping people think bigger than
-            the next transaction.
-          </p>
-          <div style={{ marginTop: 30, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link href="/about" className={`${s.btn} ${s.btnSolid}`}>
+          <div style={{ marginTop: 28, display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Link href="/about" className={`${c.btn} ${c.btnInk}`}>
               Chris&rsquo;s story &rarr;
             </Link>
-            <Link href="/library" className={`${s.btn} ${s.btnGhost}`}>
+            <Link href="/library" className={`${c.btn} ${c.btnLine}`}>
               The Game of Money &rarr;
             </Link>
           </div>
         </div>
       </section>
 
-      <LoudLead
-        kicker="The conference"
-        title="Be in the room."
-        accent="Get on the list."
-        lede="Tickets, sponsorship, or just tell us to shout when the next date lands."
-      />
       <SiteFooter />
-    </>
+    </div>
   );
 }
