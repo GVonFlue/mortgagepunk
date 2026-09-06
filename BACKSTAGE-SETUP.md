@@ -69,7 +69,8 @@ window without a redeploy.
 
 | Screen | What it drives |
 |---|---|
-| **Library** | The education library. Paste a YouTube link, pick a topic, write a blurb. Title and thumbnail come from YouTube — no image uploads, ever |
+| **Library** | The education library. Paste a YouTube link, tag it with every topic it fits, write a blurb. Title and thumbnail come from YouTube — no image uploads, ever. Every video can be edited after publishing |
+| **Topics** | The filter chips themselves. Add, rename, reorder, remove |
 | **Leads** | Read-only inbox of everyone who filled out a form |
 | **Press** | The press cards on /about. Unverified items stay off the public site |
 | **Conference** | The American Dream Conference card — date, venue, keynote, the three stats, giveaways |
@@ -128,3 +129,28 @@ exists.
 feeds the sheet and the inbox. The Apps Script leg runs whether or not the
 database write succeeded. A database outage means a lead is missing from the
 dashboard, never missing entirely.
+
+
+## Migration: editable topics + multiple topics per video
+
+Run `supabase-migration-topics.sql` **once**, after the main schema. It is safe
+on a table that already has videos — their existing topic is copied into the
+new array column before the old column is dropped.
+
+What changes:
+
+- A new `library_topics` table, seeded with Chris's ten. He edits the list in
+  /backstage → Topics.
+- `library_videos.topic` (single text) becomes `topics` (text array). A video
+  can now sit under several categories, which most of them genuinely do.
+
+### Renaming a topic
+
+Videos store topic names as plain strings, so renaming is an explicit action
+rather than "edit the text and save". The rename endpoint moves every affected
+video onto the new name and reports how many it touched. A silent rename would
+orphan every video using the old name — visible only when the topic page came
+up empty.
+
+Removing a topic that still has videos is blocked, with a count of what is
+using it.
