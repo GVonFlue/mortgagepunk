@@ -5,6 +5,22 @@ import { LIMITS, youtubeId } from "@/lib/content";
 
 export const runtime = "nodejs";
 
+/**
+ * Normalise whatever arrived as `topics` into a clean string[].
+ *
+ * req.json() returns `any`, so an inline map/filter chain widens to unknown[]
+ * and fails the build. Typing the boundary once here keeps every caller sane.
+ */
+function cleanTopics(input: unknown): string[] {
+  if (!Array.isArray(input)) return [];
+  const out: string[] = [];
+  for (const t of input) {
+    const name = String(t ?? "").trim().slice(0, 46);
+    if (name && !out.includes(name)) out.push(name);
+  }
+  return out;
+}
+
 export async function GET() {
   const blocked = await guard();
   if (blocked) return blocked;
@@ -33,9 +49,7 @@ export async function POST(req: Request) {
     let featured = Boolean(b.featured);
     if (featured && (await featuredCount()) >= 4) featured = false;
 
-    const topics = Array.isArray(b.topics)
-      ? Array.from(new Set(b.topics.map((t: unknown) => String(t).slice(0, 46)).filter(Boolean)))
-      : [];
+    const topics = cleanTopics(b.topics);
     if (topics.length === 0) {
       return NextResponse.json({ ok: false, error: "Pick at least one topic" }, { status: 400 });
     }
@@ -70,10 +84,8 @@ export async function PATCH(req: Request) {
     }
     if (typeof patch.title === "string") patch.title = patch.title.slice(0, LIMITS.videoTitle);
     if (typeof patch.blurb === "string") patch.blurb = patch.blurb.slice(0, LIMITS.videoBlurb);
-    if (Array.isArray(patch.topics)) {
-      patch.topics = Array.from(
-        new Set(patch.topics.map((t: unknown) => String(t).slice(0, 46)).filter(Boolean))
-      );
+    if (patch.topics !== undefined) {
+      patch.topics = cleanTopics(patch.topics);
       if (patch.topics.length === 0) {
         return NextResponse.json(
           { ok: false, error: "A video needs at least one topic" },
