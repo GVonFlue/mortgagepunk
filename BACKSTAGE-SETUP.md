@@ -23,19 +23,47 @@ Never prefix either with `NEXT_PUBLIC_`.
 Without these the dashboard cannot be logged into at all — which is a safe
 failure, not a broken one.
 
-## 2. Two more when you want changes to persist
+## 2. Supabase, so changes actually save
 
 Until these are set, every screen shows a yellow "Preview mode" banner and
-says plainly that edits won't save. Chris can click through the whole thing
-and see exactly what he's getting.
+says plainly that edits won't save.
 
-1. Run `supabase-schema.sql` in the Supabase SQL editor
-2. Add to Vercel, all environments:
+1. **Create the project** at supabase.com. Any region, any name.
+2. **Run the schema.** SQL Editor → New query → paste all of
+   `supabase-schema.sql` → Run. It creates six tables and seeds the two
+   single-row ones.
+3. **Copy the credentials.** Project Settings → API:
+   - *Project URL* → `SUPABASE_URL`
+   - *service_role* secret (NOT `anon`) → `SUPABASE_SERVICE_KEY`
+4. **Add both to Vercel**, all three environments, then **redeploy**.
 
-       SUPABASE_URL          project URL
-       SUPABASE_SERVICE_KEY  service_role key
+The service key bypasses row-level security. Server-side only, always. Never
+prefix it with `NEXT_PUBLIC_` — that ships it to the browser and hands anyone
+full write access to every table.
 
-The service key bypasses row-level security. Server-side only, always.
+RLS is enabled on all six tables with no public policies, so even if the
+`anon` key leaked it can read and write nothing. Every query goes through the
+server with the service key, behind the password gate.
+
+### Confirming it worked
+
+Reload `/backstage`. The yellow banner should be gone. Add a video, refresh
+the page — if it's still there, you're live. It should also appear on the
+homepage within five minutes (pages revalidate on a 300-second cycle).
+
+## What each screen drives on the live site
+
+| Screen | Shows up on |
+|---|---|
+| Library | Homepage teaser (4 featured max) and `/library` + every topic page |
+| Conference | The card in the Movement section of the homepage |
+| Press | The press cards on `/about` |
+| Speaking | The tour-date list on `/about` |
+| Announcement | A red bar above the nav on every page |
+| Leads | Nowhere public. Read-only record of form submissions |
+
+Public pages revalidate every 5 minutes, so an edit shows up within that
+window without a redeploy.
 
 ## What Chris can change
 
@@ -71,3 +99,32 @@ Caps live in one place: `LIMITS` in `src/lib/content.ts`.
 - Press items marked unverified render dimmed in the dashboard and are
   withheld from the public page
 - Leads are read-only. They are a record, not a document
+
+
+## How saving behaves
+
+**Library** saves per action — add, feature, publish, remove all write
+immediately. Toggles are optimistic: the switch flips at once and rolls back
+if the server rejects it.
+
+**Press and Speaking** are edited as a list and saved with an explicit Save
+button. The button stays disabled until something actually changes, so there
+is never a doubt about whether the work is stored.
+
+**Conference and Announcement** save on their own button.
+
+**Leads** are read-only.
+
+## Two rules enforced on the server, not just in the UI
+
+The dashboard caps every field and blocks a fifth featured video. Those same
+rules are repeated in the API routes and again as CHECK constraints in
+Postgres, because the UI is only a suggestion to anyone who knows the endpoint
+exists.
+
+## Leads never get lost
+
+`/api/lead` writes to Supabase first, then to the Apps Script endpoint that
+feeds the sheet and the inbox. The Apps Script leg runs whether or not the
+database write succeeded. A database outage means a lead is missing from the
+dashboard, never missing entirely.
