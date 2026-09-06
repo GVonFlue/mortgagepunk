@@ -40,7 +40,7 @@ export default function Tools() {
             <br />
             <em>isn&rsquo;t an underwriter.</em>
           </h2>
-          <p className={s.lede}>
+          <p className={`${s.lede} ${s.prose}`}>
             These give you a solid working estimate. What they can&rsquo;t see is
             your credit profile, your reserves, your job history, or which of the
             dozen programs actually fits your situation — which is why plenty of

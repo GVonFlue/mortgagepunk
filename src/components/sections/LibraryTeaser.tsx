@@ -1,6 +1,5 @@
 import Link from "next/link";
 import s from "../Site.module.css";
-import Statement, { Kicker } from "../brand/Statement";
 import { thumbnail, topicSlug } from "@/lib/library";
 import { getVideos, getTopics } from "@/lib/db";
 
@@ -23,14 +22,11 @@ export default async function LibraryTeaser() {
       <div className={s.wrap}>
         <div className={s.libhead}>
           <div>
-            <Kicker>The Game of Money</Kicker>
-            <Statement
-              lines={[
-                { t: "Everything", size: "lg" },
-                { t: "they never taught you", size: "sm" },
-                { t: "about money.", size: "xl", tone: "red" },
-              ]}
-            />
+            <div className={s.kick}>The Game of Money</div>
+            <h2 className={s.h2}>
+              Everything they never taught you
+              <em>about money.</em>
+            </h2>
           </div>
           <Link href="/library" className={`${s.btn} ${s.btnGhost}`}>
             All {"\u2014"} browse the library &rarr;

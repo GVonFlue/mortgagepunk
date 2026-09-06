@@ -208,7 +208,7 @@ export default async function Movement() {
             That sentence is why the conference exists, and it is the same reason
             Mortgage Punk does.
           </p>
-          <p className={s.lede}>
+          <p className={`${s.lede} ${s.prose}`}>
             It started by challenging a broken mortgage experience. It grew into
             a lending team, a media platform, an education community, a live
             event, and a movement built around helping people think bigger than

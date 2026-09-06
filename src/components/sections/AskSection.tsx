@@ -1,6 +1,5 @@
 import ChatStage from "../chat/ChatStage";
 import s from "../Site.module.css";
-import Statement, { Kicker, Punch } from "../brand/Statement";
 
 /**
  * The assistant, inline on the homepage.

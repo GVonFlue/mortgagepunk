@@ -60,7 +60,7 @@ export default function Lending() {
             <br />
             <em>The process is what sucks.</em>
           </h2>
-          <p className={s.lede}>
+          <p className={`${s.lede} ${s.prose}`}>
             That sentence is the whole reason Mortgage Punk exists. The loan
             itself is a tool that turns debt into an asset. Everything painful
             about getting one is a process problem, and process problems are
