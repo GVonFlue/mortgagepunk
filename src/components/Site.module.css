@@ -121,10 +121,13 @@
   linear-gradient(145deg,rgba(10,10,10,.34) 0%,rgba(10,10,10,.76) 52%,rgba(10,10,10,.94) 100%)}
 .path:hover::after{opacity:.86}
 .red{color:var(--mp-black)}
-.ghost{position:absolute;right:-4%;bottom:-14%;z-index:-1;
+/* oversized numeral bled off the path panels. Named ghostNo, not
+   ghost, because "ghost" collided with the ghost BUTTON style and silently
+   turned a link into a 380px invisible block. */
+.ghostNo{position:absolute;right:-4%;bottom:-14%;z-index:-1;
   font-family:var(--font-display),sans-serif;font-size:clamp(200px,26vw,380px);
   line-height:.8;color:rgba(255,255,255,.07);pointer-events:none;letter-spacing:-.04em}
-.red .ghost{color:rgba(10,10,10,.13)}
+.red .ghostNo{color:rgba(10,10,10,.13)}
 .num{font-weight:800;font-size:12px;letter-spacing:.28em;text-transform:uppercase;
   opacity:.66;margin-bottom:18px}
 .path h3{font-family:var(--font-display),sans-serif;font-weight:400;
@@ -773,3 +776,21 @@
   font-size:clamp(19px,1.9vw,29px);line-height:1.06;text-transform:uppercase;
   color:var(--mp-bone)}
 .runWhat p{margin:0;font-size:14.5px;line-height:1.62;color:#8E8E8E;max-width:62ch}
+
+/* ---------- ransom-note conference lockup ----------
+   Taken from the conference's own logo sheet: white letters knocked out of
+   torn red blocks, each tilted its own way. It reads as a sibling brand to
+   Mortgage Punk rather than the same one, which is what his assets show. */
+.ransom{margin:0;display:flex;flex-wrap:wrap;align-items:flex-end;
+  gap:clamp(8px,1vw,16px);font-family:var(--font-display),sans-serif;
+  font-weight:400;text-transform:uppercase;line-height:.86}
+.ransom span{display:inline-block;background:var(--mp-black);color:#fff;
+  padding:.06em .16em .1em;font-size:clamp(40px,8.4vw,132px);
+  letter-spacing:-.03em;
+  clip-path:polygon(0 6%,3% 0,26% 4%,52% 0,78% 5%,100% 1%,98% 94%,
+    74% 100%,49% 95%,24% 100%,2% 96%)}
+.ransom span:first-child{transform:rotate(-1.4deg)}
+.ransom span:nth-child(2){transform:rotate(1deg) translateY(-.04em)}
+.ransom em{font-style:normal;align-self:flex-end;padding-bottom:.5em;
+  font-size:clamp(11px,1.05vw,16px);line-height:1.15;letter-spacing:.13em;
+  color:var(--mp-black);max-width:9ch}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import s from "../Site.module.css";
+import Statement, { Kicker } from "../brand/Statement";
 import { getTestimonials } from "@/lib/db";
 
 /**
@@ -18,12 +19,15 @@ export default async function Testimonials() {
       <div className={s.wrap}>
         <div className={s.libhead}>
           <div>
-            <div className={s.kick}>Real people</div>
-            <h2 className={s.h2}>
-              Don&rsquo;t take
-              <br />
-              <em>our word for it.</em>
-            </h2>
+            <Kicker>Real people</Kicker>
+            <Statement
+              onLight
+              lines={[
+                { t: "Don't take", size: "md", tone: "ink" },
+                { t: "our word", size: "xl", tone: "ink" },
+                { t: "for it.", size: "xl", tone: "red" },
+              ]}
+            />
           </div>
           <Link href="/testimonials" className={`${s.btn} ${s.btnGhost}`}>
             Read them all &rarr;

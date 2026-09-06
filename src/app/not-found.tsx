@@ -17,8 +17,8 @@ export default function NotFound() {
             The page you were after does not exist, or it moved during the rebuild.
           </p>
           <div style={{ marginTop: 30, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link href="/" className={`${s.btn} ${s.solid}`}>Back home &rarr;</Link>
-            <Link href="/library" className={`${s.btn} ${s.ghost}`}>The library &rarr;</Link>
+            <Link href="/" className={`${s.btn} ${s.btnSolid}`}>Back home &rarr;</Link>
+            <Link href="/library" className={`${s.btn} ${s.btnGhost}`}>The library &rarr;</Link>
           </div>
         </div>
       </section>

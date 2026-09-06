@@ -1,5 +1,6 @@
 import Link from "next/link";
 import s from "../Site.module.css";
+import Statement, { Kicker, Punch } from "../brand/Statement";
 
 /**
  * Points at /tools from the homepage.
@@ -40,12 +41,13 @@ export default function ToolsTeaser() {
   return (
     <section className={`${s.sec} ${s.ink}`} aria-label="Tools">
       <div className={s.wrap}>
-        <div className={s.kick}>Run your own numbers</div>
-        <h2 className={s.h2}>
-          No form. No call.
-          <br />
-          <em>Just the math.</em>
-        </h2>
+        <Kicker>Run your own numbers</Kicker>
+        <Statement
+          lines={[
+            { t: "No form. No call.", size: "md" },
+            { t: "Just the math.", size: "xl", tone: "red" },
+          ]}
+        />
         <p className={s.lede}>
           Most lender calculators quietly leave out taxes, insurance and mortgage
           insurance, then hand you a number that&rsquo;s thousands off. These

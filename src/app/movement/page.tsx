@@ -4,6 +4,7 @@ import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import LoudLead from "@/components/sections/LoudLead";
 import GfxNote from "@/components/ui/GfxNote";
+import Statement, { Kicker, Punch } from "@/components/brand/Statement";
 import s from "@/components/Site.module.css";
 import { getConference } from "@/lib/db";
 
@@ -76,9 +77,13 @@ export default async function Movement() {
       <section className={s.confHero}>
         <div className={s.confWrap}>
           <span className={s.confDate}>{conf.date_label}</span>
-          <h1 className={s.confTitle}>
-            The American
-            <em>Dream Conference</em>
+          {/* Ransom-note lockup, matching the conference's own logo: white
+              letters knocked out of torn red blocks, each one tilted its own
+              way. It is a sibling brand to Mortgage Punk, not the same one. */}
+          <h1 className={s.ransom}>
+            <span>American</span>
+            <span>Dream!</span>
+            <em>Home Buying Conference</em>
           </h1>
           <div className={s.confMeta}>
             <span>{conf.venue}</span>
@@ -103,13 +108,15 @@ export default async function Movement() {
       {/* ---------- what it is ---------- */}
       <section className={`${s.sec} ${s.dark}`} id="what">
         <div className={s.wrap}>
-          <div className={s.kick}>What it is</div>
-          <h2 className={s.h2}>
-            Not a sit-in-a-chair
-            <br />
-            <em>seminar.</em>
-          </h2>
-          <p className={s.lede}>{conf.blurb}</p>
+          <Kicker>What it is</Kicker>
+          <Statement
+            lines={[
+              { t: "Not a", size: "md" },
+              { t: "sit-in-a-chair", size: "lg" },
+              { t: "seminar.", size: "xl", tone: "red" },
+            ]}
+          />
+          <Punch>{conf.blurb}</Punch>
 
           <div className={s.confStats}>
             {conf.stats.map((st) => (
@@ -125,16 +132,18 @@ export default async function Movement() {
       {/* ---------- the giveaways ---------- */}
       <section className={`${s.sec} ${s.ink}`}>
         <div className={s.wrap}>
-          <div className={s.kick}>Given away live</div>
-          <h2 className={s.h2}>
-            Somebody in that room
-            <br />
-            <em>goes home with this.</em>
-          </h2>
-          <p className={s.lede}>
+          <Kicker>Given away live</Kicker>
+          <Statement
+            lines={[
+              { t: "Somebody in that room", size: "sm" },
+              { t: "goes home", size: "xl" },
+              { t: "with this.", size: "xl", tone: "red" },
+            ]}
+          />
+          <Punch>
             On stage, on the day, to people in the seats. Not a raffle you hear
             about in an email a week later.
-          </p>
+          </Punch>
 
           <div className={s.prizeGrid}>
             {conf.prizes.map((p, i) => (
@@ -157,12 +166,13 @@ export default async function Movement() {
       <section className={`${s.sec} ${s.dark}`}>
         <div className={s.wrap} style={{ position: "relative" }}>
           <GfxNote where="evt" />
-          <div className={s.kick}>The day</div>
-          <h2 className={s.h2}>
-            How it
-            <br />
-            <em>actually runs.</em>
-          </h2>
+          <Kicker>The day</Kicker>
+          <Statement
+            lines={[
+              { t: "How it", size: "md" },
+              { t: "actually runs.", size: "xl", tone: "red" },
+            ]}
+          />
 
           <div className={s.runOrder}>
             {RUN_ORDER.map((r) => (

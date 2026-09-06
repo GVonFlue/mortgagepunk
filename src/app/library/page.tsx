@@ -2,7 +2,7 @@ import Link from "next/link";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
-import PageHead from "@/components/layout/PageHead";
+import Statement, { Kicker, Punch } from "@/components/brand/Statement";
 import s from "@/components/Site.module.css";
 import { thumbnail, topicSlug } from "@/lib/library";
 import { getVideos, getTopics } from "@/lib/db";
@@ -25,12 +25,28 @@ export default async function Library() {
     <>
       <AnnouncementBar />
       <SiteNav />
-      <PageHead
-        kicker="The Game of Money"
-        title="Everything they"
-        accent="never taught you."
-        lede="The rules around money, homeownership, investing and wealth that most people were never taught. Free, always."
-      />
+      {/* Teaching page, so the hero gives before it asks. Set with the
+          size-jump treatment from his posters rather than a flat two-tone
+          heading. */}
+      <section className={`${s.sec} ${s.dark}`}>
+        <div className={s.wrap}>
+          <Kicker>The Game of Money</Kicker>
+          <Statement
+            as="h1"
+            lines={[
+              { t: "Nobody", size: "md" },
+              { t: "taught you", size: "xl" },
+              { t: "any of this.", size: "xl", tone: "red" },
+              { t: "So here it is. Free. All of it.", size: "sm" },
+            ]}
+          />
+          <Punch>
+            The rules around money, homeownership, investing and taxes that
+            most people are expected to just <strong>know</strong>. No gate, no
+            email, no upsell at the end.
+          </Punch>
+        </div>
+      </section>
 
       <section className={`${s.sec} ${s.dark}`} style={{ paddingTop: 0 }}>
         <div className={s.wrap}>
