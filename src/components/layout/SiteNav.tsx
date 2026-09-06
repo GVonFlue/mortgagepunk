@@ -8,6 +8,7 @@ import n from "./SiteNav.module.css";
  */
 const LINKS = [
   { label: "Lending", href: "/lending" },
+  { label: "Tools", href: "/tools" },
   { label: "The Game of Money", href: "/library" },
   { label: "The Movement", href: "/movement" },
   { label: "About Chris", href: "/about" },

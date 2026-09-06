@@ -1,8 +1,9 @@
 import {
   SEED_VIDEOS, SEED_TOPICS, SEED_PRESS, SEED_TALKS, SEED_CONFERENCE,
   SEED_ANNOUNCEMENT,
+  SEED_TESTIMONIALS,
   type Video, type LibraryTopic, type PressItem, type Talk, type Conference,
-  type Announcement, type Lead,
+  type Announcement, type Lead, type Testimonial,
 } from "./content";
 
 /**
@@ -255,6 +256,33 @@ export async function getAnnouncement(): Promise<Announcement> {
 
 export async function saveAnnouncement(a: Announcement): Promise<void> {
   await rest("site_announcement?id=eq.1", "PATCH", a);
+}
+
+// ---------------------------------------------------------------------------
+// TESTIMONIALS
+// ---------------------------------------------------------------------------
+
+export async function getTestimonials(opts?: {
+  publishedOnly?: boolean;
+  featuredOnly?: boolean;
+}): Promise<Testimonial[]> {
+  return safeRead(
+    async () => {
+      let q = "";
+      if (opts?.publishedOnly) q += "&published=eq.true";
+      if (opts?.featuredOnly) q += "&featured=eq.true";
+      return await rest<Testimonial[]>(`testimonials?select=*${q}&order=sort.asc`);
+    },
+    SEED_TESTIMONIALS,
+    "testimonials"
+  );
+}
+
+export async function saveTestimonials(
+  items: Omit<Testimonial, "id" | "created_at">[]
+): Promise<void> {
+  await rest("testimonials?id=not.is.null", "DELETE");
+  if (items.length) await rest("testimonials", "POST", items);
 }
 
 // ---------------------------------------------------------------------------

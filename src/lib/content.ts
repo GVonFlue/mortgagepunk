@@ -69,6 +69,17 @@ export type Conference = {
 
 export type Announcement = { enabled: boolean; text: string; href: string };
 
+export type Testimonial = {
+  id: string;
+  name: string;
+  role: string;
+  quote: string;
+  rating: number;
+  featured: boolean;
+  published: boolean;
+  sort: number;
+};
+
 export type Lead = {
   id: string;
   first: string;
@@ -106,6 +117,9 @@ export function topicSlug(t: string): string {
 /** Field caps. Enforced in the UI so no entry can break a layout. */
 export const LIMITS = {
   topicName: 46,
+  testimonialName: 48,
+  testimonialRole: 60,
+  testimonialQuote: 420,
   videoTitle: 70,
   videoBlurb: 220,
   pressOutlet: 44,
@@ -179,5 +193,7 @@ export const SEED_ANNOUNCEMENT: Announcement = {
   text: "Tickets for the American Dream Conference are on sale now.",
   href: "https://mortgagepunklive.com",
 };
+
+export const SEED_TESTIMONIALS: Testimonial[] = [];
 
 export const SEED_LEADS: Lead[] = [];

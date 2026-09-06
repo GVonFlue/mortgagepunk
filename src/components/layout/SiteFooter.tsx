@@ -17,6 +17,7 @@ const COLS = [
       ["Investors", "/lending/investors"],
       ["Get approved", "/get-approved"],
       ["The team", "/team"],
+      ["Tools & calculators", "/tools"],
     ],
   },
   {
@@ -26,6 +27,7 @@ const COLS = [
       ["The mission", "/movement"],
       ["American Dream Conference", "https://mortgagepunklive.com"],
       ["Merch", "/merch"],
+      ["Free guides", "/freebies"],
     ],
   },
   {
@@ -34,6 +36,7 @@ const COLS = [
       ["About Chris", "/about"],
       ["Speaking", "/about#speaking"],
       ["Press", "/about#press"],
+      ["Client stories", "/testimonials"],
       ["Contact", "/contact"],
     ],
   },

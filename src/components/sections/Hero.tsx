@@ -23,6 +23,7 @@ const PORTRAIT = "/brand/chris-hero-bwred.png";
 
 const NAV = [
   { label: "Lending", href: "/lending" },
+  { label: "Tools", href: "/tools" },
   { label: "The Game of Money", href: "/library" },
   { label: "The Movement", href: "/movement" },
   { label: "About Chris", href: "/about" },
