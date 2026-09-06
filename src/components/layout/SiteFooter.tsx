@@ -12,9 +12,9 @@ const COLS = [
   {
     head: "Lending",
     links: [
-      ["Buy a home", "/lending#buy"],
-      ["Refinance", "/lending#refi"],
-      ["Investors", "/lending#invest"],
+      ["Buy a home", "/lending/buy"],
+      ["Refinance", "/lending/refinance"],
+      ["Investors", "/lending/investors"],
       ["Get approved", "/get-approved"],
     ],
   },

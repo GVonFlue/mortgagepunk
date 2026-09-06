@@ -296,3 +296,177 @@
   font-weight:800;font-size:clamp(12px,.92vw,14px);letter-spacing:.05em}
 .annBar a{color:inherit;text-decoration:none}
 .annBar a:hover{text-decoration:underline}
+
+/* ============================================================
+   THE PROCESS — scroll-driven mortgage walkthrough
+   ============================================================
+   A sticky left panel holds the current step at poster scale while the right
+   column scrolls through the detail. IntersectionObserver drives which step is
+   active — no scroll math, no jank, and it degrades to a plain readable list
+   when JS is off or prefers-reduced-motion is set.
+
+   Deliberately on the LIGHT panel. The lending page was a wall of black and
+   the eye had nowhere to rest; this is the break, and it's where the most
+   important explanation on the site lives.
+   ============================================================ */
+.proc{position:relative;background:var(--mp-bone);color:var(--mp-black);
+  padding:clamp(64px,7vw,120px) clamp(20px,4vw,64px) clamp(40px,5vw,90px);
+  margin-top:clamp(-48px,-3.4vw,-28px);
+  border-radius:clamp(24px,2.6vw,44px) clamp(24px,2.6vw,44px) 0 0;z-index:1}
+.procWrap{max-width:1400px;margin:0 auto}
+.procHead{max-width:60ch;margin-bottom:clamp(30px,4vw,60px)}
+
+.procGrid{display:grid;grid-template-columns:minmax(280px,.82fr) 1.18fr;
+  gap:clamp(26px,4vw,80px);align-items:start}
+@media(max-width:900px){.procGrid{grid-template-columns:1fr;gap:20px}}
+
+/* --- sticky panel --- */
+.procSticky{position:sticky;top:calc(50vh - 190px);align-self:start}
+@media(max-width:900px){
+  .procSticky{position:sticky;top:64px;z-index:5;background:var(--mp-bone);
+    padding:14px 0 12px;border-bottom:2px solid rgba(10,10,10,.14)}
+}
+.procNum{display:block;font-family:var(--font-display),sans-serif;
+  font-size:clamp(90px,13vw,210px);line-height:.8;letter-spacing:-.04em;
+  color:var(--mp-red);transition:opacity .3s}
+@media(max-width:900px){.procNum{font-size:54px;display:inline-block;margin-right:14px}}
+.procNowTitle{display:block;font-family:var(--font-display),sans-serif;
+  font-size:clamp(22px,2.4vw,38px);line-height:1.02;text-transform:uppercase;
+  letter-spacing:-.01em;margin-top:10px;max-width:14ch}
+@media(max-width:900px){.procNowTitle{display:inline-block;font-size:20px;max-width:none}}
+
+/* progress rail */
+.procRail{position:relative;height:4px;background:rgba(10,10,10,.14);
+  border-radius:99px;margin-top:clamp(18px,2vw,30px);overflow:hidden}
+.procRailFill{position:absolute;inset:0 auto 0 0;background:var(--mp-red);
+  border-radius:99px;transition:width .45s cubic-bezier(.16,1,.3,1)}
+.procCount{margin-top:11px;font-size:11.5px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:#6E6E6E}
+
+/* jump dots */
+.procDots{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.procDot{width:26px;height:26px;border-radius:50%;border:1px solid rgba(10,10,10,.2);
+  background:transparent;color:#7A7A7A;font-family:var(--font-body),sans-serif;
+  font-size:10.5px;font-weight:800;cursor:pointer;transition:.2s;padding:0}
+.procDot:hover{border-color:var(--mp-red);color:var(--mp-black)}
+.procDotOn{background:var(--mp-red);border-color:var(--mp-red);color:#fff}
+@media(max-width:900px){.procDots{display:none}}
+
+/* --- steps --- */
+.procSteps{display:grid;gap:clamp(16px,2vw,26px)}
+.procStep{position:relative;background:#fff;border:1px solid rgba(10,10,10,.12);
+  border-radius:18px;padding:clamp(22px,2.6vw,40px);
+  opacity:.5;transform:translateY(10px);
+  transition:opacity .45s cubic-bezier(.16,1,.3,1),
+             transform .45s cubic-bezier(.16,1,.3,1),
+             border-color .45s,box-shadow .45s}
+.procStepOn{opacity:1;transform:translateY(0);border-color:rgba(235,41,51,.5);
+  box-shadow:0 22px 50px -30px rgba(0,0,0,.5)}
+@media(prefers-reduced-motion:reduce){
+  .procStep{opacity:1;transform:none;transition:none}
+}
+.procStepTop{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.procStepNo{font-family:var(--font-display),sans-serif;font-size:19px;
+  color:var(--mp-red);line-height:1}
+.procStepTitle{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(22px,2.5vw,38px);line-height:1.02;text-transform:uppercase;
+  letter-spacing:-.015em;flex:1;min-width:180px}
+.procWhen{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#fff;background:var(--mp-black);padding:5px 10px;border-radius:999px;
+  white-space:nowrap}
+.procBody{font-size:clamp(14.5px,1.05vw,17px);line-height:1.66;color:#4A4A4A;
+  margin:0 0 16px;max-width:60ch}
+
+/* the honest bit — "where this usually sucks" */
+.procSuck{display:flex;gap:12px;align-items:flex-start;
+  background:#FDF1F1;border-left:3px solid var(--mp-red);
+  border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:14px}
+.procSuckLabel{display:block;font-size:10px;font-weight:800;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--mp-red);margin-bottom:5px}
+.procSuck p{margin:0;font-size:14px;line-height:1.6;color:#5A3A3C}
+
+.procDo{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.procDo li{position:relative;padding-left:20px;font-size:14.5px;line-height:1.55;
+  color:var(--mp-black)}
+.procDo li::before{content:'';position:absolute;left:0;top:.55em;width:9px;height:2px;
+  background:var(--mp-red)}
+
+/* ============================================================
+   LENDING PATHS — the three routes, loud
+   ============================================================ */
+.lpaths{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,22px)}
+@media(max-width:960px){.lpaths{grid-template-columns:1fr}}
+.lpath{position:relative;display:flex;flex-direction:column;justify-content:space-between;
+  min-height:clamp(300px,26vw,380px);padding:clamp(26px,2.8vw,42px);
+  border-radius:18px;overflow:hidden;isolation:isolate;text-decoration:none;
+  background:#101010;border:1px solid var(--mp-line);
+  transition:transform .32s cubic-bezier(.16,1,.3,1),border-color .32s}
+.lpath::before{content:'';position:absolute;inset:0;z-index:-2;
+  background:url('/brand/hero-plate.jpg') center/cover;
+  filter:brightness(1.6) grayscale(1);opacity:.42}
+.lpath::after{content:'';position:absolute;inset:0;z-index:-1;transition:opacity .32s;
+  background:radial-gradient(72% 88% at 82% 6%, rgba(235,41,51,.26) 0%, rgba(235,41,51,0) 62%),
+    linear-gradient(160deg,rgba(10,10,10,.5) 0%,rgba(10,10,10,.9) 58%,#0A0A0A 100%)}
+.lpath:hover{transform:translateY(-5px);border-color:rgba(235,41,51,.6)}
+.lpath:hover::after{opacity:.86}
+.lpathNo{font-family:var(--font-display),sans-serif;font-size:17px;color:var(--mp-red);
+  margin-bottom:12px}
+.lpath h3{margin:0 0 12px;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(28px,3vw,44px);line-height:.96;text-transform:uppercase;
+  letter-spacing:-.02em;color:var(--mp-bone)}
+.lpath p{margin:0;font-size:14.5px;line-height:1.6;color:#9A9A9A;max-width:34ch}
+.lpathGo{margin-top:26px;display:inline-flex;align-items:center;gap:11px;
+  align-self:flex-start;background:var(--mp-red);color:#fff;
+  padding:13px 20px;border-radius:8px;font-weight:800;font-size:12.5px;
+  letter-spacing:.11em;text-transform:uppercase;
+  box-shadow:0 8px 26px rgba(235,41,51,.32);
+  transition:transform .26s cubic-bezier(.16,1,.3,1),background .26s}
+.lpath:hover .lpathGo{background:var(--mp-red-deep);transform:translateX(4px)}
+
+/* ============================================================
+   LOUD LEAD BAND
+   ============================================================ */
+.loud{position:relative;overflow:hidden;color:var(--mp-black);
+  background:linear-gradient(148deg,#FF4438 0%,#EB2933 44%,#A8141C 100%);
+  padding:clamp(56px,6.5vw,110px) clamp(20px,4vw,64px);
+  margin-top:clamp(-48px,-3.4vw,-28px);
+  border-radius:clamp(24px,2.6vw,44px) clamp(24px,2.6vw,44px) 0 0;z-index:1}
+.loudGrid{position:relative;z-index:1;max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,72px);align-items:center}
+@media(max-width:900px){.loudGrid{grid-template-columns:1fr}}
+.loud .h2{color:var(--mp-black)}
+.loud .h2 em{color:#fff}
+.loudLede{font-size:clamp(15px,1.15vw,19px);line-height:1.62;
+  color:rgba(10,10,10,.78);max-width:52ch;margin-top:16px}
+.loudCard{background:#0A0A0A;border-radius:18px;padding:clamp(22px,2.6vw,36px);
+  box-shadow:0 30px 66px -30px rgba(0,0,0,.65)}
+.loudCard .field label{color:#8E8E8E}
+
+/* ---------- FAQ disclosure ----------
+   Native <details> rather than a JS accordion: it works before hydration, it
+   is keyboard accessible for free, and Google can read the answers. */
+.faq{border-bottom:1px solid rgba(10,10,10,.16);padding:4px 0}
+.faq summary{list-style:none;cursor:pointer;padding:18px 34px 18px 0;position:relative;
+  font-family:var(--font-display),sans-serif;font-size:clamp(17px,1.6vw,25px);
+  line-height:1.16;text-transform:uppercase;letter-spacing:-.005em;color:var(--mp-black)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'';position:absolute;right:6px;top:50%;width:13px;height:2px;
+  background:var(--mp-red);transform:translateY(-50%)}
+.faq summary::before{content:'';position:absolute;right:11.5px;top:50%;width:2px;height:13px;
+  background:var(--mp-red);transform:translateY(-50%);transition:transform .24s}
+.faq[open] summary::before{transform:translateY(-50%) scaleY(0)}
+.faq p{margin:0 0 20px;font-size:15.5px;line-height:1.68;color:#4A4A4A;max-width:64ch}
+
+/* ---------- honest timeline on the lending sub-pages ----------
+   Its own classes rather than borrowing the dashboard's row styles — those
+   live in Backstage.module.css and are not in scope here. */
+.tl{border-top:1px solid var(--mp-line)}
+.tlRow{display:grid;grid-template-columns:170px 1fr;gap:clamp(14px,2vw,32px);
+  align-items:baseline;padding:clamp(16px,1.9vw,26px) 0;
+  border-bottom:1px solid var(--mp-line);transition:border-color .3s}
+.tlRow:hover{border-bottom-color:var(--mp-red)}
+@media(max-width:640px){.tlRow{grid-template-columns:1fr;gap:6px}}
+.tlWhen{font-family:var(--font-display),sans-serif;font-size:clamp(14px,1.2vw,18px);
+  color:var(--mp-red);text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.tlWhat{margin:0;font-size:clamp(14.5px,1.05vw,16.5px);line-height:1.62;color:#A5A5A5;
+  max-width:66ch}
