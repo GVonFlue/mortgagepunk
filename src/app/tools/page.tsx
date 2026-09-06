@@ -19,6 +19,7 @@ export default function Tools() {
       <AnnouncementBar />
       <SiteNav />
       <PageHead
+        tone="bone"
         kicker="Tools"
         title="Run the numbers"
         accent="before anyone calls you."

@@ -3,6 +3,7 @@ import Hero from "@/components/sections/Hero";
 import ProofStrip from "@/components/sections/ProofStrip";
 import ThreeDoors from "@/components/sections/ThreeDoors";
 import ToolsTeaser from "@/components/sections/ToolsTeaser";
+import AskSection from "@/components/sections/AskSection";
 import Testimonials from "@/components/sections/Testimonials";
 import LibraryTeaser from "@/components/sections/LibraryTeaser";
 import MovementBlock from "@/components/sections/MovementBlock";
@@ -26,6 +27,9 @@ export const revalidate = 300;
  *  3 ThreeDoors        the fork — ready / curious / learning. The middle door
  *                      is new and is where most traffic actually sits
  *  4 ToolsTeaser       something to DO. This is what makes people stay
+ *  4b AskSection       the assistant, inline. Sits right after the tools
+ *                      because someone who just ran their numbers has exactly
+ *                      one follow-up, and that is the warmest moment here
  *  5 Testimonials      social proof, immediately after we've been useful
  *  6 LendingBrief      the business, on a light band
  *  7 LibraryTeaser     free education
@@ -45,6 +49,7 @@ export default function Home() {
       <ProofStrip />
       <ThreeDoors />
       <ToolsTeaser />
+      <AskSection />
       <Testimonials />
       <LendingBrief />
       <LibraryTeaser />

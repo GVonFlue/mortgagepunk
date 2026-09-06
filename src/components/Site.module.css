@@ -68,6 +68,11 @@
   color:var(--mp-black);box-shadow:0 6px 24px rgba(235,41,51,.36)}
 .btnSolid:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(235,41,51,.5)}
 .btnGhost{border-color:var(--mp-red);color:inherit}
+/* on the red conference hero, red buttons would vanish — these invert */
+.btnDark{background:var(--mp-black);color:#fff}
+.btnDark:hover{background:#000;transform:translateY(-2px)}
+.btnOutline{border-color:var(--mp-black);color:var(--mp-black)}
+.btnOutline:hover{background:var(--mp-black);color:#fff;transform:translateY(-2px)}
 .btnGhost:hover{background:var(--mp-red);color:var(--mp-black);transform:translateY(-2px)}
 
 /* ---------- proof strip: 66% height, and a band rather than filler ---------- */
@@ -686,76 +691,6 @@
 .fMeta{font-size:10.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
   color:var(--mp-red)}
 
-/* ============================================================
-   CHAT WIDGET
-   Rides every page — the question usually arrives while someone is reading
-   something else. Sits above everything except a modal.
-   ============================================================ */
-.chatFab{position:fixed;right:clamp(14px,2vw,26px);bottom:clamp(14px,2vw,26px);z-index:90;
-  display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;
-  background:var(--mp-red);color:#fff;border-radius:999px;
-  padding:14px 20px;font-family:var(--font-body),sans-serif;font-size:13px;
-  font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-  box-shadow:0 12px 34px rgba(235,41,51,.4),0 4px 12px rgba(0,0,0,.4);
-  transition:transform .26s cubic-bezier(.16,1,.3,1),background .26s}
-.chatFab:hover{transform:translateY(-2px);background:var(--mp-red-deep)}
-.chatFab svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;flex:none}
-@media(max-width:560px){.chatFab span{display:none}.chatFab{padding:15px}}
-
-.chatPanel{position:fixed;right:clamp(10px,2vw,26px);bottom:clamp(76px,7vw,96px);z-index:91;
-  width:min(400px,calc(100vw - 20px));height:min(600px,calc(100svh - 130px));
-  display:flex;flex-direction:column;overflow:hidden;
-  background:#0C0C0C;border:1px solid var(--mp-line);border-radius:18px;
-  box-shadow:0 30px 80px -20px rgba(0,0,0,.85)}
-.chatHead{display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:16px 18px;border-bottom:1px solid var(--mp-line);
-  background:linear-gradient(160deg,#171717 0%,#0C0C0C 100%)}
-.chatHead strong{display:block;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:18px;text-transform:uppercase;letter-spacing:.01em;color:var(--mp-bone)}
-.chatHead span{display:block;margin-top:3px;font-size:10.5px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--mp-red)}
-.chatHead button{background:none;border:0;cursor:pointer;padding:6px;color:#8E8E8E}
-.chatHead button:hover{color:var(--mp-bone)}
-.chatHead button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
-
-.chatBody{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
-.chatTheirs,.chatMine{max-width:88%;border-radius:14px;padding:12px 15px;
-  font-size:14.5px;line-height:1.6}
-.chatTheirs{align-self:flex-start;background:#161616;color:#C4C4C4;
-  border:1px solid var(--mp-line);border-bottom-left-radius:5px}
-.chatMine{align-self:flex-end;background:var(--mp-red);color:#fff;
-  border-bottom-right-radius:5px}
-.chatTheirs p,.chatMine p{margin:0 0 9px}
-.chatTheirs p:last-child,.chatMine p:last-child{margin:0}
-
-.chatChips{display:grid;gap:7px;margin-top:4px}
-.chatChips button{text-align:left;background:transparent;border:1px solid var(--mp-line);
-  color:#9A9A9A;border-radius:11px;padding:11px 13px;font-family:var(--font-body),sans-serif;
-  font-size:13.5px;cursor:pointer;transition:.2s}
-.chatChips button:hover{border-color:var(--mp-red);color:var(--mp-bone)}
-
-.chatDots{display:flex!important;gap:5px;align-items:center;height:16px}
-.chatDots span{width:6px;height:6px;border-radius:50%;background:var(--mp-red);
-  animation:chatPulse 1.3s ease-in-out infinite}
-.chatDots span:nth-child(2){animation-delay:.16s}
-.chatDots span:nth-child(3){animation-delay:.32s}
-@keyframes chatPulse{0%,60%,100%{opacity:.25;transform:translateY(0)}
-  30%{opacity:1;transform:translateY(-3px)}}
-@media(prefers-reduced-motion:reduce){.chatDots span{animation:none;opacity:.6}}
-
-.chatFoot{display:flex;gap:9px;padding:13px;border-top:1px solid var(--mp-line);
-  background:#0A0A0A}
-.chatFoot input{flex:1;min-width:0;background:#141414;border:1px solid var(--mp-line);
-  border-radius:10px;color:var(--mp-bone);padding:12px 14px;
-  font-family:var(--font-body),sans-serif;font-size:14.5px}
-.chatFoot input:focus{outline:none;border-color:var(--mp-red)}
-.chatFoot button{flex:none;width:44px;border:0;border-radius:10px;cursor:pointer;
-  background:var(--mp-red);color:#fff;display:grid;place-items:center;transition:.2s}
-.chatFoot button:disabled{opacity:.4;cursor:not-allowed}
-.chatFoot button svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2}
-.chatLegal{margin:0;padding:0 14px 12px;font-size:10.5px;line-height:1.5;color:#5E5E5E;
-  background:#0A0A0A}
-
 /* ---------- tools teaser on the homepage ---------- */
 .ttGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
   gap:clamp(12px,1.6vw,20px);margin-top:clamp(26px,3vw,42px)}
@@ -771,3 +706,70 @@
   font-size:clamp(18px,1.7vw,25px);line-height:1.08;text-transform:uppercase;
   color:var(--mp-bone)}
 .ttCard p{margin:0;font-size:13.5px;line-height:1.55;color:#8E8E8E}
+
+/* ============================================================
+   CONFERENCE — /movement
+   Ticket-stub energy. The conference is an event brand with its own audience,
+   so this page leans louder and more graphic than the lending pages.
+   ============================================================ */
+.confHero{position:relative;overflow:hidden;isolation:isolate;
+  background:linear-gradient(152deg,#FF4438 0%,#EB2933 42%,#A8141C 100%);
+  color:var(--mp-black);padding:clamp(56px,7vw,120px) clamp(20px,4vw,64px)}
+.confHero::before{content:'';position:absolute;inset:0;z-index:-1;
+  background:url('/brand/hero-plate.jpg') center/cover;
+  filter:grayscale(1) contrast(1.1);opacity:.13;mix-blend-mode:multiply}
+.confWrap{position:relative;max-width:1400px;margin:0 auto}
+.confDate{display:inline-flex;align-items:center;gap:11px;background:var(--mp-black);
+  color:#fff;padding:9px 17px;border-radius:999px;font-family:var(--font-body),sans-serif;
+  font-size:11.5px;font-weight:800;letter-spacing:.19em;text-transform:uppercase;
+  margin-bottom:clamp(18px,2.2vw,30px)}
+.confTitle{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(48px,10.5vw,168px);line-height:.84;letter-spacing:-.035em;
+  text-transform:uppercase;color:var(--mp-black)}
+.confTitle em{display:block;font-style:normal;color:#fff}
+.confMeta{display:flex;gap:clamp(16px,2.4vw,42px);flex-wrap:wrap;
+  margin-top:clamp(20px,2.6vw,38px);font-family:var(--font-display),sans-serif;
+  font-size:clamp(14px,1.35vw,23px);text-transform:uppercase;letter-spacing:.03em;
+  color:var(--mp-black)}
+.confMeta span{position:relative;padding-left:19px}
+.confMeta span::before{content:'';position:absolute;left:0;top:50%;width:8px;height:8px;
+  margin-top:-4px;background:#fff;transform:rotate(45deg)}
+.confBtns{display:flex;gap:12px;flex-wrap:wrap;margin-top:clamp(24px,3vw,44px)}
+
+/* the numbers */
+.confStats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:2px;background:var(--mp-line);border:1px solid var(--mp-line);
+  border-radius:16px;overflow:hidden;margin-top:clamp(28px,3.4vw,52px)}
+.confStat{background:#0D0D0D;padding:clamp(22px,2.6vw,36px) 20px;text-align:center}
+.confStat b{display:block;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(38px,5vw,72px);line-height:.9;color:var(--mp-red)}
+.confStat span{display:block;margin-top:9px;font-size:11px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:#8E8E8E}
+
+/* giveaways — the actual hook */
+.prizeGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:clamp(12px,1.6vw,20px);margin-top:clamp(26px,3vw,44px)}
+.prizeCard{position:relative;background:#fff;color:var(--mp-black);border-radius:16px;
+  padding:clamp(22px,2.4vw,32px);overflow:hidden;
+  box-shadow:0 22px 50px -30px rgba(0,0,0,.5)}
+.prizeCard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:var(--mp-red)}
+.prizeNo{font-family:var(--font-display),sans-serif;font-size:15px;color:var(--mp-red);
+  margin-bottom:10px;display:block}
+.prizeCard h3{margin:0 0 8px;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(20px,1.9vw,28px);line-height:1.06;text-transform:uppercase}
+.prizeCard p{margin:0;font-size:13.5px;line-height:1.6;color:#4A4A4A}
+
+/* the day, as a running order */
+.runOrder{margin-top:clamp(26px,3vw,44px);border-top:1px solid var(--mp-line)}
+.runRow{display:grid;grid-template-columns:150px 1fr;gap:clamp(14px,2.2vw,36px);
+  padding:clamp(18px,2vw,28px) 0;border-bottom:1px solid var(--mp-line);
+  align-items:baseline;transition:border-color .3s}
+.runRow:hover{border-bottom-color:var(--mp-red)}
+@media(max-width:620px){.runRow{grid-template-columns:1fr;gap:5px}}
+.runWhen{font-family:var(--font-display),sans-serif;font-size:clamp(15px,1.3vw,20px);
+  color:var(--mp-red);text-transform:uppercase;letter-spacing:.02em}
+.runWhat h3{margin:0 0 6px;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(19px,1.9vw,29px);line-height:1.06;text-transform:uppercase;
+  color:var(--mp-bone)}
+.runWhat p{margin:0;font-size:14.5px;line-height:1.62;color:#8E8E8E;max-width:62ch}
