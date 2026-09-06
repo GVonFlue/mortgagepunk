@@ -14,7 +14,10 @@
    ============================================================ */
 .hero{position:relative;width:100%;min-height:100svh;height:100svh;overflow:hidden;
   background:var(--mp-black);font-family:var(--font-body),sans-serif;
-  --u:min(calc(100vw / 1512), calc(100vh / 900))}
+  /* svh, NOT vh. The element is sized with 100svh, so the stage scale must
+     use the same unit. On iOS 100vh includes the URL bar and is taller than
+     what you can actually see — mixing them pushes the CTAs off the bottom. */
+  --u:min(calc(100vw / 1512), calc(100svh / 900))}
 .stage{position:absolute;top:50%;left:50%;
   width:calc(1512*var(--u));height:calc(900*var(--u));
   margin-top:calc(-450*var(--u));margin-left:calc(-756*var(--u))}
@@ -143,7 +146,7 @@
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
 
 @media (max-width:820px){
-  .hero{--u:min(calc(100vw / 390), calc(100vh / 844))}
+  .hero{--u:min(calc(100vw / 390), calc(100svh / 844))}
   .stage{width:calc(390*var(--u));height:calc(844*var(--u));
     margin-top:calc(-422*var(--u));margin-left:calc(-195*var(--u))}
   .plateImg{object-position:62% 42%}

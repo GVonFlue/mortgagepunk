@@ -16,6 +16,7 @@ const COLS = [
       ["Refinance", "/lending/refinance"],
       ["Investors", "/lending/investors"],
       ["Get approved", "/get-approved"],
+      ["The team", "/team"],
     ],
   },
   {

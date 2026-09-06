@@ -285,7 +285,15 @@
 .gfxPath{right:clamp(20px,2.4vw,44px);bottom:clamp(20px,2.4vw,44px)}
 .gfxEvt{right:clamp(16px,1.6vw,26px);top:clamp(16px,1.6vw,26px)}
 
-@media(max-width:640px){.gfxNote{font-size:10px;padding:7px 12px 7px 10px;letter-spacing:.08em}}
+@media(max-width:820px){
+  /* On a narrow panel the absolutely-positioned chip lands on top of the
+     "start your approval" link. Drop it into normal flow instead and let it
+     sit below, where it still reads as a marked slot. */
+  .gfxNote{position:static;align-self:flex-start;margin-top:16px;order:3;
+    font-size:10px;padding:7px 12px 7px 10px;letter-spacing:.08em}
+  .gfxNote::before{display:none}
+  .evt .gfxNote{margin:0 0 14px}
+}
 
 
 /* ---------- announcement bar ----------
@@ -470,3 +478,53 @@
   color:var(--mp-red);text-transform:uppercase;letter-spacing:.02em;line-height:1}
 .tlWhat{margin:0;font-size:clamp(14.5px,1.05vw,16.5px);line-height:1.62;color:#A5A5A5;
   max-width:66ch}
+
+/* ============================================================
+   THE TEAM
+   Three people today, built assuming more. Each card links to its own page —
+   an individual page carrying a name, an NMLS number and a market is a real
+   local-search asset, and that coverage compounds as the team grows.
+   ============================================================ */
+.teamGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+  gap:clamp(14px,1.8vw,24px)}
+.teamCard{position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:18px;background:#101010;border:1px solid var(--mp-line);
+  text-decoration:none;transition:transform .3s cubic-bezier(.16,1,.3,1),border-color .3s}
+.teamCard:hover{transform:translateY(-5px);border-color:rgba(235,41,51,.55)}
+.teamPhoto{position:relative;aspect-ratio:4/5;overflow:hidden;background:#181818;
+  display:flex;align-items:center;justify-content:center}
+.teamPhoto img{width:100%;height:100%;object-fit:cover;object-position:top center;
+  filter:grayscale(1) contrast(1.05);transition:filter .4s,transform .5s}
+.teamCard:hover .teamPhoto img{filter:grayscale(0);transform:scale(1.03)}
+.teamPhotoEmpty{border:2px dashed rgba(255,255,255,.28);border-radius:12px;
+  margin:16px;flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;text-align:center;padding:20px}
+.teamPhotoEmpty span{font-size:10.5px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:#6E6E6E}
+.teamBody{padding:clamp(18px,2vw,26px)}
+.teamName{margin:0 0 5px;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(21px,2vw,30px);line-height:1.06;text-transform:uppercase;
+  color:var(--mp-bone)}
+.teamRole{display:block;font-size:11px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--mp-red);margin-bottom:11px}
+.teamShort{margin:0;font-size:14px;line-height:1.6;color:#8E8E8E}
+.teamMeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.teamPending{opacity:.62}
+
+/* individual member page */
+.memberGrid{display:grid;grid-template-columns:.8fr 1.2fr;
+  gap:clamp(26px,4vw,70px);align-items:start}
+@media(max-width:860px){.memberGrid{grid-template-columns:1fr}}
+.memberPhoto{position:relative;border-radius:18px;overflow:hidden;background:#151515;
+  border:1px solid var(--mp-line);aspect-ratio:4/5}
+.memberPhoto img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.memberBio p{font-size:clamp(15px,1.15vw,18px);line-height:1.72;color:#A5A5A5;
+  margin:0 0 18px;max-width:60ch}
+.memberBio p:first-child{color:var(--mp-bone);font-size:clamp(17px,1.35vw,21px)}
+.memberFacts{display:grid;gap:1px;background:var(--mp-line);border:1px solid var(--mp-line);
+  border-radius:14px;overflow:hidden;margin-top:26px}
+.memberFact{background:#101010;padding:15px 18px;display:flex;
+  justify-content:space-between;gap:16px;align-items:baseline;flex-wrap:wrap}
+.memberFact dt{font-size:10.5px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:#7A7A7A;margin:0}
+.memberFact dd{margin:0;font-size:15px;color:var(--mp-bone)}
