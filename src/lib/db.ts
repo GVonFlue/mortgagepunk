@@ -1,7 +1,8 @@
 import {
-  SEED_VIDEOS, SEED_PRESS, SEED_TALKS, SEED_CONFERENCE, SEED_ANNOUNCEMENT,
-  type Video, type PressItem, type Talk, type Conference, type Announcement,
-  type Lead,
+  SEED_VIDEOS, SEED_TOPICS, SEED_PRESS, SEED_TALKS, SEED_CONFERENCE,
+  SEED_ANNOUNCEMENT,
+  type Video, type LibraryTopic, type PressItem, type Talk, type Conference,
+  type Announcement, type Lead,
 } from "./content";
 
 /**
@@ -134,6 +135,44 @@ export async function updateVideo(id: string, patch: Partial<Video>): Promise<vo
 
 export async function deleteVideo(id: string): Promise<void> {
   await rest(`library_videos?id=eq.${encodeURIComponent(id)}`, "DELETE");
+}
+
+// ---------------------------------------------------------------------------
+// TOPICS
+// ---------------------------------------------------------------------------
+
+export async function getTopics(): Promise<LibraryTopic[]> {
+  return safeRead(
+    () => rest<LibraryTopic[]>("library_topics?select=*&order=sort.asc"),
+    SEED_TOPICS,
+    "library_topics"
+  );
+}
+
+/**
+ * Replace-all, and it deliberately does NOT touch library_videos.
+ *
+ * Videos store topic names as plain strings. If Chris renames a topic, the
+ * videos keep the old name and simply stop matching — which is visible and
+ * fixable. The alternative, cascading a rename across every video, is the
+ * kind of silent bulk edit that is very hard to undo when it goes wrong.
+ * renameTopic() below handles the deliberate case.
+ */
+export async function saveTopics(items: { name: string; sort: number }[]): Promise<void> {
+  await rest("library_topics?id=not.is.null", "DELETE");
+  if (items.length) await rest("library_topics", "POST", items);
+}
+
+/** Deliberate rename: move every video off the old name and onto the new one. */
+export async function renameTopic(from: string, to: string): Promise<number> {
+  const affected = await rest<Video[]>(
+    `library_videos?select=id,topics&topics=cs.${encodeURIComponent(`{"${from}"}`)}`
+  );
+  for (const v of affected) {
+    const next = Array.from(new Set((v.topics ?? []).map((t) => (t === from ? to : t))));
+    await rest(`library_videos?id=eq.${encodeURIComponent(v.id)}`, "PATCH", { topics: next });
+  }
+  return affected.length;
 }
 
 /** Max four featured. Enforced here as well as in the UI, because the UI is

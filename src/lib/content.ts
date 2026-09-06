@@ -10,6 +10,13 @@
  * Both env vars are server-side only. Never NEXT_PUBLIC_.
  */
 
+/**
+ * Chris's ten topics, verbatim from onboarding.
+ *
+ * These are now only the SEED and the fallback. The live list lives in the
+ * library_topics table and Chris edits it in /backstage → Topics, because a
+ * hardcoded list means every new category is a code change.
+ */
 export const TOPICS = [
   "The Game of Money",
   "Buying a Home",
@@ -23,14 +30,15 @@ export const TOPICS = [
   "Reimagining the American Dream",
 ] as const;
 
-export type Topic = (typeof TOPICS)[number];
+export type LibraryTopic = { id: string; name: string; sort: number };
 
 export type Video = {
   id: string;
   youtube_id: string;
   title: string;
   blurb: string;
-  topic: Topic | string;
+  /** A video can belong to several topics — plenty of them straddle two. */
+  topics: string[];
   featured: boolean;
   published: boolean;
   sort: number;
@@ -97,6 +105,7 @@ export function topicSlug(t: string): string {
 
 /** Field caps. Enforced in the UI so no entry can break a layout. */
 export const LIMITS = {
+  topicName: 46,
   videoTitle: 70,
   videoBlurb: 220,
   pressOutlet: 44,
@@ -110,17 +119,15 @@ export const LIMITS = {
 // SEED DATA — shown until Supabase is configured
 // ---------------------------------------------------------------------------
 
-export const SEED_VIDEOS: Video[] = [
-  { id: "v1", youtube_id: "", title: "The rate is not the deal", topic: "Lender Lies",
-    blurb: "Why the number everyone shops for is the one that matters least, and what to look at instead.",
-    featured: true, published: true, sort: 1 },
-  { id: "v2", youtube_id: "", title: "What you actually need to close", topic: "Buying a Home",
-    blurb: "Down payment myths, what underwriting really looks at, and the timeline nobody explains up front.",
-    featured: true, published: true, sort: 2 },
-  { id: "v3", youtube_id: "", title: "Your house is not your plan", topic: "Building Wealth",
-    blurb: "Equity, leverage, and the difference between owning something and building something.",
-    featured: true, published: true, sort: 3 },
-];
+
+/** Only shown before the database is reachable. */
+export const SEED_VIDEOS: Video[] = [];
+
+export const SEED_TOPICS: LibraryTopic[] = TOPICS.map((name, i) => ({
+  id: `seed-${i}`,
+  name,
+  sort: i + 1,
+}));
 
 export const SEED_PRESS: PressItem[] = [
   { id: "p1", kind: "Feature", outlet: "Wichita Real Producers", pending: false, sort: 1,

@@ -33,11 +33,18 @@ export async function POST(req: Request) {
     let featured = Boolean(b.featured);
     if (featured && (await featuredCount()) >= 4) featured = false;
 
+    const topics = Array.isArray(b.topics)
+      ? Array.from(new Set(b.topics.map((t: unknown) => String(t).slice(0, 46)).filter(Boolean)))
+      : [];
+    if (topics.length === 0) {
+      return NextResponse.json({ ok: false, error: "Pick at least one topic" }, { status: 400 });
+    }
+
     const row = await createVideo({
       youtube_id: vid,
       title,
       blurb,
-      topic: String(b.topic ?? ""),
+      topics,
       featured,
       published: b.published !== false,
       sort: Number(b.sort ?? 0),
@@ -63,6 +70,17 @@ export async function PATCH(req: Request) {
     }
     if (typeof patch.title === "string") patch.title = patch.title.slice(0, LIMITS.videoTitle);
     if (typeof patch.blurb === "string") patch.blurb = patch.blurb.slice(0, LIMITS.videoBlurb);
+    if (Array.isArray(patch.topics)) {
+      patch.topics = Array.from(
+        new Set(patch.topics.map((t: unknown) => String(t).slice(0, 46)).filter(Boolean))
+      );
+      if (patch.topics.length === 0) {
+        return NextResponse.json(
+          { ok: false, error: "A video needs at least one topic" },
+          { status: 400 }
+        );
+      }
+    }
 
     await updateVideo(id, patch);
     return NextResponse.json({ ok: true });

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import s from "../Site.module.css";
-import { TOPICS, thumbnail, topicSlug } from "@/lib/library";
-import { getVideos } from "@/lib/db";
+import { thumbnail, topicSlug } from "@/lib/library";
+import { getVideos, getTopics } from "@/lib/db";
 
 /**
  * The education library teaser. Thumbnails are grayscale until hover — the
@@ -11,7 +11,10 @@ import { getVideos } from "@/lib/db";
  * featured in /backstage shows up here without a rebuild.
  */
 export default async function LibraryTeaser() {
-  const all = await getVideos({ publishedOnly: true });
+  const [all, topics] = await Promise.all([
+    getVideos({ publishedOnly: true }),
+    getTopics(),
+  ]);
   const featured = all.filter((v) => v.featured).slice(0, 3);
 
   return (
@@ -32,9 +35,9 @@ export default async function LibraryTeaser() {
 
         <div className={s.chips}>
           <span className={`${s.chip} ${s.on}`}>All</span>
-          {TOPICS.map((t) => (
-            <Link key={t} href={`/library/${topicSlug(t)}`} className={s.chip}>
-              {t}
+          {topics.map((t) => (
+            <Link key={t.id} href={`/library/${topicSlug(t.name)}`} className={s.chip}>
+              {t.name}
             </Link>
           ))}
         </div>
@@ -59,7 +62,7 @@ export default async function LibraryTeaser() {
                   />
                   <span className={s.play} aria-hidden="true" />
                 </div>
-                <div className={s.tp}>{v.topic}</div>
+                <div className={s.tp}>{v.topics?.[0]}</div>
                 <h4>{v.title}</h4>
                 <p>{v.blurb}</p>
               </a>

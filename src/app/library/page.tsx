@@ -4,8 +4,8 @@ import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import s from "@/components/Site.module.css";
-import { TOPICS, thumbnail, topicSlug } from "@/lib/library";
-import { getVideos } from "@/lib/db";
+import { thumbnail, topicSlug } from "@/lib/library";
+import { getVideos, getTopics } from "@/lib/db";
 
 export const metadata = {
   title: "The Game of Money — Mortgage Punk",
@@ -16,7 +16,10 @@ export const metadata = {
 export const revalidate = 300;
 
 export default async function Library() {
-  const videos = await getVideos({ publishedOnly: true });
+  const [videos, topics] = await Promise.all([
+    getVideos({ publishedOnly: true }),
+    getTopics(),
+  ]);
 
   return (
     <>
@@ -33,9 +36,9 @@ export default async function Library() {
         <div className={s.wrap}>
           <div className={s.chips}>
             <span className={`${s.chip} ${s.on}`}>All</span>
-            {TOPICS.map((t) => (
-              <Link key={t} href={`/library/${topicSlug(t)}`} className={s.chip}>
-                {t}
+            {topics.map((t) => (
+              <Link key={t.id} href={`/library/${topicSlug(t.name)}`} className={s.chip}>
+                {t.name}
               </Link>
             ))}
           </div>
@@ -61,7 +64,7 @@ export default async function Library() {
                     />
                     <span className={s.play} aria-hidden="true" />
                   </div>
-                  <div className={s.tp}>{v.topic}</div>
+                  <div className={s.tp}>{(v.topics ?? []).join(" · ")}</div>
                   <h4>{v.title}</h4>
                   <p>{v.blurb}</p>
                 </a>

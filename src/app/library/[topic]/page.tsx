@@ -1,17 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import s from "@/components/Site.module.css";
-import { TOPICS, thumbnail, topicSlug } from "@/lib/library";
-import { getVideos } from "@/lib/db";
+import { thumbnail, topicSlug } from "@/lib/library";
+import { getVideos, getTopics } from "@/lib/db";
 
 export const revalidate = 300;
 
-export function generateStaticParams() {
-  return TOPICS.map((t) => ({ topic: topicSlug(t) }));
-}
+/**
+ * Topics are data now, so the routes can't be pre-generated from a constant.
+ * dynamicParams lets a topic Chris adds in /backstage work immediately
+ * instead of 404ing until the next deploy.
+ */
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -19,10 +23,11 @@ export async function generateMetadata({
   params: Promise<{ topic: string }>;
 }) {
   const { topic } = await params;
-  const name = TOPICS.find((t) => topicSlug(t) === topic);
+  const topics = await getTopics();
+  const match = topics.find((t) => topicSlug(t.name) === topic);
   return {
-    title: name ? `${name} — Mortgage Punk` : "Library — Mortgage Punk",
-    description: name ? `${name}: free education from Mortgage Punk.` : undefined,
+    title: match ? `${match.name} — Mortgage Punk` : "Library — Mortgage Punk",
+    description: match ? `${match.name}: free education from Mortgage Punk.` : undefined,
   };
 }
 
@@ -32,28 +37,35 @@ export default async function TopicPage({
   params: Promise<{ topic: string }>;
 }) {
   const { topic } = await params;
-  const name = TOPICS.find((t) => topicSlug(t) === topic);
-  if (!name) notFound();
+  const [all, topics] = await Promise.all([
+    getVideos({ publishedOnly: true }),
+    getTopics(),
+  ]);
 
-  const all = await getVideos({ publishedOnly: true });
-  const videos = all.filter((v) => v.topic === name);
+  const match = topics.find((t) => topicSlug(t.name) === topic);
+  if (!match) notFound();
+
+  // filtered in JS rather than with a PostgREST array query: the library is
+  // small, and it keeps the array-encoding rules out of the query string
+  const videos = all.filter((v) => (v.topics ?? []).includes(match.name));
 
   return (
     <>
+      <AnnouncementBar />
       <SiteNav />
-      <PageHead kicker="The Game of Money" title={name} />
+      <PageHead kicker="The Game of Money" title={match.name} />
 
       <section className={`${s.sec} ${s.dark}`} style={{ paddingTop: 0 }}>
         <div className={s.wrap}>
           <div className={s.chips}>
             <Link href="/library" className={s.chip}>All</Link>
-            {TOPICS.map((t) => (
+            {topics.map((t) => (
               <Link
-                key={t}
-                href={`/library/${topicSlug(t)}`}
-                className={`${s.chip} ${t === name ? s.on : ""}`}
+                key={t.id}
+                href={`/library/${topicSlug(t.name)}`}
+                className={`${s.chip} ${t.name === match.name ? s.on : ""}`}
               >
-                {t}
+                {t.name}
               </Link>
             ))}
           </div>
@@ -78,7 +90,7 @@ export default async function TopicPage({
                     />
                     <span className={s.play} aria-hidden="true" />
                   </div>
-                  <div className={s.tp}>{v.topic}</div>
+                  <div className={s.tp}>{(v.topics ?? []).join(" \u00b7 ")}</div>
                   <h4>{v.title}</h4>
                   <p>{v.blurb}</p>
                 </a>

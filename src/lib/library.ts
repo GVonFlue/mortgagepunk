@@ -1,3 +1,7 @@
+// Topic names live in the library_topics table and are edited in
+// /backstage → Topics. TOPICS in lib/content.ts is only the seed list.
+export { TOPICS } from "./content";
+
 /**
  * The education library.
  *
@@ -9,20 +13,6 @@
  * from the YouTube ID, which is why the dashboard never asks for an image.
  */
 
-export const TOPICS = [
-  "The Game of Money",
-  "Buying a Home",
-  "Getting a Mortgage the Right Way",
-  "Building Wealth",
-  "Living Beyond a Paycheck",
-  "Real Estate Investing",
-  "Taxes + Keeping More of Your Money",
-  "Lender Lies",
-  "Saved Loans / Real Stories",
-  "Reimagining the American Dream",
-] as const;
-
-export type Topic = (typeof TOPICS)[number];
 
 /**
  * NOTE: video records and all reads now live in lib/db.ts, backed by Supabase.
