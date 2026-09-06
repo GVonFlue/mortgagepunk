@@ -19,6 +19,7 @@ const NAV = [
   { href: "/backstage/conference", label: "Conference", icon: "calendar" },
   { href: "/backstage/speaking", label: "Speaking", icon: "mic" },
   { href: "/backstage/settings", label: "Announcement", icon: "megaphone" },
+  { href: "/backstage/design", label: "Design specs", icon: "ruler" },
 ] as const;
 
 function Icon({ name }: { name: string }) {
@@ -32,6 +33,7 @@ function Icon({ name }: { name: string }) {
     star: <path d="m12 3.6 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.8l5.9-.9z" />,
     calendar: <><rect x="3" y="5" width="18" height="16" rx="2.5" /><path d="M3 10h18M8 3v4M16 3v4" /></>,
     mic: <><rect x="9" y="2.5" width="6" height="11" rx="3" /><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" /></>,
+    ruler: <><path d="M3.5 14.8 14.8 3.5l5.7 5.7L9.2 20.5z" /><path d="M7.6 7.4l2 2M10.6 10.4l2 2M13.6 13.4l2 2" /></>,
     megaphone: <><path d="M3.5 10.5v3a1.5 1.5 0 0 0 1.5 1.5h2l7 4V5l-7 4H5a1.5 1.5 0 0 0-1.5 1.5z" /><path d="M18 9.5a4 4 0 0 1 0 5" /></>,
   };
   return <svg viewBox="0 0 24 24" aria-hidden="true">{paths[name]}</svg>;

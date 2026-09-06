@@ -53,19 +53,57 @@ export default function ArtUploader({
       return setErr(`That's ${(file.size / 1048576).toFixed(1)}MB. Keep it under 6MB.`);
     }
 
-    // read the real dimensions before uploading
-    const dims = await new Promise<{ w: number; h: number } | null>((res) => {
+    /**
+     * Read dimensions AND check the alpha channel.
+     *
+     * A PNG can be technically valid and still have a solid background baked
+     * into the pixels — which is exactly what image generators produce when
+     * asked for "transparent". It looks fine in a file browser and wrong on
+     * the site. Sampling the corners catches it before it goes live.
+     */
+    const probe = await new Promise<
+      { w: number; h: number; opaqueCorners: number } | null
+    >((res) => {
       const img = new Image();
       const src = URL.createObjectURL(file);
       img.onload = () => {
-        res({ w: img.naturalWidth, h: img.naturalHeight });
+        const c = document.createElement("canvas");
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        const ctx = c.getContext("2d");
+        let opaque = 0;
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          const pad = Math.max(2, Math.round(Math.min(c.width, c.height) * 0.02));
+          const spots: [number, number][] = [
+            [pad, pad],
+            [c.width - pad, pad],
+            [pad, c.height - pad],
+            [c.width - pad, c.height - pad],
+          ];
+          for (const [x, y] of spots) {
+            try {
+              if (ctx.getImageData(x, y, 1, 1).data[3] > 24) opaque++;
+            } catch {
+              /* ignore */
+            }
+          }
+        }
+        res({ w: img.naturalWidth, h: img.naturalHeight, opaqueCorners: opaque });
         URL.revokeObjectURL(src);
       };
       img.onerror = () => res(null);
       img.src = src;
     });
 
-    if (!dims) return setErr("Couldn't read that file. Try exporting it again.");
+    if (!probe) return setErr("Couldn't read that file. Try exporting it again.");
+    const dims = { w: probe.w, h: probe.h };
+
+    if (probe.opaqueCorners >= 3) {
+      return setErr(
+        "This PNG isn't actually transparent — the background is baked into the pixels, so it'll show as a solid block behind the letters. Image generators do this even when you ask for transparency. Re-export with a real alpha channel, or send it to Garrett and he'll knock the background out."
+      );
+    }
     if (dims.w < 900 && slot === "desktop") {
       setErr(
         `That's only ${dims.w}px wide. It'll look soft on a big screen — export at 2000px or more.`

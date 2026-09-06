@@ -185,8 +185,14 @@
 .artWrap{position:absolute;z-index:2;left:calc(38*var(--u));
   top:calc(var(--art-top, 96) * var(--u));
   width:calc(var(--art-w, 1030) * var(--u));
+  /* Clamping width alone isn't enough: a wide-aspect file keeps growing
+     downward until it collides with the CTA buttons. This caps the height at
+     the space actually available between the top offset and the buttons, and
+     object-fit keeps the art's proportions while it shrinks to fit. */
+  max-height:calc((640 - var(--art-top, 96)) * var(--u));
   pointer-events:none}
-.artDesktop,.artMobile{display:block;width:100%;height:auto}
+.artDesktop,.artMobile{display:block;width:100%;height:auto;
+  max-height:inherit;object-fit:contain;object-position:left top}
 /* aspect-ratio comes from the real file dimensions, captured at upload, so
    the art can never stretch while the image is still loading */
 .artDesktop{aspect-ratio:var(--art-ratio, auto)}
@@ -199,7 +205,8 @@
 
 @media (max-width:820px){
   .artWrap{left:calc(17*var(--u));top:calc(96*var(--u));
-    width:calc(356*var(--u))}
+    width:calc(356*var(--u));
+    max-height:calc(250*var(--u))}
   /* a desktop lockup is far too wide for a phone, so a mobile variant wins
      when one has been uploaded */
   .artMobile{display:block}
