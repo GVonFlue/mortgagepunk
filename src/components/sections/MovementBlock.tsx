@@ -1,6 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
 import s from "../Site.module.css";
-import GfxNote from "../ui/GfxNote";
 import { getConference } from "@/lib/db";
 
 /**
@@ -40,7 +40,18 @@ export default async function MovementBlock() {
           </div>
 
           <div className={s.evt}>
-            <GfxNote where="evt" />
+            {/* Was a GfxNote placeholder. Real frame from the last one — the
+                empty stage before doors, which reads as anticipation rather
+                than as a crowd shot competing with the copy below it. */}
+            <div className={s.evtShot}>
+              <Image
+                src="/brand/adc-stageset.jpg"
+                alt="The American Dream Conference stage"
+                width={1800}
+                height={1200}
+                sizes="(max-width: 900px) 92vw, 44vw"
+              />
+            </div>
             <span className={s.tag}>Next &middot; {conf.date_label}</span>
             <h3>{conf.headline}</h3>
             <div className={s.meta}>

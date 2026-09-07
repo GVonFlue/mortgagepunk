@@ -3,7 +3,7 @@ import LeadForm from "./LeadForm";
 
 export default function LeadSection() {
   return (
-    <section className={`${s.sec} ${s.dark}`} id="start" aria-label="Contact the team">
+    <section className={`${s.sec} ${s.dark} ${s.wash} ${s.washConcert}`} id="start" aria-label="Contact the team">
       <div className={s.wrap}>
         <div className={s.lead}>
           <div>

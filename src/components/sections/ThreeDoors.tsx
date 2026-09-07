@@ -26,6 +26,7 @@ const DOORS = [
     ],
     cta: "Start your approval",
     href: "/get-approved",
+    img: "/brand/door-approved.jpg",
   },
   {
     tone: "doorMid",
@@ -39,6 +40,7 @@ const DOORS = [
     ],
     cta: "Open the tools",
     href: "/tools",
+    img: "/brand/door-learn.jpg",
   },
   {
     tone: "doorDark",
@@ -52,6 +54,7 @@ const DOORS = [
     ],
     cta: "Join the movement",
     href: "/movement",
+    img: "/brand/adc-concert.jpg",
   },
 ] as const;
 
@@ -59,7 +62,13 @@ export default function ThreeDoors() {
   return (
     <section className={s.doors} aria-label="Where to start">
       {DOORS.map((d) => (
-        <Link key={d.title} href={d.href} className={`${s.door} ${s[d.tone]}`}>
+        <Link
+          key={d.title}
+          href={d.href}
+          className={`${s.door} ${s[d.tone]}`}
+          /* real photography per door instead of the same generic concrete */
+          style={{ ["--door-img" as string]: `url('${d.img}')` }}
+        >
           <span className={s.doorTag}>{d.tag}</span>
           <h3>{d.title}</h3>
           <p>{d.body}</p>

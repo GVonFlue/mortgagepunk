@@ -236,3 +236,32 @@
 .pressNote{margin:0;font-size:13.5px;line-height:1.6;color:#8E8E8E}
 .pressPending{opacity:.66}
 .pressPending .pressOutlet{background:#3A3A3A;color:#C9C9C9}
+
+/* ============================================================
+   PHOTO WASHES
+   ============================================================
+   Event photography sitting behind dark sections at low opacity, to break up
+   flat black without competing with the copy.
+
+   Why this and not a photo card: at 8-12% a photograph reads as texture and
+   depth rather than as an image you're meant to look at. It only works with
+   wide, high-contrast frames — crowd silhouettes, stage lighting. A detail
+   shot of a face turns to grey mush at this opacity.
+
+   The images are pre-processed with contrast pushed and brightness pulled
+   (see the prep script), because doing that in CSS with filter() forces a
+   repaint on every scroll.
+   ============================================================ */
+.wash{position:relative;isolation:isolate}
+.wash::before{content:'';position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background-size:cover;background-position:center;opacity:.1}
+/* fades to nothing at the edges so it never reads as a pasted-in rectangle */
+.wash::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,var(--mp-black) 0%,rgba(10,10,10,.55) 35%,
+    rgba(10,10,10,.72) 65%,var(--mp-black) 100%)}
+.washCrowd::before{background-image:url('/brand/wash-crowd.jpg')}
+.washStage::before{background-image:url('/brand/wash-stage.jpg')}
+.washPanel::before{background-image:url('/brand/wash-panel.jpg')}
+/* a touch stronger where there is less copy over it */
+.washLoud::before{opacity:.16}
+

@@ -25,6 +25,19 @@ export const metadata = {
  * Copy is Chris's own, from onboarding. Do not rewrite it without asking.
  */
 
+/**
+ * Cycled behind the press cards until real article artwork exists.
+ *
+ * Indexed by position rather than matched per outlet, so adding or removing a
+ * press item can't leave a card with no image.
+ */
+const PRESS_SHOTS = [
+  "/brand/adc-stage-crowd.jpg",
+  "/brand/adc-education.jpg",
+  "/brand/adc-concert.jpg",
+  "/brand/adc-interview.jpg",
+];
+
 const MARQUEE = [
   "Reimagining the American Dream",
   "The Game of Money",
@@ -85,7 +98,7 @@ export default async function About() {
       </div>
 
       {/* 3 — the story */}
-      <section className={a.story}>
+      <section className={`${a.story} ${a.wash} ${a.washStage}`}>
         <div className={a.storyGrid}>
           <div>
             <p className={a.pull}>
@@ -192,16 +205,23 @@ export default async function About() {
           </div>
 
           <div className={a.pressCards}>
-            {press.map((p) => (
+            {press.map((p, i) => (
               <article
                 key={p.id}
                 className={`${a.pressCard} ${p.pending ? a.pressPending : ""}`}
               >
-                <PhotoSlot
-                  className={a.pressCover}
-                  label="Cover image"
-                  hint="Screenshot or photo"
-                />
+                {/* Was a marked PhotoSlot per card. Real conference frames
+                    now, cycled so no two adjacent cards repeat. */}
+                <div className={a.pressCover} style={{ border: 0, padding: 0 }}>
+                  <Image
+                    src={PRESS_SHOTS[i % PRESS_SHOTS.length]}
+                    alt=""
+                    width={1600}
+                    height={1067}
+                    sizes="(max-width: 700px) 92vw, 30vw"
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </div>
                 <div className={a.pressMeta}>
                   <span className={a.pressOutlet}>{p.pending ? "Pending" : p.kind}</span>
                   <h3 className={a.pressTitle}>{p.outlet}</h3>
