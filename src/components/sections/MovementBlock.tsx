@@ -43,10 +43,10 @@ export default async function MovementBlock() {
             {/* Was a GfxNote placeholder. Real frame from the last one — the
                 empty stage before doors, which reads as anticipation rather
                 than as a crowd shot competing with the copy below it. */}
-            <div className={s.evtShot}>
+            <div className={s.evtShot} aria-hidden="true">
               <Image
                 src="/brand/adc-stageset.jpg"
-                alt="The American Dream Conference stage"
+                alt=""
                 width={1800}
                 height={1200}
                 sizes="(max-width: 900px) 92vw, 44vw"
