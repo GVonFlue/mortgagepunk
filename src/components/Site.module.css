@@ -911,10 +911,9 @@
   stroke:#4A4A4A;fill:none;stroke-width:3;stroke-linejoin:round;
   transition:stroke .35s}
 .tile:hover .tileArt svg{stroke:#6E6E6E}
-/* the one element in each drawing that carries the idea */
-.tileArt .fillRed{fill:var(--mp-red);stroke:var(--mp-red)}
-.tileArt .rule{stroke:var(--mp-red);stroke-width:4;stroke-linecap:round}
-.tileArt .knock{stroke:var(--mp-black);stroke-width:3;stroke-linecap:round}
+/* NOTE: the red accents inside each drawing are set with presentation
+   attributes in ToolsTiles.tsx, not classes. CSS Modules hashes class names,
+   so `.tileArt .fillRed` here would never match a plain className in the SVG. */
 
 .tileEyebrow{display:block;font-size:10.5px;font-weight:800;letter-spacing:.17em;
   text-transform:uppercase;color:var(--mp-red);margin-bottom:9px}

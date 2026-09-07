@@ -19,6 +19,10 @@ import { APPLY_URL, EXTERNAL } from "@/lib/links";
  *
  * Graphics are inline SVG rather than photographs — these are diagrams of an
  * idea, and a diagram scales, recolours, and weighs nothing.
+ *
+ * Colour is set with presentation attributes, NOT classes. Site.module.css
+ * hashes its class names, so a plain `className="fillRed"` inside an SVG
+ * silently matches nothing and every drawing renders flat grey.
  */
 
 type Tool = {
@@ -37,12 +41,12 @@ const ArtAfford = (
   <svg viewBox="0 0 200 120" aria-hidden="true">
     <rect x="14" y="74" width="26" height="34" rx="3" />
     <rect x="50" y="56" width="26" height="52" rx="3" />
-    <rect x="86" y="34" width="26" height="74" rx="3" className="fillRed" />
+    <rect x="86" y="34" width="26" height="74" rx="3" fill="#EB2933" stroke="#EB2933" />
     <rect x="122" y="52" width="26" height="56" rx="3" />
     <rect x="158" y="66" width="26" height="42" rx="3" />
-    <path d="M14 30 L60 30" className="rule" />
-    <circle cx="99" cy="20" r="9" className="fillRed" />
-    <path d="M99 15v10M95.5 18.5h7M95.5 22h7" className="knock" />
+    <path d="M14 30 L60 30" stroke="#EB2933" strokeWidth="4" strokeLinecap="round" />
+    <circle cx="99" cy="20" r="9" fill="#EB2933" stroke="#EB2933" />
+    <path d="M99 15v10M95.5 18.5h7M95.5 22h7" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round" />
   </svg>
 );
 
@@ -50,9 +54,9 @@ const ArtPayment = (
   <svg viewBox="0 0 200 120" aria-hidden="true">
     <rect x="24" y="26" width="152" height="70" rx="8" />
     <path d="M24 48h152" />
-    <rect x="40" y="62" width="44" height="8" rx="4" className="fillRed" />
+    <rect x="40" y="62" width="44" height="8" rx="4" fill="#EB2933" stroke="#EB2933" />
     <rect x="40" y="76" width="26" height="6" rx="3" />
-    <circle cx="150" cy="74" r="12" className="fillRed" />
+    <circle cx="150" cy="74" r="12" fill="#EB2933" stroke="#EB2933" />
     <circle cx="134" cy="74" r="12" opacity=".45" />
   </svg>
 );
@@ -61,18 +65,18 @@ const ArtRefi = (
   <svg viewBox="0 0 200 120" aria-hidden="true">
     <path d="M40 60a40 40 0 0 1 68-28" />
     <path d="M160 60a40 40 0 0 1-68 28" />
-    <path d="M108 18v16h-16" className="fillRed" />
-    <path d="M92 102V86h16" className="fillRed" />
-    <path d="M70 60h60" className="rule" />
+    <path d="M108 18v16h-16" fill="#EB2933" stroke="#EB2933" />
+    <path d="M92 102V86h16" fill="#EB2933" stroke="#EB2933" />
+    <path d="M70 60h60" stroke="#EB2933" strokeWidth="4" strokeLinecap="round" />
   </svg>
 );
 
 const ArtGuides = (
   <svg viewBox="0 0 200 120" aria-hidden="true">
     <path d="M34 24h58a14 14 0 0 1 14 14v58H48a14 14 0 0 1-14-14z" />
-    <path d="M106 38a14 14 0 0 1 14-14h46v58a14 14 0 0 1-14 14h-46z" className="fillRed" />
-    <path d="M52 46h34M52 60h26" className="rule" />
-    <path d="M124 46h30M124 60h22" className="knock" />
+    <path d="M106 38a14 14 0 0 1 14-14h46v58a14 14 0 0 1-14 14h-46z" fill="#EB2933" stroke="#EB2933" />
+    <path d="M52 46h34M52 60h26" stroke="#EB2933" strokeWidth="4" strokeLinecap="round" />
+    <path d="M124 46h30M124 60h22" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round" />
   </svg>
 );
 
