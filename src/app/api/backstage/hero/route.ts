@@ -60,11 +60,11 @@ export async function PUT(req: Request) {
       rail_hit: rail(h.rail_hit, "Leading a Movement."),
       rail_bottom: rail(h.rail_bottom, "Building a World-Class Lending Team."),
       cta1_label: label(h.cta1_label, "Get Approved the Right Way"),
-      cta1_href: safeHref(h.cta1_href, "/get-approved"),
+      cta1_href: safeHref(h.cta1_href, "https://portal.neighborhoodloans.com/#/milestones?referrerId=cwaipa%40neighborhoodloans.com&loanType=MORTGAGE"),
       cta2_label: label(h.cta2_label, "Follow the Movement"),
       cta2_href: safeHref(h.cta2_href, "/movement"),
       nav_cta_label: label(h.nav_cta_label, "Get Approved"),
-      nav_cta_href: safeHref(h.nav_cta_href, "/get-approved"),
+      nav_cta_href: safeHref(h.nav_cta_href, "https://portal.neighborhoodloans.com/#/milestones?referrerId=cwaipa%40neighborhoodloans.com&loanType=MORTGAGE"),
     });
     return NextResponse.json({ ok: true });
   } catch (e) {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import s from "../Site.module.css";
+import { APPLY_URL } from "@/lib/links";
 
 /**
  * Compliance note: NMLS 339232 is confirmed. The exact legal entity wording,
@@ -15,7 +16,7 @@ const COLS = [
       ["Buy a home", "/lending/buy"],
       ["Refinance", "/lending/refinance"],
       ["Investors", "/lending/investors"],
-      ["Get approved", "/get-approved"],
+      ["Get approved", APPLY_URL],
       ["The team", "/team"],
       ["Tools & calculators", "/tools"],
     ],

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import s from "../Site.module.css";
+import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
 /**
  * The homepage fork.
@@ -25,7 +26,8 @@ const DOORS = [
       "A person on your file, start to close",
     ],
     cta: "Start your approval",
-    href: "/get-approved",
+    href: APPLY_URL,
+    external: true,
     img: "/brand/door-approved.jpg",
   },
   {
@@ -65,6 +67,7 @@ export default function ThreeDoors() {
         <Link
           key={d.title}
           href={d.href}
+          {...("external" in d && d.external ? EXTERNAL : {})}
           className={`${s.door} ${s[d.tone]}`}
           /* real photography per door instead of the same generic concrete */
           style={{ ["--door-img" as string]: `url('${d.img}')` }}

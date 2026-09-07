@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import n from "./SiteNav.module.css";
+import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
 /**
  * Nav for inner pages. The homepage does NOT use this — its nav is baked into
@@ -33,9 +34,9 @@ export default function SiteNav() {
           </li>
         ))}
       </ul>
-      <Link href="/get-approved" className={n.cta}>
+      <a href={APPLY_URL} {...EXTERNAL} className={n.cta}>
         Get Approved <span aria-hidden="true">&rarr;</span>
-      </Link>
+      </a>
     </nav>
   );
 }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
 import LogoPunch from "./LogoPunch";
+import { APPLY_URL, EXTERNAL } from "@/lib/links";
 import { getHero } from "@/lib/db";
 import { HERO_FIT } from "@/lib/content";
 
@@ -44,6 +45,11 @@ const NAV = [
  * This is why the copy can be editable at all. Without it, one long word from
  * a designer breaks the hero on every screen.
  */
+/** An outbound link needs target and rel; an internal path must not have them. */
+function isExternal(href: string): boolean {
+  return /^https?:\/\//.test(href);
+}
+
 function fit(text: string, base: number, reference: number): number {
   const len = text.trim().length || 1;
   if (len <= reference) return base;
@@ -52,6 +58,10 @@ function fit(text: string, base: number, reference: number): number {
 
 export default async function Hero() {
   const h = await getHero();
+
+  /** Chris can override these in Backstage; the portal is the fallback. */
+  const cta1 = h.cta1_href || APPLY_URL;
+  const navCta = h.nav_cta_href || APPLY_URL;
 
   const art = h.art_url ? { url: h.art_url, w: h.art_w, h: h.art_h } : null;
 
@@ -160,10 +170,14 @@ export default async function Hero() {
 
         {/* equal weight — Chris asked for two equally obvious paths */}
         <div className={styles.ctas}>
-          <Link href="/get-approved" className={`${styles.btn} ${styles.btnSolid}`}>
-<span>Get Approved the Right Way</span>
+          <a
+            href={cta1}
+            {...(isExternal(cta1) ? EXTERNAL : {})}
+            className={`${styles.btn} ${styles.btnSolid}`}
+          >
+            <span>{h.cta1_label}</span>
             <span aria-hidden="true">&rarr;</span>
-          </Link>
+          </a>
           <Link href={h.cta2_href} className={`${styles.btn} ${styles.btnGhost}`}>
             <span>{h.cta2_label}</span>
             <span aria-hidden="true">&rarr;</span>
@@ -188,9 +202,13 @@ export default async function Hero() {
             </li>
           ))}
         </ul>
-        <Link href="/get-approved" className={styles.navCta}>
-Get Approved <span aria-hidden="true">&rarr;</span>
-        </Link>
+        <a
+          href={navCta}
+          {...(isExternal(navCta) ? EXTERNAL : {})}
+          className={styles.navCta}
+        >
+          {h.nav_cta_label} <span aria-hidden="true">&rarr;</span>
+        </a>
       </nav>
 
       {/* fires on impact, gone in a blink */}

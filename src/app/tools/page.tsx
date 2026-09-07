@@ -1,11 +1,11 @@
+import Link from "next/link";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
-import PageHead from "@/components/layout/PageHead";
-import ToolsTabs from "@/components/tools/ToolsTabs";
+import ToolsTiles from "@/components/tools/ToolsTiles";
 import LoudLead from "@/components/sections/LoudLead";
 import s from "@/components/Site.module.css";
-import Link from "next/link";
+import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
 export const metadata = {
   title: "Tools — Mortgage Punk",
@@ -18,17 +18,29 @@ export default function Tools() {
     <>
       <AnnouncementBar />
       <SiteNav />
-      <PageHead
-        tone="bone"
-        kicker="Tools"
-        title="Run the numbers"
-        accent="before anyone calls you."
-        lede="No signup, no credit pull, nothing lands in an inbox. Most lender calculators leave out taxes, insurance and mortgage insurance and hand you a number that's thousands off. These don't."
-      />
 
-      <section className={`${s.sec} ${s.dark}`} style={{ paddingTop: 0 }}>
+      {/* Chris pointing straight down the lens. The whole page is "you, run
+          your own numbers", and the gesture says it before the copy does. */}
+      <section className={s.toolsHero}>
+        <div className={s.toolsHeroWrap}>
+          <div className={s.toolsHeroCopy}>
+            <div className={s.kick}>Tools</div>
+            <h1 className={s.h2}>
+              Run the numbers
+              <em>before anyone calls you.</em>
+            </h1>
+            <p className={`${s.lede} ${s.prose}`}>
+              No signup, no credit pull, nothing lands in an inbox. Most lender
+              calculators leave out taxes, insurance and mortgage insurance and
+              hand you a number that&rsquo;s thousands off. These don&rsquo;t.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className={`${s.sec} ${s.dark}`}>
         <div className={s.wrap}>
-          <ToolsTabs />
+          <ToolsTiles />
         </div>
       </section>
 
@@ -37,46 +49,18 @@ export default function Tools() {
           <div className={s.kick}>What the numbers can&rsquo;t tell you</div>
           <h2 className={s.h2}>
             A calculator
-            <br />
             <em>isn&rsquo;t an underwriter.</em>
           </h2>
           <p className={`${s.lede} ${s.prose}`}>
-            These give you a solid working estimate. What they can&rsquo;t see is
-            your credit profile, your reserves, your job history, or which of the
-            dozen programs actually fits your situation — which is why plenty of
-            people qualify for more than a calculator suggests, and occasionally
-            less.
+            These give a solid working estimate. What they can&rsquo;t see is
+            your credit profile, your reserves, your job history, or which of
+            the dozen programs actually fits — which is why plenty of people
+            qualify for more than a calculator suggests, and occasionally less.
           </p>
-          <div className={s.lend} style={{ marginTop: 44 }}>
-            <div className={s.c}>
-              <div className={s.n}>01</div>
-              <h3>Get the real number</h3>
-              <p>
-                A full pre-approval, underwritten up front. Takes about a day and
-                it&rsquo;s what actually holds up when you make an offer.
-              </p>
-            </div>
-            <div className={s.c}>
-              <div className={s.n}>02</div>
-              <h3>Free guides</h3>
-              <p>
-                Checklists and walkthroughs you can keep. No gate on the ones
-                that are genuinely useful.
-              </p>
-            </div>
-            <div className={s.c}>
-              <div className={s.n}>03</div>
-              <h3>Just ask</h3>
-              <p>
-                The assistant in the corner answers process questions any hour.
-                A person picks it up when it matters.
-              </p>
-            </div>
-          </div>
           <div style={{ marginTop: 34, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link href="/get-approved" className={`${s.btn} ${s.btnSolid}`}>
+            <a href={APPLY_URL} {...EXTERNAL} className={`${s.btn} ${s.btnSolid}`}>
               Get pre-approved &rarr;
-            </Link>
+            </a>
             <Link href="/freebies" className={`${s.btn} ${s.btnGhost}`}>
               Free guides &rarr;
             </Link>

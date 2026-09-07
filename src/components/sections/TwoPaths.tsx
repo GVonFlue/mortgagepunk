@@ -1,5 +1,6 @@
 import Link from "next/link";
 import s from "../Site.module.css";
+import { APPLY_URL, EXTERNAL } from "@/lib/links";
 import GfxNote from "../ui/GfxNote";
 
 /**
@@ -10,7 +11,7 @@ import GfxNote from "../ui/GfxNote";
 export default function TwoPaths() {
   return (
     <section className={s.paths} aria-label="Choose your path">
-      <Link href="/get-approved" className={`${s.path} ${s.red}`}>
+      <a href={APPLY_URL} {...EXTERNAL} className={`${s.path} ${s.red}`}>
         <span className={s.ghostNo} aria-hidden="true">01</span>
         <GfxNote />
         <div>
@@ -22,7 +23,7 @@ export default function TwoPaths() {
           </p>
         </div>
         <span className={s.go}>Start your approval <span aria-hidden="true">&rarr;</span></span>
-      </Link>
+      </a>
 
       <Link href="/movement" className={`${s.path} ${s.dk}`}>
         <span className={s.ghostNo} aria-hidden="true">02</span>
