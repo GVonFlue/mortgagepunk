@@ -247,14 +247,27 @@
    ============================================================ */
 
 @keyframes logoPunch{
-  /* 5x, not 15x. The logo is a 1209px raster; every doubling multiplies the
-     texture the compositor has to hold. 5x still fills the frame. */
-  0%   {opacity:0; transform:scale(5) rotate(-7deg) translate3d(-3%,-4%,0)}
-  10%  {opacity:1}
-  50%  {transform:scale(2.1) rotate(-3deg) translate3d(-1%,-1.5%,0)}
-  70%  {transform:scale(1.18) rotate(2deg) translate3d(0,0,0)}
-  84%  {transform:scale(.95) rotate(-1deg) translate3d(0,0,0)}
-  100% {opacity:1; transform:scale(1) rotate(0) translate3d(0,0,0)}
+  /* Starts at RESTING SIZE, punches out toward the viewer on a top-left to
+     bottom-right diagonal, then settles back. Earlier this ran backwards —
+     starting huge and shrinking — which reads as a page loading, not a punch.
+
+     Each keyframe carries its OWN animation-timing-function. A single easing
+     curve on the animation is re-applied between every pair of stops, so it
+     accelerates and decelerates at each one — which is exactly the "stops for
+     a split second a few times" feel. Per-stop easing gives one continuous
+     motion: hard out, float at the peak, snap home. */
+  0%   {transform:scale(1) rotate(0deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.34,0,.66,.4)}      /* wind up, accelerating */
+  34%  {transform:scale(5) rotate(-5deg) translate3d(7%,9%,0);
+        animation-timing-function:cubic-bezier(.25,0,.35,1)}       /* peak, coasting */
+  46%  {transform:scale(4.4) rotate(-4deg) translate3d(6%,8%,0);
+        animation-timing-function:cubic-bezier(.5,0,.2,1)}         /* falls back fast */
+  76%  {transform:scale(.88) rotate(2.5deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.3,0,.2,1)}         /* undershoots */
+  89%  {transform:scale(1.06) rotate(-.8deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.3,0,.3,1)}
+  100% {transform:scale(1) rotate(0deg) translate3d(0,0,0)}
+}
 }
 /* one element, one transform — the whole headline arrives together */
 @keyframes typeIn{
@@ -270,8 +283,8 @@
   to  {opacity:1; transform:translate3d(0,0,0)}
 }
 @keyframes punchFlash{
-  0%,44% {opacity:0}
-  52%    {opacity:.3}
+  0%,26% {opacity:0}
+  34%    {opacity:.32}   /* peak of the punch */
   100%   {opacity:0}
 }
 
@@ -286,16 +299,16 @@
 .ctas   {animation:fadeUp 460ms var(--ease-out-heavy) 580ms both}
 
 /* --- pre-warm: promote the logo before it moves, never during --- */
-.punchReady .logo img{will-change:transform,opacity;transform:translateZ(0)}
+.punchReady .logo img{will-change:transform;transform:translateZ(0)}
 
 /* --- first view only --- */
 .punching .logo img{transform-origin:18% 30%;
-  animation:logoPunch 900ms cubic-bezier(.5,.05,.25,1) both}
-.punching .punchFlash{animation:punchFlash 900ms ease-out both}
-.punching .type {animation-delay:520ms}
-.punching .chris{animation-delay:600ms}
-.punching .rail {animation-delay:760ms}
-.punching .ctas {animation-delay:820ms}
+  animation:logoPunch 780ms linear both}
+.punching .punchFlash{animation:punchFlash 780ms ease-out both}
+.punching .type {animation-delay:430ms}
+.punching .chris{animation-delay:500ms}
+.punching .rail {animation-delay:660ms}
+.punching .ctas {animation-delay:720ms}
 
 @media (prefers-reduced-motion: reduce){
   .type,.chris,.rail,.ctas,
