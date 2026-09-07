@@ -198,7 +198,11 @@ Get Approved <span aria-hidden="true">&rarr;</span>
       <div className={styles.grain} aria-hidden="true" />
 
       {/* arms the entrance; renders nothing */}
-      <LogoPunch targetId="mp-hero" className={styles.punching} />
+      <LogoPunch
+        targetId="mp-hero"
+        className={styles.punching}
+        readyClass={styles.punchReady}
+      />
     </section>
   );
 }

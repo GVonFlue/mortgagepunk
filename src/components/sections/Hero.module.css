@@ -248,11 +248,13 @@
    ============================================================ */
 
 @keyframes logoPunch{
-  0%   {opacity:0; transform:scale(15) rotate(-8deg) translate(-4%,-6%)}
-  8%   {opacity:1; transform:scale(13) rotate(-7deg) translate(-3.5%,-5%)}
-  /* hold it big — a punch you can't see isn't a punch */
-  30%  {transform:scale(7.5) rotate(-4.5deg) translate(-2%,-3%)}
-  46%  {transform:scale(3.4) rotate(-2deg) translate(-.6%,-1%)}
+  /* Max scale is 8, not 15. The logo is a 1209px raster — at 15x the browser
+     rasterises it around 18,000px wide, which cost a single 433ms frame and
+     was the whole source of the choppiness. 8x still fills the screen. */
+  0%   {opacity:0; transform:scale(8) rotate(-8deg) translate(-4%,-6%)}
+  8%   {opacity:1; transform:scale(7.4) rotate(-7deg) translate(-3.5%,-5%)}
+  30%  {transform:scale(5.2) rotate(-4.5deg) translate(-2%,-3%)}
+  46%  {transform:scale(2.9) rotate(-2deg) translate(-.6%,-1%)}
   62%  {transform:scale(1.26) rotate(2.6deg) translate(0,0)}   /* impact */
   74%  {transform:scale(.92) rotate(-1.6deg)}
   87%  {transform:scale(1.05) rotate(.6deg)}
@@ -309,8 +311,17 @@
   background:radial-gradient(26% 24% at 13% 12%, rgba(255,255,255,.9) 0%,
     rgba(235,41,51,.55) 40%, rgba(235,41,51,0) 72%)}
 
+/* Applied one frame before .punching. Promoting the layer at the same instant
+   the animation starts means the browser rasterises under time pressure — that
+   was a 210ms first frame. Warming it first makes the entrance start cold-free. */
+.punchReady .logo img{will-change:transform,opacity;backface-visibility:hidden;
+  transform:translateZ(0)}
+.punchReady .stage{will-change:transform;backface-visibility:hidden}
+.punchReady .btnGhost{backdrop-filter:none}
+
 /* --- FIRST VIEW ONLY. LogoPunch.tsx adds this once per session. --- */
-.punching .logo img{transform-origin:18% 30%;will-change:transform,opacity;
+.punching .logo img{transform-origin:18% 30%;
+
   animation:logoPunch 1150ms cubic-bezier(.62,.02,.3,1) both}
 .punching .stage      {animation:stageShake 1150ms ease-out both}
 .punching .punchFlash {animation:punchFlash 1150ms ease-out both}
@@ -334,6 +345,9 @@
 .punching .rail            {animation-delay:1080ms}
 .punching .ctas            {animation-delay:1140ms}
 .punching .btnSolid        {animation:ctaPulse 900ms ease-in-out 1700ms 1 both}
+/* backdrop-filter forces a readback of everything behind it on every frame.
+   Cheap when static, brutal during a full-stage shake. */
+.punching .btnGhost{backdrop-filter:none}
 
 /* --- one place to turn all of it off --- */
 @media (prefers-reduced-motion: reduce){
