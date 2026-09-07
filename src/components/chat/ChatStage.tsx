@@ -50,12 +50,29 @@ export default function ChatStage({
   const [captured, setCaptured] = useState(false);
   const [lead, setLead] = useState({ first: "", email: "", phone: "" });
   const [leadErr, setLeadErr] = useState("");
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const firstRender = useRef(true);
 
   const exchanges = msgs.filter((m) => m.role === "user").length;
 
+  /**
+   * Keep the conversation pinned to the newest message.
+   *
+   * Deliberately NOT scrollIntoView: that walks up the tree and scrolls every
+   * scrollable ancestor, including the window. Since this component is
+   * embedded mid-homepage, calling it on mount dragged the whole page down to
+   * the chat — which looked exactly like a broken scroll position on reload.
+   *
+   * Setting scrollTop on the list itself cannot affect the page. The first
+   * render is skipped so nothing moves at all until there's a real message.
+   */
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [msgs, showCapture]);
 
   // offer the follow-up once there's a real conversation, not on message one
@@ -163,7 +180,7 @@ export default function ChatStage({
           )}
         </div>
 
-        <div className={s.msgs}>
+        <div className={s.msgs} ref={listRef}>
           {msgs.map((m, i) => (
             <div key={i} className={m.role === "user" ? s.msgMe : s.msgBot}>
               {m.content.split("\n").filter(Boolean).map((p, j) => (
@@ -235,7 +252,6 @@ export default function ChatStage({
             </div>
           )}
 
-          <div ref={endRef} />
         </div>
 
         <div className={s.inrow}>

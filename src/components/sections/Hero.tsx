@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
+import LogoPunch from "./LogoPunch";
 import { getHero } from "@/lib/db";
 import { HERO_FIT } from "@/lib/content";
 
@@ -74,6 +75,7 @@ export default async function Hero() {
 
   return (
     <section
+      id="mp-hero"
       className={styles.hero}
       aria-label={`${h.eyebrow} ${h.line_small} ${h.line_big} ${h.line_accent}`}
       style={sizes}
@@ -191,7 +193,12 @@ Get Approved <span aria-hidden="true">&rarr;</span>
         </Link>
       </nav>
 
+      {/* fires on impact, gone in a blink */}
+      <div className={styles.punchFlash} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
+
+      {/* arms the entrance; renders nothing */}
+      <LogoPunch targetId="mp-hero" className={styles.punching} />
     </section>
   );
 }

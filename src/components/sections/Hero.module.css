@@ -18,7 +18,11 @@
      use the same unit. On iOS 100vh includes the URL bar and is taller than
      what you can actually see — mixing them pushes the CTAs off the bottom. */
   --u:min(calc(100vw / 1512), calc(100svh / 900))}
-.stage{position:absolute;top:50%;left:50%;
+/* z-index:2 is load-bearing. The entrance puts a transform on .stage for the
+   impact shake, and a transform creates a NEW STACKING CONTEXT, which scopes
+   every child z-index inside it. Without this, .plate (z-index:1) paints over
+   the whole stage and the hero renders as bare concrete. */
+.stage{position:absolute;top:50%;left:50%;z-index:2;
   width:calc(1512*var(--u));height:calc(900*var(--u));
   margin-top:calc(-450*var(--u));margin-left:calc(-756*var(--u))}
 
@@ -52,11 +56,13 @@
 /* Outline: longhand, not the shorthand. paint-order pushes the stroke outside
    the glyph so Anton's letterforms stay true instead of being choked. */
 .the>span,.american>span{
-  -webkit-text-stroke-width:calc(4.4*var(--u));
+  -webkit-text-stroke-width:calc(3.4*var(--u));
   -webkit-text-stroke-color:var(--mp-black);
   paint-order:stroke fill;
-  text-shadow:calc(5*var(--u)) calc(6*var(--u)) 0 rgba(0,0,0,.9),
-              calc(11*var(--u)) calc(13*var(--u)) calc(20*var(--u)) rgba(0,0,0,.55)}
+  /* One soft cast, no zero-blur slab. The hard offset was what made the
+     letterforms look cut out and pasted on — worst on diagonals, where a
+     0-blur shadow of an angled edge steps visibly. */
+  text-shadow:calc(4*var(--u)) calc(7*var(--u)) calc(16*var(--u)) rgba(0,0,0,.6)}
 
 /* DREAM: outline on the real text, gradient on an overlay.
    background-clip:text renders at the element's BACKGROUND layer, so anything
@@ -157,9 +163,9 @@
   .the{font-size:calc(45*var(--u))}
   .american,.dream{font-size:calc(92*var(--u))}
   .the>span,.american>span{-webkit-text-stroke-width:calc(1.8*var(--u));
-    text-shadow:calc(1.8*var(--u)) calc(2.2*var(--u)) 0 rgba(0,0,0,.9)}
+    text-shadow:calc(1.4*var(--u)) calc(2.4*var(--u)) calc(6*var(--u)) rgba(0,0,0,.6)}
   .dream>span{-webkit-text-stroke-width:calc(1.3*var(--u));
-    text-shadow:calc(1.6*var(--u)) calc(2*var(--u)) calc(4*var(--u)) rgba(0,0,0,.6)}
+    text-shadow:calc(1.4*var(--u)) calc(2.4*var(--u)) calc(6*var(--u)) rgba(0,0,0,.6)}
   .dream>span::after{-webkit-text-stroke-width:0}
   .chris{height:calc(422*var(--u));width:calc(332*var(--u));
     right:calc(-58*var(--u));bottom:calc(93*var(--u))}
@@ -212,4 +218,131 @@
   .artMobile{display:block}
   .artMobile ~ .artDesktop,
   .artWrap:has(.artMobile) .artDesktop{display:none}
+}
+
+
+/* ============================================================
+   THE ENTRANCE
+   ============================================================
+   One timeline, not two systems. Everything below is a single choreographed
+   moment: the logo lands, the impact shakes the stage, and the shake is what
+   throws the headline into place. Total run is under two seconds.
+
+   WHY NO `@media (prefers-reduced-motion: no-preference)` WRAPPER:
+   the delay overrides live at `.punching .american>span` (0,2,1) while the
+   base animation sat at `.american>span` (0,1,1) inside the media block.
+   The override won the delay but the animation resolved from a lower-priority
+   rule, so elements froze at their `from` state and the headline never
+   appeared. Declaring the animations unconditionally and switching them OFF in
+   a single reduce block at the bottom removes the conflict entirely.
+
+   TIMELINE
+     0ms    announcement bar drops
+     60ms   logo begins its approach, oversized and rotated
+    ~460ms  IMPACT — shake, flash, plate settles
+     520ms  headline starts assembling, line by line
+     700ms  Chris steps in
+     900ms  nav links stagger
+    1080ms  rail and CTAs
+    1500ms  one glow pulse on the primary CTA
+   ============================================================ */
+
+@keyframes logoPunch{
+  0%   {opacity:0; transform:scale(15) rotate(-8deg) translate(-4%,-6%)}
+  8%   {opacity:1; transform:scale(13) rotate(-7deg) translate(-3.5%,-5%)}
+  /* hold it big — a punch you can't see isn't a punch */
+  30%  {transform:scale(7.5) rotate(-4.5deg) translate(-2%,-3%)}
+  46%  {transform:scale(3.4) rotate(-2deg) translate(-.6%,-1%)}
+  62%  {transform:scale(1.26) rotate(2.6deg) translate(0,0)}   /* impact */
+  74%  {transform:scale(.92) rotate(-1.6deg)}
+  87%  {transform:scale(1.05) rotate(.6deg)}
+  100% {opacity:1; transform:scale(1) rotate(0) translate(0,0)}
+}
+@keyframes stageShake{
+  0%,58% {transform:translate(0,0)}
+  64%    {transform:translate(calc(-10*var(--u)), calc(6*var(--u)))}
+  69%    {transform:translate(calc(8*var(--u)), calc(-5*var(--u)))}
+  74%    {transform:translate(calc(-4*var(--u)), calc(2*var(--u)))}
+  80%    {transform:translate(calc(2*var(--u)), 0)}
+  100%   {transform:translate(0,0)}
+}
+@keyframes punchFlash{
+  0%,58% {opacity:0}
+  63%    {opacity:.34}
+  100%   {opacity:0}
+}
+@keyframes plateSettle{from{transform:scale(1.05)} to{transform:scale(1)}}
+@keyframes riseMask{from{transform:translateY(106%)} to{transform:translateY(0)}}
+@keyframes drawStrike{from{transform:scaleX(0)} to{transform:scaleX(1)}}
+@keyframes arrive{from{opacity:0;transform:translateY(48px)} to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)}}
+/* one pulse on the primary action once everything has landed */
+@keyframes ctaPulse{
+  0%,100%{box-shadow:0 calc(6*var(--u)) calc(26*var(--u)) rgba(235,41,51,.42),
+                     0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
+  50%    {box-shadow:0 calc(6*var(--u)) calc(40*var(--u)) rgba(235,41,51,.95),
+                     0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
+}
+
+/* --- declared unconditionally; disabled in one block at the bottom --- */
+.plateImg        {animation:plateSettle 1500ms var(--ease-out-heavy) both}
+.reimagining>span{animation:riseMask var(--dur-slow) var(--ease-out-heavy) 180ms both}
+.strike          {animation:drawStrike 420ms var(--ease-out-heavy) 300ms both}
+.the>span        {animation:riseMask var(--dur-slow) var(--ease-out-heavy) 300ms both}
+.american>span   {animation:riseMask var(--dur-slow) var(--ease-out-heavy) 360ms both}
+.dream>span      {animation:riseMask var(--dur-slow) var(--ease-out-heavy) 440ms both}
+.chris           {animation:arrive var(--dur-slow) var(--ease-out-heavy) 520ms both}
+.shadowGround,
+.shadowWall      {animation:fadeUp var(--dur-slow) var(--ease-out-heavy) 560ms both}
+.rail            {animation:fadeUp var(--dur-base) var(--ease-out-heavy) 760ms both}
+.ctas            {animation:fadeUp var(--dur-base) var(--ease-out-heavy) 820ms both}
+.links li        {animation:fadeUp var(--dur-base) var(--ease-out-heavy) both}
+.links li:nth-child(1){animation-delay:520ms}
+.links li:nth-child(2){animation-delay:570ms}
+.links li:nth-child(3){animation-delay:620ms}
+.links li:nth-child(4){animation-delay:670ms}
+.links li:nth-child(5){animation-delay:720ms}
+.navCta          {animation:fadeUp var(--dur-base) var(--ease-out-heavy) 760ms both}
+
+.punchFlash{position:absolute;inset:0;z-index:8;pointer-events:none;opacity:0;
+  background:radial-gradient(26% 24% at 13% 12%, rgba(255,255,255,.9) 0%,
+    rgba(235,41,51,.55) 40%, rgba(235,41,51,0) 72%)}
+
+/* --- FIRST VIEW ONLY. LogoPunch.tsx adds this once per session. --- */
+.punching .logo img{transform-origin:18% 30%;will-change:transform,opacity;
+  animation:logoPunch 1150ms cubic-bezier(.62,.02,.3,1) both}
+.punching .stage      {animation:stageShake 1150ms ease-out both}
+.punching .punchFlash {animation:punchFlash 1150ms ease-out both}
+
+/* the impact is what throws the headline in, so everything waits for it */
+.punching .plateImg        {animation-delay:60ms}
+.punching .reimagining>span{animation-delay:520ms}
+.punching .strike          {animation-delay:600ms}
+.punching .the>span        {animation-delay:600ms}
+.punching .american>span   {animation-delay:660ms}
+.punching .dream>span      {animation-delay:740ms}
+.punching .chris           {animation-delay:700ms}
+.punching .shadowGround,
+.punching .shadowWall      {animation-delay:740ms}
+.punching .links li:nth-child(1){animation-delay:900ms}
+.punching .links li:nth-child(2){animation-delay:950ms}
+.punching .links li:nth-child(3){animation-delay:1000ms}
+.punching .links li:nth-child(4){animation-delay:1050ms}
+.punching .links li:nth-child(5){animation-delay:1100ms}
+.punching .navCta          {animation-delay:1140ms}
+.punching .rail            {animation-delay:1080ms}
+.punching .ctas            {animation-delay:1140ms}
+.punching .btnSolid        {animation:ctaPulse 900ms ease-in-out 1700ms 1 both}
+
+/* --- one place to turn all of it off --- */
+@media (prefers-reduced-motion: reduce){
+  .plateImg,.reimagining>span,.strike,.the>span,.american>span,.dream>span,
+  .chris,.shadowGround,.shadowWall,.rail,.ctas,.links li,.navCta,
+  .punching .logo img,.punching .stage,.punching .punchFlash,
+  .punching .btnSolid{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important}
+  .strike{transform:scaleX(1) !important}
 }
