@@ -12,7 +12,7 @@ import s from "../Site.module.css";
  */
 export default function AskSection() {
   return (
-    <section className={`${s.sec} ${s.dark}`} aria-label="Ask a question">
+    <section className={`${s.sec} ${s.dark} ${s.wash} ${s.washCrowd}`} aria-label="Ask a question">
       <div className={s.wrap}>
         <div className={s.kick}>Ask anything</div>
         <h2 className={s.h2}>

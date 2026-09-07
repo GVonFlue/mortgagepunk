@@ -244,11 +244,19 @@ export default async function About() {
                 </Link>
               </div>
             </div>
-            <PhotoSlot
-              className={a.bookSlot}
-              label="Chris on stage"
-              hint="Photo needed from Mortgage Punk"
-            />
+            {/* Was a marked PhotoSlot. This is the real thing: Chris mid-talk
+                at the American Dream Conference, the screen behind him. */}
+            <div className={a.bookSlot} style={{ border: 0, padding: 0 }}>
+              <Image
+                src="/brand/chris-stage.jpg"
+                alt="Chris Waipa speaking at the American Dream Conference"
+                width={1600}
+                height={1067}
+                sizes="(max-width: 900px) 92vw, 46vw"
+                style={{ width: "100%", height: "100%", objectFit: "cover",
+                         borderRadius: 0 }}
+              />
+            </div>
           </div>
         </div>
       </section>

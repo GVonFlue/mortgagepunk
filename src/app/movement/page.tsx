@@ -206,6 +206,30 @@ export default async function Movement() {
         </div>
       </section>
 
+      {/* ---------- what it actually looked like ---------- */}
+      <section className={`${c.sec} ${c.secInk} ${c.wash} ${c.washStage}`}>
+        <div className={c.wrap}>
+          <span className={c.kick}>Last year</span>
+          <h2 className={c.h2} style={{ color: "var(--mp-bone)" }}>
+            This is what
+            <em>it looks like.</em>
+          </h2>
+          <div className={c.shots}>
+            {[
+              { src: "/brand/adc-stage-crowd.jpg", cap: "Keynote, room full" },
+              { src: "/brand/adc-panel.jpg", cap: "Panel sessions" },
+              { src: "/brand/adc-phone.jpg", cap: "Everybody filming it" },
+            ].map((s) => (
+              <figure key={s.src} className={c.shot}>
+                <Image src={s.src} alt="" width={1800} height={1200}
+                  sizes="(max-width: 700px) 92vw, 32vw" />
+                <figcaption className={c.shotCap}>{s.cap}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ---------- who it's for ---------- */}
       <section className={`${c.sec} ${c.secPaper}`}>
         <div className={c.wrap}>
@@ -271,7 +295,7 @@ export default async function Movement() {
       </section>
 
       {/* ---------- giveaways, the one dark band ---------- */}
-      <section className={`${c.sec} ${c.secInk}`}>
+      <section className={`${c.sec} ${c.secInk} ${c.wash} ${c.washCrowd}`}>
         <div className={c.wrap}>
           <span className={c.kick}>Given away live</span>
           <h2 className={c.h2} style={{ color: "var(--mp-bone)" }}>
