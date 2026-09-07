@@ -863,19 +863,19 @@
   letter-spacing:.14em;text-transform:uppercase;color:var(--mp-bone)}
 
 /* photo header on the homepage conference card */
-/* Photo fills the card behind the copy rather than sitting above it. Adds no
-   height, so the section stays the length it was, and there are no negative
-   margins to fall out of step with the card's padding. */
-.evtShot{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.evtShot img{width:100%;height:100%;object-fit:cover;object-position:center 42%;
-  filter:grayscale(1) contrast(1.06);opacity:.42;
-  transition:filter .5s,opacity .5s,transform .8s}
-.evt:hover .evtShot img{filter:grayscale(.2) contrast(1.06);opacity:.55;
-  transform:scale(1.04)}
-/* scrim so the copy over it stays readable at any card height */
+/* Photo header on the conference card.
+   The negative margins MUST match .evt's padding exactly — clamp(28px,2.8vw,44px).
+   An earlier version used 26/2.8vw/42 and the photo stopped 2px short of every
+   edge, which read as a misaligned image rather than a bleed. */
+.evtShot{position:relative;
+  margin:calc(-1 * clamp(28px,2.8vw,44px)) calc(-1 * clamp(28px,2.8vw,44px))
+         clamp(20px,2.2vw,30px);
+  aspect-ratio:16/9;overflow:hidden;border-radius:17px 17px 0 0}
+.evtShot img{width:100%;height:100%;object-fit:cover;
+  filter:grayscale(1) contrast(1.05);transition:filter .5s,transform .7s}
+.evt:hover .evtShot img{filter:grayscale(0);transform:scale(1.03)}
 .evtShot::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(165deg,rgba(10,10,10,.72) 0%,rgba(10,10,10,.86) 55%,
-    rgba(10,10,10,.94) 100%)}
+  background:linear-gradient(180deg,rgba(10,10,10,0) 40%,rgba(10,10,10,.85) 100%)}
 
 /* ============================================================
    TOOLS HERO + TILES

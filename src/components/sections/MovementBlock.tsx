@@ -15,7 +15,7 @@ export default async function MovementBlock() {
   const conf = await getConference();
 
   return (
-    <section className={`${s.sec} ${s.bone}`} aria-label="The movement">
+    <section className={`${s.sec} ${s.ink}`} aria-label="The movement">
       <div className={s.wrap}>
         <div className={s.mv}>
           <div>
