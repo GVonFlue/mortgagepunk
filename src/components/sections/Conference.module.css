@@ -12,11 +12,20 @@
 .page{background:#F4F2EF;color:var(--mp-black)}
 
 /* ---------- hero ---------- */
+/* Paper white, with the room faintly underneath. Keeps the page approachable
+   while hinting that this is a real event rather than a landing page — the
+   photograph is barely there, which is the point. */
 .hero{position:relative;overflow:hidden;isolation:isolate;
   padding:clamp(40px,5.5vw,86px) clamp(20px,4vw,64px) clamp(48px,6vw,96px);
+  background:#F4F2EF}
+.hero::before{content:'';position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:url('/brand/adc-stage-crowd.jpg') center 30% / cover no-repeat;
+  opacity:.12;filter:grayscale(.6) contrast(1.05)}
+.hero::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(90% 70% at 82% 0%, rgba(235,41,51,.09) 0%, rgba(235,41,51,0) 60%),
-    #F4F2EF}
+    radial-gradient(90% 70% at 82% 0%, rgba(235,41,51,.1) 0%, rgba(235,41,51,0) 60%),
+    linear-gradient(180deg,rgba(244,242,239,.72) 0%,rgba(244,242,239,.82) 52%,
+      #F4F2EF 100%)}
 .heroWrap{max-width:1200px;margin:0 auto;text-align:center}
 .logo{width:min(100%,760px);height:auto;margin:0 auto clamp(20px,2.6vw,36px);display:block}
 

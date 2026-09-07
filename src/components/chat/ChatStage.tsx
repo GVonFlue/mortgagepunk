@@ -26,6 +26,9 @@ import s from "./Chat.module.css";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+/** Survives reloads, unlike sessionStorage — a dismissal should stick. */
+const DISMISS_KEY = "mp_chat_capture_dismissed";
+
 const OPENERS = [
   "What do I actually need to get pre-approved?",
   "What's the difference between pre-qualified and pre-approved?",
@@ -47,6 +50,8 @@ export default function ChatStage({
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [showCapture, setShowCapture] = useState(false);
+  /** Once dismissed, never shown again — see DISMISS_KEY below. */
+  const [dismissed, setDismissed] = useState(true);
   const [captured, setCaptured] = useState(false);
   const [lead, setLead] = useState({ first: "", email: "", phone: "" });
   const [leadErr, setLeadErr] = useState("");
@@ -75,10 +80,36 @@ export default function ChatStage({
     if (el) el.scrollTop = el.scrollHeight;
   }, [msgs, showCapture]);
 
-  // offer the follow-up once there's a real conversation, not on message one
+  /**
+   * Whether the follow-up card has been waved away before.
+   *
+   * Read once on mount rather than inline, because localStorage throws in
+   * some private modes and we would rather show the card than crash.
+   */
   useEffect(() => {
-    if (exchanges >= 2 && !captured) setShowCapture(true);
-  }, [exchanges, captured]);
+    try {
+      setDismissed(Boolean(localStorage.getItem(DISMISS_KEY)));
+    } catch {
+      setDismissed(false);
+    }
+  }, []);
+
+  // Offer the follow-up once there's a real conversation, and only ever once.
+  // Asking again after someone has said no is how a helpful prompt turns into
+  // a nag.
+  useEffect(() => {
+    if (exchanges >= 2 && !captured && !dismissed) setShowCapture(true);
+  }, [exchanges, captured, dismissed]);
+
+  function dismissCapture() {
+    setShowCapture(false);
+    setDismissed(true);
+    try {
+      localStorage.setItem(DISMISS_KEY, "1");
+    } catch {
+      /* private mode — it stays dismissed for this session either way */
+    }
+  }
 
   async function send(text: string) {
     const clean = text.trim();
@@ -209,6 +240,16 @@ export default function ChatStage({
 
           {showCapture && (
             <div className={s.capture}>
+              <button
+                type="button"
+                className={s.captureClose}
+                onClick={dismissCapture}
+                aria-label="Dismiss, and don't ask again"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
               <strong>Want a person to pick this up?</strong>
               <p>
                 Leave these and someone from the team follows up. No obligation,
@@ -241,11 +282,7 @@ export default function ChatStage({
                 <button type="button" className={s.captureGo} onClick={submitLead} disabled={busy}>
                   Have someone reach out
                 </button>
-                <button
-                  type="button"
-                  className={s.captureSkip}
-                  onClick={() => setShowCapture(false)}
-                >
+                <button type="button" className={s.captureSkip} onClick={dismissCapture}>
                   Not yet
                 </button>
               </div>

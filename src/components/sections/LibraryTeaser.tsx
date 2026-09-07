@@ -18,7 +18,7 @@ export default async function LibraryTeaser() {
   const featured = all.filter((v) => v.featured).slice(0, 3);
 
   return (
-    <section className={`${s.sec} ${s.dark} ${s.wash} ${s.washEducation}`} aria-label="The Game of Money">
+    <section className={`${s.sec} ${s.dark} ${s.photoBg} ${s.photoEducation}`} aria-label="The Game of Money">
       <div className={s.wrap}>
         <div className={s.libhead}>
           <div>

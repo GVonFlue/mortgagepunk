@@ -28,7 +28,7 @@ export default async function Library() {
       {/* Teaching page, so the hero gives before it asks. Set with the
           size-jump treatment from his posters rather than a flat two-tone
           heading. */}
-      <section className={`${s.sec} ${s.dark}`}>
+      <section className={`${s.sec} ${s.dark} ${s.photoBg} ${s.photoEducation}`}>
         <div className={s.wrap}>
           <Kicker>The Game of Money</Kicker>
           <Statement
