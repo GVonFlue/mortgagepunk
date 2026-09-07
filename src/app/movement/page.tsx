@@ -52,36 +52,77 @@ const WHO = [
   },
 ];
 
-const DAY = [
+/**
+ * Two days, not one. The event runs the 16th and 17th.
+ *
+ * Split into named days rather than one long list, because a visitor deciding
+ * whether to take two days off work needs to see what each day is FOR before
+ * they see the running order. Still a draft until Ashley confirms.
+ */
+const SCHEDULE = [
   {
-    when: "Morning",
-    what: "Doors and the opening keynote",
-    p: "It starts loud. No twenty minutes of housekeeping — the first session is the reason you came.",
+    day: "Day one",
+    date: "Friday",
+    theme: "The Game of Money",
+    rows: [
+      {
+        when: "Morning",
+        what: "Doors and the opening keynote",
+        p: "It starts loud. No twenty minutes of housekeeping — the first session is the reason you came.",
+      },
+      {
+        when: "Late morning",
+        what: "Breakout sessions",
+        p: "Smaller rooms, specific problems. Buying your first place, financing a rental, dealing with debt, keeping more of what you earn.",
+      },
+      {
+        when: "Midday",
+        what: "Lunch and the floor",
+        p: "The part most people say they got the most from. A room full of people solving the same problems you are.",
+      },
+      {
+        when: "Afternoon",
+        what: "Keynote two",
+        p: "What the American Dream actually looks like now, and what it takes to build one.",
+      },
+      {
+        when: "Evening",
+        what: "Live music",
+        p: "Day one closes with a concert, because of course it does.",
+      },
+    ],
   },
   {
-    when: "Late morning",
-    what: "Breakout sessions",
-    p: "Smaller rooms, specific problems. Buying your first place, financing a rental, dealing with debt, keeping more of what you earn.",
-  },
-  {
-    when: "Midday",
-    what: "Lunch and the floor",
-    p: "The part most people say they got the most from. A room full of people solving the same problems you are.",
-  },
-  {
-    when: "Afternoon",
-    what: "Keynotes two and three",
-    p: "The big-picture sessions. What the American Dream looks like now, and what it takes to build one.",
-  },
-  {
-    when: "Late afternoon",
-    what: "The giveaways",
-    p: "Given away live, on stage, to people in the room. Not a raffle you hear about in an email a week later.",
-  },
-  {
-    when: "Evening",
-    what: "Live music",
-    p: "It closes with a concert, because of course it does.",
+    day: "Day two",
+    date: "Saturday",
+    theme: "Putting it to work",
+    rows: [
+      {
+        when: "Morning",
+        what: "Keynote three",
+        p: "The big-picture session. Ownership, leverage, and building a life that does not depend on the next paycheck.",
+      },
+      {
+        when: "Late morning",
+        what: "Workshops",
+        p: "Hands on rather than sit and listen. Bring your actual numbers and work them with someone who does this for a living.",
+      },
+      {
+        when: "Midday",
+        what: "Lunch and the floor",
+        p: "Second day, warmer room. This is where most of the connections actually get made.",
+      },
+      {
+        when: "Late afternoon",
+        what: "The giveaways",
+        p: "Given away live, on stage, to people in the room. Not a raffle you hear about in an email a week later.",
+      },
+      {
+        when: "Close",
+        what: "Where you go from here",
+        p: "You leave with a plan you wrote, not a folder of notes you never open again.",
+      },
+    ],
   },
 ];
 
@@ -125,7 +166,7 @@ export default async function Movement() {
           </div>
 
           <p className={c.tagline}>
-            One day. <em>Everything they never taught you</em> about money.
+            Two days. <em>Everything they never taught you</em> about money.
           </p>
 
           <div className={c.heroBtns}>
@@ -199,22 +240,32 @@ export default async function Movement() {
             <em>actually runs.</em>
           </h2>
 
-          <div className={c.day}>
-            {DAY.map((d) => (
-              <div key={d.when} className={c.dayRow}>
-                <span className={c.dayWhen}>{d.when}</span>
-                <div className={c.dayWhat}>
-                  <h3>{d.what}</h3>
-                  <p>{d.p}</p>
-                </div>
+          {SCHEDULE.map((d) => (
+            <div key={d.day} className={c.dayBlock}>
+              <div className={c.dayHead}>
+                <span className={c.dayNo}>{d.day}</span>
+                <span className={c.dayDate}>{d.date}</span>
+                <span className={c.dayTheme}>{d.theme}</span>
               </div>
-            ))}
-          </div>
+              <div className={c.day}>
+                {d.rows.map((r) => (
+                  <div key={r.when} className={c.dayRow}>
+                    <span className={c.dayWhen}>{r.when}</span>
+                    <div className={c.dayWhat}>
+                      <h3>{r.what}</h3>
+                      <p>{r.p}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
 
           <div className={c.todo}>
-            TODO: this running order is a reasonable draft, not confirmed. Ashley
-            needs to supply the real schedule, the other two keynote speakers,
-            and the breakout titles.
+            TODO: this two-day running order is a reasonable draft, not
+            confirmed. Ashley needs to supply the real schedule for both days,
+            the other two keynote speakers, and the breakout and workshop
+            titles.
           </div>
         </div>
       </section>
@@ -257,12 +308,11 @@ export default async function Movement() {
               <span className={c.kick}>Where and when</span>
               <h2 className={c.h2}>
                 Wichita.
-                <em>One day only.</em>
+                <em>Two days.</em>
               </h2>
               <p className={c.lede}>
-                Everything happens in one building, so there is no running
-                between venues and nothing missed because you were in the wrong
-                room.
+                Both days happen in one building, so there is no running between
+                venues and nothing missed because you were in the wrong room.
               </p>
             </div>
 

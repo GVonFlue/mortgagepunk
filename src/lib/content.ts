@@ -215,7 +215,7 @@ export const SEED_TALKS: Talk[] = [
 
 export const SEED_CONFERENCE: Conference = {
   headline: "The American Dream Conference",
-  date_label: "October 16, 2027",
+  date_label: "October 16-17, 2027",
   venue: "Hyatt Regency · Wichita, Kansas",
   keynote: "Hannah Hammond",
   blurb: "Not a sit-in-a-chair seminar. Real education, real connections, and the volume all the way up.",
