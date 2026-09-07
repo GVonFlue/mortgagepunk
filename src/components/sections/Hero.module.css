@@ -222,141 +222,83 @@
 
 
 /* ============================================================
-   THE ENTRANCE
+   THE ENTRANCE — deliberately lean
    ============================================================
-   One timeline, not two systems. Everything below is a single choreographed
-   moment: the logo lands, the impact shakes the stage, and the shake is what
-   throws the headline into place. Total run is under two seconds.
+   REWRITTEN FOR PERFORMANCE, not for effect count.
 
-   WHY NO `@media (prefers-reduced-motion: no-preference)` WRAPPER:
-   the delay overrides live at `.punching .american>span` (0,2,1) while the
-   base animation sat at `.american>span` (0,1,1) inside the media block.
-   The override won the delay but the animation resolved from a lower-priority
-   rule, so elements froze at their `from` state and the headline never
-   appeared. Declaring the animations unconditionally and switching them OFF in
-   a single reduce block at the bottom removes the conflict entirely.
+   The previous version animated fourteen things at once, and three of them
+   were the expensive kind:
+     - plateSettle scaled a full-bleed photograph every frame
+     - stageShake transformed the ENTIRE stage, meaning the concrete, Chris,
+       and every piece of stroked-and-shadowed display type got recomposited
+       together on every frame
+     - five separate masked line reveals, each carrying a text-stroke, a
+       text-shadow, and (on DREAM) a background-clip gradient overlay
 
-   TIMELINE
-     0ms    announcement bar drops
-     60ms   logo begins its approach, oversized and rotated
-    ~460ms  IMPACT — shake, flash, plate settles
-     520ms  headline starts assembling, line by line
-     700ms  Chris steps in
-     900ms  nav links stagger
-    1080ms  rail and CTAs
-    1500ms  one glow pulse on the primary CTA
+   Painting stroked text with shadows is one of the most expensive things a
+   browser does. Moving it is worse. So now:
+
+     - the plate never moves
+     - nothing transforms the whole stage
+     - the headline rises as ONE element, not five
+     - only four things animate in total
+
+   The logo punch is the moment. Everything else gets out of its way.
    ============================================================ */
 
 @keyframes logoPunch{
-  /* Max scale is 8, not 15. The logo is a 1209px raster — at 15x the browser
-     rasterises it around 18,000px wide, which cost a single 433ms frame and
-     was the whole source of the choppiness. 8x still fills the screen. */
-  0%   {opacity:0; transform:scale(8) rotate(-8deg) translate(-4%,-6%)}
-  8%   {opacity:1; transform:scale(7.4) rotate(-7deg) translate(-3.5%,-5%)}
-  30%  {transform:scale(5.2) rotate(-4.5deg) translate(-2%,-3%)}
-  46%  {transform:scale(2.9) rotate(-2deg) translate(-.6%,-1%)}
-  62%  {transform:scale(1.26) rotate(2.6deg) translate(0,0)}   /* impact */
-  74%  {transform:scale(.92) rotate(-1.6deg)}
-  87%  {transform:scale(1.05) rotate(.6deg)}
-  100% {opacity:1; transform:scale(1) rotate(0) translate(0,0)}
+  /* 5x, not 15x. The logo is a 1209px raster; every doubling multiplies the
+     texture the compositor has to hold. 5x still fills the frame. */
+  0%   {opacity:0; transform:scale(5) rotate(-7deg) translate3d(-3%,-4%,0)}
+  10%  {opacity:1}
+  50%  {transform:scale(2.1) rotate(-3deg) translate3d(-1%,-1.5%,0)}
+  70%  {transform:scale(1.18) rotate(2deg) translate3d(0,0,0)}
+  84%  {transform:scale(.95) rotate(-1deg) translate3d(0,0,0)}
+  100% {opacity:1; transform:scale(1) rotate(0) translate3d(0,0,0)}
 }
-@keyframes stageShake{
-  0%,58% {transform:translate(0,0)}
-  64%    {transform:translate(calc(-10*var(--u)), calc(6*var(--u)))}
-  69%    {transform:translate(calc(8*var(--u)), calc(-5*var(--u)))}
-  74%    {transform:translate(calc(-4*var(--u)), calc(2*var(--u)))}
-  80%    {transform:translate(calc(2*var(--u)), 0)}
-  100%   {transform:translate(0,0)}
+/* one element, one transform — the whole headline arrives together */
+@keyframes typeIn{
+  from{opacity:0; transform:translate3d(0,34px,0)}
+  to  {opacity:1; transform:translate3d(0,0,0)}
+}
+@keyframes arrive{
+  from{opacity:0; transform:translate3d(0,44px,0)}
+  to  {opacity:1; transform:translate3d(0,0,0)}
+}
+@keyframes fadeUp{
+  from{opacity:0; transform:translate3d(0,16px,0)}
+  to  {opacity:1; transform:translate3d(0,0,0)}
 }
 @keyframes punchFlash{
-  0%,58% {opacity:0}
-  63%    {opacity:.34}
+  0%,44% {opacity:0}
+  52%    {opacity:.3}
   100%   {opacity:0}
 }
-@keyframes plateSettle{from{transform:scale(1.05)} to{transform:scale(1)}}
-@keyframes riseMask{from{transform:translateY(106%)} to{transform:translateY(0)}}
-@keyframes drawStrike{from{transform:scaleX(0)} to{transform:scaleX(1)}}
-@keyframes arrive{from{opacity:0;transform:translateY(48px)} to{opacity:1;transform:translateY(0)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)}}
-@keyframes dropIn{from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)}}
-/* one pulse on the primary action once everything has landed */
-@keyframes ctaPulse{
-  0%,100%{box-shadow:0 calc(6*var(--u)) calc(26*var(--u)) rgba(235,41,51,.42),
-                     0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
-  50%    {box-shadow:0 calc(6*var(--u)) calc(40*var(--u)) rgba(235,41,51,.95),
-                     0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
-}
-
-/* --- declared unconditionally; disabled in one block at the bottom --- */
-.plateImg        {animation:plateSettle 1500ms var(--ease-out-heavy) both}
-.reimagining>span{animation:riseMask var(--dur-slow) var(--ease-out-heavy) 180ms both}
-.strike          {animation:drawStrike 420ms var(--ease-out-heavy) 300ms both}
-.the>span        {animation:riseMask var(--dur-slow) var(--ease-out-heavy) 300ms both}
-.american>span   {animation:riseMask var(--dur-slow) var(--ease-out-heavy) 360ms both}
-.dream>span      {animation:riseMask var(--dur-slow) var(--ease-out-heavy) 440ms both}
-.chris           {animation:arrive var(--dur-slow) var(--ease-out-heavy) 520ms both}
-.shadowGround,
-.shadowWall      {animation:fadeUp var(--dur-slow) var(--ease-out-heavy) 560ms both}
-.rail            {animation:fadeUp var(--dur-base) var(--ease-out-heavy) 760ms both}
-.ctas            {animation:fadeUp var(--dur-base) var(--ease-out-heavy) 820ms both}
-.links li        {animation:fadeUp var(--dur-base) var(--ease-out-heavy) both}
-.links li:nth-child(1){animation-delay:520ms}
-.links li:nth-child(2){animation-delay:570ms}
-.links li:nth-child(3){animation-delay:620ms}
-.links li:nth-child(4){animation-delay:670ms}
-.links li:nth-child(5){animation-delay:720ms}
-.navCta          {animation:fadeUp var(--dur-base) var(--ease-out-heavy) 760ms both}
 
 .punchFlash{position:absolute;inset:0;z-index:8;pointer-events:none;opacity:0;
-  background:radial-gradient(26% 24% at 13% 12%, rgba(255,255,255,.9) 0%,
-    rgba(235,41,51,.55) 40%, rgba(235,41,51,0) 72%)}
+  background:radial-gradient(24% 22% at 13% 12%, rgba(255,255,255,.85) 0%,
+    rgba(235,41,51,.5) 42%, rgba(235,41,51,0) 74%)}
 
-/* Applied one frame before .punching. Promoting the layer at the same instant
-   the animation starts means the browser rasterises under time pressure — that
-   was a 210ms first frame. Warming it first makes the entrance start cold-free. */
-.punchReady .logo img{will-change:transform,opacity;backface-visibility:hidden;
-  transform:translateZ(0)}
-.punchReady .stage{will-change:transform;backface-visibility:hidden}
-.punchReady .btnGhost{backdrop-filter:none}
+/* four animated elements, full stop */
+.type   {animation:typeIn 620ms var(--ease-out-heavy) 240ms both}
+.chris  {animation:arrive 700ms var(--ease-out-heavy) 340ms both}
+.rail   {animation:fadeUp 460ms var(--ease-out-heavy) 520ms both}
+.ctas   {animation:fadeUp 460ms var(--ease-out-heavy) 580ms both}
 
-/* --- FIRST VIEW ONLY. LogoPunch.tsx adds this once per session. --- */
+/* --- pre-warm: promote the logo before it moves, never during --- */
+.punchReady .logo img{will-change:transform,opacity;transform:translateZ(0)}
+
+/* --- first view only --- */
 .punching .logo img{transform-origin:18% 30%;
+  animation:logoPunch 900ms cubic-bezier(.5,.05,.25,1) both}
+.punching .punchFlash{animation:punchFlash 900ms ease-out both}
+.punching .type {animation-delay:520ms}
+.punching .chris{animation-delay:600ms}
+.punching .rail {animation-delay:760ms}
+.punching .ctas {animation-delay:820ms}
 
-  animation:logoPunch 1150ms cubic-bezier(.62,.02,.3,1) both}
-.punching .stage      {animation:stageShake 1150ms ease-out both}
-.punching .punchFlash {animation:punchFlash 1150ms ease-out both}
-
-/* the impact is what throws the headline in, so everything waits for it */
-.punching .plateImg        {animation-delay:60ms}
-.punching .reimagining>span{animation-delay:520ms}
-.punching .strike          {animation-delay:600ms}
-.punching .the>span        {animation-delay:600ms}
-.punching .american>span   {animation-delay:660ms}
-.punching .dream>span      {animation-delay:740ms}
-.punching .chris           {animation-delay:700ms}
-.punching .shadowGround,
-.punching .shadowWall      {animation-delay:740ms}
-.punching .links li:nth-child(1){animation-delay:900ms}
-.punching .links li:nth-child(2){animation-delay:950ms}
-.punching .links li:nth-child(3){animation-delay:1000ms}
-.punching .links li:nth-child(4){animation-delay:1050ms}
-.punching .links li:nth-child(5){animation-delay:1100ms}
-.punching .navCta          {animation-delay:1140ms}
-.punching .rail            {animation-delay:1080ms}
-.punching .ctas            {animation-delay:1140ms}
-.punching .btnSolid        {animation:ctaPulse 900ms ease-in-out 1700ms 1 both}
-/* backdrop-filter forces a readback of everything behind it on every frame.
-   Cheap when static, brutal during a full-stage shake. */
-.punching .btnGhost{backdrop-filter:none}
-
-/* --- one place to turn all of it off --- */
 @media (prefers-reduced-motion: reduce){
-  .plateImg,.reimagining>span,.strike,.the>span,.american>span,.dream>span,
-  .chris,.shadowGround,.shadowWall,.rail,.ctas,.links li,.navCta,
-  .punching .logo img,.punching .stage,.punching .punchFlash,
-  .punching .btnSolid{
-    animation:none !important;
-    opacity:1 !important;
-    transform:none !important}
-  .strike{transform:scaleX(1) !important}
+  .type,.chris,.rail,.ctas,
+  .punching .logo img,.punching .punchFlash{
+    animation:none !important; opacity:1 !important; transform:none !important}
 }
