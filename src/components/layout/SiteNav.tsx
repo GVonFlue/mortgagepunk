@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import n from "./SiteNav.module.css";
+import MobileNav from "./MobileNav";
 import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
 /**
@@ -37,6 +38,7 @@ export default function SiteNav() {
       <a href={APPLY_URL} {...EXTERNAL} className={n.cta}>
         Get Approved <span aria-hidden="true">&rarr;</span>
       </a>
+      <MobileNav />
     </nav>
   );
 }

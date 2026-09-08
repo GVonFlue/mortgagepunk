@@ -178,6 +178,9 @@
   .logo img{height:calc(46*var(--u))}
   .links{display:none}
   .navCta{font-size:calc(11*var(--u));padding:calc(9*var(--u)) calc(15*var(--u))}
+  /* the burger is a fixed 44px tap target, so the nav row stops shrinking
+     the CTA into it */
+  .nav{gap:calc(10*var(--u))}
   .ctas{left:calc(17.5*var(--u));right:calc(17.5*var(--u));width:auto;bottom:calc(26*var(--u))}
   .btn{font-size:calc(13*var(--u));padding:calc(15*var(--u)) calc(17*var(--u))}
 }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
 import LogoPunch from "./LogoPunch";
+import MobileNav from "../layout/MobileNav";
 import { APPLY_URL, EXTERNAL } from "@/lib/links";
 import { getHero } from "@/lib/db";
 import { HERO_FIT } from "@/lib/content";
@@ -209,6 +210,9 @@ export default async function Hero() {
         >
           {h.nav_cta_label} <span aria-hidden="true">&rarr;</span>
         </a>
+
+        {/* the link row is hidden below 820px; this is what replaces it */}
+        <MobileNav />
       </nav>
 
       {/* fires on impact, gone in a blink */}
