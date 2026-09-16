@@ -30,6 +30,14 @@ import s from "./Section.module.css";
 
 export type Tone = "dark" | "ink" | "bone" | "red";
 
+/**
+ * How the section sits on the fixed ground.
+ *   float  glass panel, the ground reads through
+ *   solid  near-opaque, for dense copy or a form
+ *   open   no panel, content sits straight on the ground
+ */
+export type Sit = "float" | "solid" | "open";
+
 export default function Section({
   id,
   tone = "dark",
@@ -40,6 +48,7 @@ export default function Section({
   cta,
   children,
   bleed = false,
+  sit,
 }: {
   id?: string;
   tone?: Tone;
@@ -54,12 +63,22 @@ export default function Section({
   children?: React.ReactNode;
   /** Content runs full width instead of inside the text column. */
   bleed?: boolean;
+  /** Omit for a classic full-bleed section; set to float over the ground. */
+  sit?: Sit;
 }) {
   const hasHead = Boolean(kicker || title || lede);
 
+  const floating = Boolean(sit);
+  const panel = floating
+    ? `${s.panel} ${s[sit as Sit]} ${tone === "red" ? s.redPanel : ""}`
+    : "";
+
   return (
-    <section id={id} className={`${s.sec} ${s[tone]}`}>
-      <div className={s.wrap}>
+    <section
+      id={id}
+      className={`${s.sec} ${floating ? s.onGround : s[tone]}`}
+    >
+      <div className={`${s.wrap} ${panel}`}>
         {hasHead && (
           <header className={s.head}>
             {kicker && <span className={s.kicker}>{kicker}</span>}

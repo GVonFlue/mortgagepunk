@@ -1,16 +1,15 @@
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
-import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import Section from "@/components/layout/Section";
+import PageGround from "@/components/layout/PageGround";
 
 import Hero from "@/components/sections/Hero";
-import ProofStrip from "@/components/sections/ProofStrip";
-import LendingPaths from "@/components/sections/LendingPaths";
+import ThreeDoors from "@/components/sections/ThreeDoors";
+import LendingBrief from "@/components/sections/LendingBrief";
 import ToolsTiles from "@/components/tools/ToolsTiles";
 import MoneyWall from "@/components/sections/MoneyWall";
 import MovementBlock from "@/components/sections/MovementBlock";
 import ChrisSection from "@/components/sections/ChrisSection";
-import Testimonials from "@/components/sections/Testimonials";
 import ChatStage from "@/components/chat/ChatStage";
 import LeadForm from "@/components/sections/LeadForm";
 
@@ -53,46 +52,18 @@ export default function Home() {
   return (
     <>
       <AnnouncementBar />
-      <SiteNav />
+      {/* The hero carries its own nav as part of its fixed stage composition.
+          Rendering <SiteNav/> here too stacked a second one on top of it. */}
       <Hero />
-      <ProofStrip />
 
-      <Section
-        id="lending"
-        tone="dark"
-        kicker="Lending"
-        title="A movement out front."
-        accent="A serious operation behind it."
-        lede="Three ways in. The process is the same either way — what changes is the paperwork and what we're solving for."
-      >
-        <LendingPaths />
-      </Section>
+      {/* Fixed concrete for the whole page below the hero. */}
+      <PageGround />
 
-      <Section
-        id="tools"
-        tone="ink"
-        kicker="Run your own numbers"
-        title="No form. No call."
-        accent="Just the math."
-        lede="Most lender calculators leave out taxes, insurance and mortgage insurance, then hand you a number that's thousands off. These don't."
-      >
-        <ToolsTiles />
-      </Section>
-
-      <Section
-        id="money"
-        tone="dark"
-        kicker="The Game of Money"
-        title="Everything they never taught you"
-        accent="about money."
-        cta={{ label: "Show me more", href: "/library" }}
-      >
-        <MoneyWall />
-      </Section>
+      <ThreeDoors />
 
       <Section
         id="movement"
-        tone="ink"
+        sit="float"
         kicker="The Movement"
         title="The American Dream"
         accent="isn't a checklist."
@@ -102,21 +73,32 @@ export default function Home() {
         <MovementBlock />
       </Section>
 
+      {/* open: the video wall IS the design, so no panel competes with it */}
       <Section
-        id="chris"
-        tone="dark"
-        kicker="Chris"
-        title="Two words that were"
-        accent="never supposed to go together."
+        id="money"
+        sit="open"
+        kicker="The Game of Money"
+        title="Everything they never taught you"
+        accent="about money."
+        cta={{ label: "Show me more", href: "/library" }}
       >
-        <ChrisSection />
+        <MoneyWall />
       </Section>
 
-      <Testimonials />
+      <Section
+        id="lending"
+        sit="float"
+        kicker="The Lending Team"
+        title="A movement out front."
+        accent="A serious operation behind it."
+        lede="Three ways in. The process is the same either way — what changes is the paperwork and what we're solving for."
+      >
+        <LendingBrief />
+      </Section>
 
       <Section
         id="ask"
-        tone="ink"
+        sit="solid"
         kicker="Ask anything"
         title="No dumb questions."
         accent="Only expensive silence."
@@ -126,8 +108,30 @@ export default function Home() {
       </Section>
 
       <Section
+        id="tools"
+        sit="float"
+        kicker="Run your own numbers"
+        title="No form. No call."
+        accent="Just the math."
+        lede="Most lender calculators leave out taxes, insurance and mortgage insurance, then hand you a number that's thousands off. These don't."
+      >
+        <ToolsTiles />
+      </Section>
+
+      <Section
+        id="chris"
+        sit="float"
+        kicker="Chris"
+        title="Two words that were"
+        accent="never supposed to go together."
+      >
+        <ChrisSection />
+      </Section>
+
+      <Section
         id="contact"
         tone="red"
+        sit="solid"
         kicker="Start here"
         title="Talk to a person."
         accent="Not a call center."

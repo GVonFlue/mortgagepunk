@@ -77,3 +77,44 @@
 .cta:hover span{transform:translateX(4px)}
 .red .cta{background:var(--mp-black);color:#fff}
 .red .cta:hover{background:#000}
+
+/* ============================================================
+   FLOATING PANELS
+   ============================================================
+   With a fixed ground behind the whole page, sections stop being full-bleed
+   colour blocks and become panels floating over it.
+
+   Three treatments rather than one. If every section were the same translucent
+   card the page would lose its rhythm in a different way to the alternating
+   black-and-white blocks it replaces — samey is its own failure. So:
+
+     float  glass. The ground reads through it. The default.
+     solid  near-opaque. For sections carrying dense copy or a form.
+     open   no panel at all. Content sits directly on the ground, which makes
+            the ground itself part of that section's design.
+   ============================================================ */
+.onGround{background:transparent;border-top:0;
+  padding:clamp(28px,4vw,64px) clamp(16px,4vw,48px)}
+.onGround .wrap{position:relative}
+
+.panel{position:relative;border-radius:clamp(18px,2vw,28px);
+  padding:clamp(30px,4.2vw,72px) clamp(22px,3.4vw,60px)}
+
+.float{background:rgba(14,14,14,.72);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.9)}
+.solid{background:rgba(10,10,10,.93);backdrop-filter:blur(6px);
+  border:1px solid var(--mp-line);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.9)}
+.open{background:transparent;border:0;box-shadow:none;
+  padding-left:0;padding-right:0}
+
+/* the red panel keeps its colour but now floats like the rest */
+.redPanel{background:linear-gradient(150deg,#FF4438 0%,#EB2933 46%,#A8141C 100%);
+  color:var(--mp-black);border:0;
+  box-shadow:0 30px 80px -36px rgba(235,41,51,.5)}
+.redPanel .kicker,.redPanel .kicker::after{color:var(--mp-black)}
+.redPanel .kicker::after{background:var(--mp-black)}
+.redPanel .title em{color:#fff}
+.redPanel .lede{color:rgba(10,10,10,.78)}
+.redPanel .cta{background:var(--mp-black);color:#fff}
