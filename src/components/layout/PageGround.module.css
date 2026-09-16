@@ -1,0 +1,26 @@
+/*
+  PageGround.module.css — the fixed ground.
+
+  position:fixed rather than background-attachment:fixed. The latter is
+  unreliable on iOS Safari and falls back to scrolling with the page, which is
+  the exact behaviour this whole idea depends on not happening.
+*/
+
+.ground{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:url('/brand/page-ground.jpg') center / cover no-repeat;
+  /* Darkened hard and nearly desaturated. The brand red has to stay the only
+     real colour on the page, and every panel that floats over this needs its
+     copy readable whatever part of the photograph happens to sit behind it. */
+  background-color:#0A0A0A}
+
+/* a red bloom top-right and a deep vignette, so the ground has depth instead
+   of reading as a flat tiled texture */
+.ground::after{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(70% 50% at 88% 4%, rgba(235,41,51,.16) 0%, rgba(235,41,51,0) 62%),
+    radial-gradient(120% 90% at 50% 50%, rgba(10,10,10,.25) 0%, rgba(10,10,10,.82) 100%)}
+
+@media(max-width:820px){
+  /* a wide strip scaled to a tall phone viewport magnifies far too much */
+  .ground{background-image:url('/brand/page-ground-m.jpg')}
+}
