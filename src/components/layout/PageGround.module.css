@@ -7,11 +7,22 @@
 */
 
 .ground{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  /* The gradient IS the ground. The photograph is layered over it, so a
+     missing or slow image leaves a deliberate-looking page rather than a
+     broken one — every panel on this page is designed to float over
+     something, and flat black is not that. */
+  background:
+    radial-gradient(80% 60% at 20% 0%,  #23211f 0%, rgba(35,33,31,0) 60%),
+    radial-gradient(70% 60% at 85% 30%, #1a1917 0%, rgba(26,25,23,0) 62%),
+    linear-gradient(170deg, #1b1a18 0%, #121110 46%, #0B0B0A 100%)}
+
+/* the photograph, over the gradient */
+.ground::before{content:'';position:absolute;inset:0;
   background:url('/brand/page-ground.jpg') center / cover no-repeat;
   /* Darkened hard and nearly desaturated. The brand red has to stay the only
-     real colour on the page, and every panel that floats over this needs its
-     copy readable whatever part of the photograph happens to sit behind it. */
-  background-color:#0A0A0A}
+     real colour on the page, and every panel floating over this needs its copy
+     readable whatever part of the photograph happens to sit behind it. */
+  opacity:.85;mix-blend-mode:luminosity}
 
 /* a red bloom top-right and a deep vignette, so the ground has depth instead
    of reading as a flat tiled texture */

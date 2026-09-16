@@ -1,5 +1,4 @@
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
-import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import Section from "@/components/layout/Section";
 import PageGround from "@/components/layout/PageGround";
@@ -53,7 +52,6 @@ export default function Home() {
   return (
     <>
       <AnnouncementBar />
-      <SiteNav />
       <Hero />
 
       {/* the ground starts below the hero and runs to the footer */}
