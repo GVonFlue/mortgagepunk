@@ -15,82 +15,36 @@ export default async function MovementBlock() {
   const conf = await getConference();
 
   return (
-    <section className={`${s.sec} ${s.ink}`} aria-label="The movement">
-      <div className={s.wrap}>
-        <div className={s.mv}>
-          <div>
-            <div className={s.kick}>The Movement</div>
-            <p className={s.quote}>
-              The American Dream isn&rsquo;t a checklist.
-              <br />
-              <em>It&rsquo;s the freedom and opportunity to rewrite your story.</em>
-            </p>
-            <div className={s.attrib}>Chris Waipa &middot; Founder, Mortgage Punk</div>
-            <p className={s.lede}>
-              It started by challenging a broken mortgage experience. It grew
-              into a lending team, a media platform, a live event, and a
-              community built around helping people think bigger than the next
-              transaction.
-            </p>
-            <div style={{ marginTop: 32 }}>
-              <Link href="/movement" className={`${s.btn} ${s.btnSolid}`}>
-                Read the mission &rarr;
-              </Link>
-            </div>
-          </div>
+    <div className={s.mv}>
+      <div className={s.evt}>
+        <div className={s.evtShot} aria-hidden="true">
+          <Image
+            src="/brand/adc-stageset.jpg"
+            alt=""
+            width={1800}
+            height={1200}
+            sizes="(max-width: 900px) 92vw, 44vw"
+          />
+        </div>
+        <span className={s.tag}>Next &middot; {conf.date_label}</span>
+        <h3>{conf.headline}</h3>
+        <div className={s.meta}>
+          <strong>{conf.venue}</strong>
+          <br />
+          Keynote: {conf.keynote}
+          <br />
+          {conf.blurb}
+        </div>
 
-          <div className={s.evt}>
-            {/* Was a GfxNote placeholder. Real frame from the last one — the
-                empty stage before doors, which reads as anticipation rather
-                than as a crowd shot competing with the copy below it. */}
-            <div className={s.evtShot} aria-hidden="true">
-              <Image
-                src="/brand/adc-stageset.jpg"
-                alt=""
-                width={1800}
-                height={1200}
-                sizes="(max-width: 900px) 92vw, 44vw"
-              />
+        <div className={s.stats}>
+          {conf.stats.map((st) => (
+            <div key={st.label} className={s.stat}>
+              <b>{st.value}</b>
+              <span>{st.label}</span>
             </div>
-            <span className={s.tag}>Next &middot; {conf.date_label}</span>
-            <h3>{conf.headline}</h3>
-            <div className={s.meta}>
-              <strong>{conf.venue}</strong>
-              <br />
-              Keynote: {conf.keynote}
-              <br />
-              {conf.blurb}
-            </div>
-
-            <div className={s.stats}>
-              {conf.stats.map((st) => (
-                <div key={st.label} className={s.stat}>
-                  <b>{st.value}</b>
-                  <span>{st.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className={s.prizes}>
-              {conf.prizes.map((p) => (
-                <div key={p} className={s.prize}>
-                  <i aria-hidden="true" />
-                  {p}
-                </div>
-              ))}
-            </div>
-
-            <a
-              href={conf.url}
-              className={`${s.btn} ${s.btnGhost}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Conference details &rarr;
-            </a>
-          </div>
+          ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
