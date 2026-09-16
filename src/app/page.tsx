@@ -1,5 +1,6 @@
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteFooter from "@/components/layout/SiteFooter";
+import SiteNav from "@/components/layout/SiteNav";
 import Section from "@/components/layout/Section";
 import PageGround from "@/components/layout/PageGround";
 
@@ -51,14 +52,16 @@ export const revalidate = 300;
 export default function Home() {
   return (
     <>
-      <div className="mp-above-ground">
-        <AnnouncementBar />
-      </div>
-      {/* The hero carries its own nav as part of its fixed stage composition.
-          Rendering <SiteNav/> here too stacked a second one on top of it. */}
-      <div className="mp-above-ground">
-        <Hero />
-      </div>
+      <AnnouncementBar />
+      {/* One sticky nav sitewide. The hero used to carry its own, which lived
+          inside the scaled stage and scrolled away with it.
+
+          Deliberately NOT wrapped in .mp-above-ground: a sticky element is
+          constrained by its parent's box, so a short wrapper would pin it for
+          a few pixels and then release it. It carries z-index:70 itself, which
+          already clears the ground. */}
+      <SiteNav />
+      <Hero />
 
       {/* Fixed concrete for the whole page below the hero. */}
       <PageGround />
@@ -67,7 +70,8 @@ export default function Home() {
 
       <Section
         id="movement"
-        sit="float"
+        sit="open"
+        center
         kicker="The Movement"
         title="The American Dream"
         accent="isn't a checklist."

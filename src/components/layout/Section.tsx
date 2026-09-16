@@ -49,6 +49,7 @@ export default function Section({
   children,
   bleed = false,
   sit,
+  center = false,
 }: {
   id?: string;
   tone?: Tone;
@@ -65,6 +66,9 @@ export default function Section({
   bleed?: boolean;
   /** Omit for a classic full-bleed section; set to float over the ground. */
   sit?: Sit;
+  /** Centre the head and content. For sections that are a statement rather
+   *  than a block of information to be read left to right. */
+  center?: boolean;
 }) {
   const hasHead = Boolean(kicker || title || lede);
 
@@ -78,7 +82,7 @@ export default function Section({
       id={id}
       className={`${s.sec} ${floating ? s.onGround : s[tone]}`}
     >
-      <div className={`${s.wrap} ${panel}`}>
+      <div className={`${s.wrap} ${panel} ${center ? s.center : ""}`}>
         {hasHead && (
           <header className={s.head}>
             {kicker && <span className={s.kicker}>{kicker}</span>}

@@ -118,3 +118,15 @@
 .redPanel .title em{color:#fff}
 .redPanel .lede{color:rgba(10,10,10,.78)}
 .redPanel .cta{background:var(--mp-black);color:#fff}
+
+/* ---------- centred sections ----------
+   For a section that is a statement rather than information to be read. The
+   head's max-width has to go too, or a 60ch column centred in a 1400px wrap
+   reads as accidentally off to one side rather than deliberately centred. */
+.center{text-align:center}
+.center .head{max-width:none;margin-left:auto;margin-right:auto}
+.center .title{align-items:center}
+.center .kicker{align-items:center;margin-left:auto;margin-right:auto}
+.center .lede{margin-left:auto;margin-right:auto}
+.center .cta{margin-left:auto;margin-right:auto}
+.center .body{display:flex;justify-content:center}
