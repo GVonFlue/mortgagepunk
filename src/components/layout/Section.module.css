@@ -129,4 +129,4 @@
 .center .kicker{align-items:center;margin-left:auto;margin-right:auto}
 .center .lede{margin-left:auto;margin-right:auto}
 .center .cta{margin-left:auto;margin-right:auto}
-.center .body{display:flex;justify-content:center}
+.center .body{display:flex;justify-content:center;width:100%}

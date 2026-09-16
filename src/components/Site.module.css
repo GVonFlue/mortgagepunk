@@ -210,7 +210,11 @@
 @media(max-width:600px){.vids{grid-template-columns:1fr}}
 
 /* ---------- movement / conference ---------- */
-.mv{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(30px,4vw,72px);align-items:start}
+/* Single centred column. The left-hand copy moved into the Section head, so
+   this now holds only the conference card — a two-column grid would stretch it
+   full width and leave it looking left-aligned inside a centred section. */
+.mv{display:flex;justify-content:center;width:100%}
+.mv > *{width:min(760px,100%)}
 .quote{font-family:var(--font-display),sans-serif;font-size:clamp(26px,3.4vw,52px);
   line-height:1.02;text-transform:uppercase;letter-spacing:-.018em;margin:0}
 .quote em{color:var(--mp-red);font-style:normal}
