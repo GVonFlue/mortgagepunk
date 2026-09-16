@@ -1,28 +1,38 @@
 /*
   PageGround.module.css — the fixed concrete the whole page floats over.
 
-  Uses hero-plate.jpg: the same concrete already behind the v1 hero. Two
-  reasons that matters — the page reads as one continuous surface with the hero
-  rather than two unrelated textures, and it is the only background asset with
-  no one in it. A photograph with Chris in it cannot be a page background when
-  his cutout is already the subject of the hero.
+  Uses hero-plate.jpg, the same concrete behind the v1 hero, so the page reads
+  as one continuous surface with it. It is also the only background asset with
+  nobody in it, which matters when Chris's cutout is already the hero's subject.
+
+  WHY position:fixed AND NOT background-attachment:fixed
+  The CSS property is unreliable on iOS Safari — it janks or silently falls
+  back to scrolling, which is the one behaviour this depends on not happening.
+
+  WHY z-index:0 AND NOT A NEGATIVE VALUE
+  A negative z-index puts this behind its stacking context, which makes it
+  dependent on what every ancestor does — a transform, a filter or an opacity
+  anywhere above it creates a new context and the layer vanishes. At z-index:0
+  it paints in normal DOM order, and every section after it in the document
+  paints on top without needing to know this exists. Fewer assumptions, fewer
+  ways to disappear.
 */
 
-.ground{position:fixed;inset:0;z-index:-2;pointer-events:none;
-  /* The gradient IS the ground; the photograph layers on top. If the image is
-     slow or missing the page still looks deliberate rather than broken —
-     every panel here is designed to float over something. */
-  background:linear-gradient(170deg,#2a2826 0%,#1d1c1a 50%,#141312 100%)}
+.ground{position:fixed;inset:0;z-index:0;pointer-events:none;
+  /* The gradient IS the ground; the photograph layers over it. A missing or
+     slow image leaves a deliberate page rather than a broken one. */
+  background:linear-gradient(170deg,#2e2c2a 0%,#211f1d 50%,#161514 100%)}
 
 .ground::before{content:'';position:absolute;inset:0;
   background:url('/brand/hero-plate.jpg') center / cover no-repeat;
-  /* Held well back. Panels sit on top of this and their copy has to stay
-     readable over whatever part of the concrete happens to land behind it. */
-  opacity:.62;filter:grayscale(1) contrast(1.02) brightness(1.05)}
+  opacity:.75;filter:grayscale(1) contrast(1.04) brightness(1.12)}
 
-/* red bloom top-right and a deep vignette, so it reads as a lit surface
-   rather than a flat tiled texture */
+/* red bloom and a vignette, so it reads as a lit surface not a flat tile */
 .ground::after{content:'';position:absolute;inset:0;
   background:
-    radial-gradient(70% 50% at 88% 4%, rgba(235,41,51,.13) 0%, rgba(235,41,51,0) 62%),
-    radial-gradient(130% 100% at 50% 42%, rgba(10,10,10,0) 0%, rgba(10,10,10,.62) 100%)}
+    radial-gradient(70% 50% at 88% 4%, rgba(235,41,51,.14) 0%, rgba(235,41,51,0) 62%),
+    radial-gradient(130% 100% at 50% 42%, rgba(10,10,10,0) 0%, rgba(10,10,10,.55) 100%)}
+
+/* The hero sits above the ground and must not be covered by it. It comes
+   first in the document, so it needs an explicit layer of its own. */
+:global(.mp-above-ground){position:relative;z-index:1}

@@ -663,7 +663,7 @@
    reads around and between them. A seamless full-width band would sit ON the
    page; this sits OVER it, which is the whole point of the ground. */
 .doors{display:grid;grid-template-columns:repeat(3,1fr);
-  gap:clamp(10px,1.2vw,18px);position:relative;z-index:2;
+  gap:clamp(10px,1.2vw,18px);position:relative;z-index:1;
   max-width:1280px;margin:0 auto;
   padding:clamp(24px,3.4vw,56px) clamp(16px,4vw,48px)}
 @media(max-width:900px){.doors{grid-template-columns:1fr}}

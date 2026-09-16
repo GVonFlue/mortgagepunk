@@ -93,7 +93,7 @@
      open   no panel at all. Content sits directly on the ground, which makes
             the ground itself part of that section's design.
    ============================================================ */
-.onGround{background:transparent;border-top:0;
+.onGround{background:transparent;border-top:0;position:relative;z-index:1;
   padding:clamp(28px,4vw,64px) clamp(16px,4vw,48px)}
 .onGround .wrap{position:relative}
 

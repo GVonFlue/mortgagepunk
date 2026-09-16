@@ -51,10 +51,14 @@ export const revalidate = 300;
 export default function Home() {
   return (
     <>
-      <AnnouncementBar />
+      <div className="mp-above-ground">
+        <AnnouncementBar />
+      </div>
       {/* The hero carries its own nav as part of its fixed stage composition.
           Rendering <SiteNav/> here too stacked a second one on top of it. */}
-      <Hero />
+      <div className="mp-above-ground">
+        <Hero />
+      </div>
 
       {/* Fixed concrete for the whole page below the hero. */}
       <PageGround />
@@ -140,7 +144,9 @@ export default function Home() {
         <LeadForm />
       </Section>
 
-      <SiteFooter />
+      <div className="mp-above-ground">
+        <SiteFooter />
+      </div>
     </>
   );
 }
