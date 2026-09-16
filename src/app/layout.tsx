@@ -32,7 +32,24 @@ export const metadata: Metadata = {
     "A world-class lending team and a movement to change the Game of Money. Get approved the right way, run your own numbers, or follow the movement.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+/**
+ * Props typed inline rather than with Next's generated `LayoutProps<"/">`.
+ *
+ * That helper is generated from the route tree, so its accepted union changes
+ * whenever the app directory does — and it broke the build with:
+ *
+ *   Type '"/"' does not satisfy the constraint '"/backstage"'
+ *
+ * because the generated union had collapsed to the one nested layout. The root
+ * layout's props are simply `{ children }` and always will be, so declaring
+ * that directly removes a build-time dependency on generated types that have
+ * no reason to be in the critical path.
+ */
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
