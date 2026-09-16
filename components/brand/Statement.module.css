@@ -1,0 +1,75 @@
+/*
+  Statement.module.css — the on-brand headline system.
+
+  Derived from Chris's actual posters and social cards, not invented:
+    - emphasis is SCALE, not colour. Red lands on one word, not half the line
+    - every line is condensed uppercase, tight leading, lines nearly touching
+    - display type carries a light grunge so it reads printed rather than set
+    - the rule under a kicker is a torn brush stroke, never a straight 2px line
+
+  The size scale exists so pages can't drift into arbitrary numbers. Each step
+  is roughly 1.7x the last, which is what gives the posters their jump.
+*/
+
+.stmt{display:flex;flex-direction:column;margin:0;
+  font-family:var(--font-display),sans-serif;font-weight:400;
+  text-transform:uppercase;letter-spacing:-.022em}
+.center{align-items:center;text-align:center}
+
+.line{display:block;line-height:.9}
+/* the small connective lines sit tighter to the big one above them */
+.xs{font-size:clamp(13px,1.15vw,18px);line-height:1.16;letter-spacing:.04em}
+.sm{font-size:clamp(17px,1.8vw,27px);line-height:1.06;letter-spacing:.01em}
+.md{font-size:clamp(28px,3.4vw,52px);line-height:.94}
+.lg{font-size:clamp(42px,5.8vw,92px);line-height:.88}
+.xl{font-size:clamp(56px,8.4vw,142px);line-height:.84;letter-spacing:-.035em}
+
+.toneBone{color:var(--mp-bone)}
+.toneRed{color:var(--mp-red)}
+.toneInk{color:var(--mp-black)}
+
+/* Printed, not set. The same grunge mask the hero artwork uses, at low
+   strength — enough to break the edge, not enough to hurt legibility. */
+.lg,.xl{
+  -webkit-mask-image:url('/brand/grunge.png');mask-image:url('/brand/grunge.png');
+  -webkit-mask-size:520px 520px;mask-size:520px 520px;
+  -webkit-mask-repeat:repeat;mask-repeat:repeat}
+
+/* On a light panel the mask punches holes to white and reads as damage, so the
+   texture only runs on dark. Driven by a prop rather than a :global() selector
+   — Site.module.css's own `.bone` is hashed, so :global(.bone) matched nothing
+   and the rule was silently dead. */
+.onLight .lg,.onLight .xl{-webkit-mask-image:none;mask-image:none}
+
+/* ---------- the torn brush rule ---------- */
+.brush{display:block;width:100%;height:7px;background:var(--mp-red);
+  margin:9px 0 0;
+  clip-path:polygon(0 38%,4% 8%,12% 44%,22% 10%,33% 42%,45% 8%,56% 40%,
+    67% 12%,78% 38%,88% 10%,96% 34%,100% 20%,100% 66%,95% 92%,86% 58%,
+    76% 88%,65% 56%,54% 90%,43% 58%,32% 86%,21% 56%,11% 88%,4% 60%,0 78%)}
+
+/* ---------- kicker ---------- */
+.kicker{display:inline-flex;flex-direction:column;align-items:flex-start;
+  font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(13px,1.15vw,17px);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--mp-red);margin-bottom:clamp(12px,1.4vw,20px)}
+
+/* ---------- attribution ---------- */
+.attrib{display:inline-flex;flex-direction:column;align-items:flex-start;
+  margin-top:clamp(16px,2vw,26px)}
+.attrib em{font-style:normal;margin-top:10px;
+  font-family:var(--font-display),sans-serif;font-size:clamp(14px,1.2vw,19px);
+  letter-spacing:.22em;text-transform:uppercase;color:var(--mp-bone)}
+.onLight .attrib em{color:var(--mp-black)}
+
+/* ---------- condensed body copy ----------
+   Short copy is set condensed uppercase like his cards. Long-form prose stays
+   sentence case — a 200-word paragraph in all caps is unreadable, and nothing
+   in his work runs that long. */
+.punch{margin:clamp(14px,1.6vw,22px) 0 0;max-width:46ch;
+  font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(15px,1.4vw,22px);line-height:1.28;letter-spacing:.01em;
+  text-transform:uppercase;color:#B4B4B4}
+.punchLight{color:#3A3A3A}
+.punch strong{color:var(--mp-bone);font-weight:400}
+.punchLight strong{color:var(--mp-black)}

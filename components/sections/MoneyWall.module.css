@@ -1,0 +1,59 @@
+/*
+  MoneyWall.module.css — square video grid.
+
+  Square because a wall of squares reads as a body of work. A row of 16:9
+  rectangles reads as a video player's sidebar, which is exactly the feeling
+  this section should not have.
+*/
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.6vw,22px)}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+
+.tile{display:block;text-decoration:none;color:inherit;group:tile}
+.thumb{position:relative;display:block;aspect-ratio:1/1;overflow:hidden;
+  border-radius:14px;background:#151515;border:1px solid var(--mp-line)}
+.thumb img{width:100%;height:100%;object-fit:cover;
+  /* desaturated until you show interest — colour marks where the energy is */
+  filter:grayscale(1) contrast(1.04);
+  transition:filter .45s,transform .7s cubic-bezier(.16,1,.3,1)}
+.tile:hover .thumb img{filter:grayscale(0);transform:scale(1.05)}
+.thumb::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,10,10,0) 55%,rgba(10,10,10,.5) 100%)}
+
+/* one play mark, centred, appearing on hover */
+.play{position:absolute;left:50%;top:50%;width:clamp(46px,4.4vw,64px);
+  height:clamp(46px,4.4vw,64px);margin:-2px 0 0 0;
+  transform:translate(-50%,-50%) scale(.86);border-radius:50%;
+  background:var(--mp-red);opacity:0;z-index:1;
+  transition:opacity .3s,transform .35s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 10px 30px rgba(235,41,51,.45)}
+.play::after{content:'';position:absolute;left:54%;top:50%;
+  transform:translate(-50%,-50%);
+  border-left:clamp(13px,1.2vw,17px) solid #fff;
+  border-top:clamp(9px,.85vw,12px) solid transparent;
+  border-bottom:clamp(9px,.85vw,12px) solid transparent}
+.tile:hover .play{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* title under the tile — text over a thumbnail fights whatever is behind it,
+   and these thumbnails already carry type of their own */
+.topic{display:block;margin:14px 0 6px;
+  font-family:var(--font-body),sans-serif;font-size:10.5px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mp-red)}
+.tile h3{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(17px,1.6vw,24px);line-height:1.1;text-transform:uppercase;
+  letter-spacing:-.005em;color:var(--mp-bone);transition:color .25s}
+.tile:hover h3{color:#fff}
+
+/* ---------- topics ----------
+   A quiet row, not a filter interface. The wall is the content; this is a way
+   deeper for anyone who wants it. */
+.topics{display:flex;flex-wrap:wrap;gap:8px;margin-top:clamp(26px,3vw,42px);
+  padding-top:clamp(20px,2.4vw,30px);border-top:1px solid var(--mp-line)}
+.topics a{padding:9px 15px;border:1px solid var(--mp-line);border-radius:999px;
+  text-decoration:none;font-family:var(--font-body),sans-serif;
+  font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:#8E8E8E;transition:.22s}
+.topics a:hover{border-color:var(--mp-red);color:var(--mp-bone)}
+
+.empty{margin:0;font-family:var(--font-body),sans-serif;font-size:16px;color:#8E8E8E}

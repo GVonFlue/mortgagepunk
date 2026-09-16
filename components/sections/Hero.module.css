@@ -1,0 +1,319 @@
+/*
+  Hero.module.css — mortgagepunk.com
+
+  THE STAGE MODEL. Composition authored once at 1512x900; --u is one authored
+  pixel scaled with min() so it is contained and never crops. Every length is
+  calc(N * var(--u)). Never convert to vw, vh, rem or em — they scale on
+  different axes and the type slides out from behind Chris.
+
+  Class names MUST match styles.X in Hero.tsx. Run verify-classes.py.
+*/
+
+/* ============================================================
+   HERO — the stage. Authored at 1512x900, scaled as one unit.
+   ============================================================ */
+.hero{position:relative;width:100%;min-height:100svh;height:100svh;overflow:hidden;
+  background:var(--mp-black);font-family:var(--font-body),sans-serif;
+  /* svh, NOT vh. The element is sized with 100svh, so the stage scale must
+     use the same unit. On iOS 100vh includes the URL bar and is taller than
+     what you can actually see — mixing them pushes the CTAs off the bottom. */
+  --u:min(calc(100vw / 1512), calc(100svh / 900))}
+/* z-index:2 is load-bearing. The entrance puts a transform on .stage for the
+   impact shake, and a transform creates a NEW STACKING CONTEXT, which scopes
+   every child z-index inside it. Without this, .plate (z-index:1) paints over
+   the whole stage and the hero renders as bare concrete. */
+.stage{position:absolute;top:50%;left:50%;z-index:2;
+  width:calc(1512*var(--u));height:calc(900*var(--u));
+  margin-top:calc(-450*var(--u));margin-left:calc(-756*var(--u))}
+
+.plate{position:absolute;inset:0;z-index:1}
+.plateImg{width:100%;height:100%;object-fit:cover;object-position:center 40%;
+  filter:brightness(1.85)}
+.plate::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(10,10,10,.60) 0%,rgba(10,10,10,.28) 38%,
+    rgba(10,10,10,.08) 62%,rgba(10,10,10,.38) 100%)}
+
+.type{position:absolute;z-index:2;left:calc(45*var(--u));top:calc(94*var(--u));
+  margin:0;font-family:var(--font-display),sans-serif;font-weight:400;color:var(--mp-bone);
+  text-transform:uppercase;line-height:.80;letter-spacing:-.028em;white-space:nowrap}
+
+/* mask wrappers: overflow hides the rise animation, padding stops Anton's
+   ascenders being clipped by the 0.80 line box */
+.reimagining,.the,.american,.dream{
+  display:block;overflow:hidden;
+  padding-top:calc(26*var(--u));margin-top:calc(-26*var(--u));
+  padding-bottom:calc(20*var(--u));margin-bottom:calc(-20*var(--u))}
+.reimagining>span,.the>span,.american>span,.dream>span{display:block}
+
+.reimagining{font-size:calc(var(--fit-eyebrow, 58) * var(--u));letter-spacing:.20em;line-height:1}
+.strike{display:block;width:calc(441*var(--u));height:calc(5*var(--u));
+  background:linear-gradient(90deg,var(--mp-red) 0%,var(--mp-red) 72%,rgba(235,41,51,0) 100%);
+  margin:calc(10*var(--u)) 0 calc(16*var(--u));transform-origin:left center}
+.the{font-size:calc(var(--fit-small, 106) * var(--u));line-height:.86}
+.american{font-size:calc(var(--fit-big, 246) * var(--u))}
+.dream{font-size:calc(var(--fit-accent, 246) * var(--u))}
+
+/* Outline: longhand, not the shorthand. paint-order pushes the stroke outside
+   the glyph so Anton's letterforms stay true instead of being choked. */
+.the>span,.american>span{
+  -webkit-text-stroke-width:calc(3.4*var(--u));
+  -webkit-text-stroke-color:var(--mp-black);
+  paint-order:stroke fill;
+  /* One soft cast, no zero-blur slab. The hard offset was what made the
+     letterforms look cut out and pasted on — worst on diagonals, where a
+     0-blur shadow of an angled edge steps visibly. */
+  text-shadow:calc(4*var(--u)) calc(7*var(--u)) calc(16*var(--u)) rgba(0,0,0,.6)}
+
+/* DREAM: outline on the real text, gradient on an overlay.
+   background-clip:text renders at the element's BACKGROUND layer, so anything
+   painted in the same element buries it. An overlay is the only way to have a
+   gradient fill and a hard outline together.
+
+   The stroke here is THINNER than AMERICAN's and the shadow is soft, not a
+   hard offset. AMERICAN is bone on black, so a hard black shadow reads as a
+   drop shadow. Under red it merges with the black stroke into one thick smear
+   on the lower right — which is what looked wrong. */
+.dream>span{position:relative;color:var(--mp-red-deep);
+  -webkit-text-stroke-width:calc(3.1*var(--u));
+  -webkit-text-stroke-color:var(--mp-black);
+  paint-order:stroke fill;
+  text-shadow:calc(4*var(--u)) calc(5*var(--u)) calc(9*var(--u)) rgba(0,0,0,.62),
+              calc(10*var(--u)) calc(12*var(--u)) calc(22*var(--u)) rgba(0,0,0,.42)}
+.dream>span::after{content:attr(data-text);position:absolute;left:0;top:0;
+  /* the dark end stops well short of black so it never fuses with the stroke */
+  background:linear-gradient(174deg,#FF8467 0%,#FF4038 22%,#EE2B35 48%,#CB1D26 78%,#B01820 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  -webkit-text-stroke-width:0;text-shadow:none;pointer-events:none}
+
+.shadowGround{position:absolute;z-index:3;right:calc(264*var(--u));bottom:calc(9*var(--u));
+  width:calc(483*var(--u));height:calc(99*var(--u));pointer-events:none;
+  background:radial-gradient(ellipse at 50% 66%,rgba(0,0,0,.88) 0%,rgba(0,0,0,.60) 30%,
+    rgba(0,0,0,.24) 55%,rgba(0,0,0,0) 76%);filter:blur(calc(11*var(--u)))}
+.shadowWall{position:absolute;z-index:3;right:calc(284*var(--u));bottom:0;
+  width:calc(503*var(--u));height:calc(588*var(--u));pointer-events:none;
+  background:radial-gradient(ellipse at 47% 64%,rgba(0,0,0,.52) 0%,rgba(0,0,0,.22) 44%,
+    rgba(0,0,0,0) 70%);filter:blur(calc(34*var(--u)))}
+
+.chris{position:absolute;z-index:4;right:calc(234*var(--u));bottom:0;
+  height:calc(639*var(--u));width:calc(503*var(--u))}
+.chrisImg{height:100%;width:auto;display:block}
+
+.rail{position:absolute;z-index:5;right:calc(45*var(--u));top:calc(261*var(--u));
+  width:calc(333*var(--u));text-align:right;color:var(--mp-bone);text-transform:uppercase;
+  letter-spacing:.14em;font-weight:700;font-size:calc(15.4*var(--u));line-height:1.85}
+.railHit{color:var(--mp-red);font-size:calc(21.5*var(--u));font-weight:700;line-height:1.5;
+  border-bottom:calc(2*var(--u)) solid var(--mp-red);display:inline-block;
+  padding-bottom:calc(3*var(--u));margin:calc(2*var(--u)) 0 calc(7*var(--u))}
+
+/* CTAs — deliberately loud. These are the two actions the whole page exists
+   to drive, so they get lift, glow and weight rather than sitting flat. */
+.ctas{position:absolute;z-index:5;left:calc(45*var(--u));bottom:calc(28*var(--u));
+  display:flex;flex-direction:column;gap:calc(10*var(--u));width:calc(418*var(--u))}
+.btn{display:flex;align-items:center;justify-content:space-between;gap:calc(22*var(--u));
+  padding:calc(16*var(--u)) calc(26*var(--u));font-weight:800;text-transform:uppercase;
+  letter-spacing:.1em;font-size:calc(14.6*var(--u));text-decoration:none;
+  border-radius:calc(4*var(--u));position:relative;overflow:hidden;
+  transition:transform .28s cubic-bezier(.16,1,.3,1),box-shadow .28s cubic-bezier(.16,1,.3,1)}
+.btnSolid{background:linear-gradient(170deg,#FF4438 0%,#EB2933 55%,#C71B24 100%);
+  color:var(--mp-black);
+  box-shadow:0 calc(6*var(--u)) calc(26*var(--u)) rgba(235,41,51,.42),
+             0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
+.btnSolid:hover{transform:translateY(calc(-2*var(--u)));
+  box-shadow:0 calc(10*var(--u)) calc(34*var(--u)) rgba(235,41,51,.55),
+             0 calc(2*var(--u)) 0 rgba(0,0,0,.6)}
+.btnGhost{background:rgba(10,10,10,.66);color:var(--mp-bone);isolation:isolate;
+  border:calc(2*var(--u)) solid var(--mp-red);backdrop-filter:blur(6px);
+  box-shadow:0 calc(4*var(--u)) calc(20*var(--u)) rgba(0,0,0,.5)}
+.btnGhost:hover{background:var(--mp-red);color:var(--mp-black);
+  transform:translateY(calc(-2*var(--u)))}
+.btn span:last-child{transition:transform .28s cubic-bezier(.16,1,.3,1)}
+.btn:hover span:last-child{transform:translateX(calc(6*var(--u)))}
+
+.nav{position:absolute;z-index:6;top:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:space-between;padding:calc(22*var(--u)) calc(48*var(--u))}
+.logo{display:block;flex:none}
+.logo img{height:calc(65*var(--u));width:auto;display:block}
+.links{display:flex;list-style:none;margin:0;padding:0;white-space:nowrap;
+  gap:calc(33*var(--u));font-size:calc(13.3*var(--u));font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase}
+.links a{color:var(--mp-bone);text-decoration:none;position:relative;padding-bottom:4px}
+.links a::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:100%;
+  background:var(--mp-red);transform:scaleX(0);transform-origin:left center;
+  transition:transform .24s cubic-bezier(.16,1,.3,1)}
+.links a:hover::after{transform:scaleX(1)}
+.navCta{flex:none;border:calc(1.6*var(--u)) solid var(--mp-red);color:var(--mp-bone);
+  padding:calc(11*var(--u)) calc(21*var(--u));font-size:calc(12.4*var(--u));font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;text-decoration:none;
+  border-radius:calc(3*var(--u));transition:.24s}
+.navCta:hover{background:var(--mp-red);color:var(--mp-black)}
+
+.grain{position:absolute;inset:0;z-index:7;pointer-events:none;opacity:.055;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+
+@media (max-width:820px){
+  .hero{--u:min(calc(100vw / 390), calc(100svh / 844))}
+  .stage{width:calc(390*var(--u));height:calc(844*var(--u));
+    margin-top:calc(-422*var(--u));margin-left:calc(-195*var(--u))}
+  .plateImg{object-position:62% 42%}
+  .type{left:calc(17.5*var(--u));top:calc(202*var(--u))}
+  .reimagining,.the,.american,.dream{padding-top:calc(9*var(--u));margin-top:calc(-9*var(--u))}
+  .reimagining{font-size:calc(24*var(--u))}
+  .strike{width:calc(154*var(--u));height:calc(2.4*var(--u));margin:calc(4*var(--u)) 0 calc(6*var(--u))}
+  .the{font-size:calc(45*var(--u))}
+  .american,.dream{font-size:calc(92*var(--u))}
+  .the>span,.american>span{-webkit-text-stroke-width:calc(1.8*var(--u));
+    text-shadow:calc(1.4*var(--u)) calc(2.4*var(--u)) calc(6*var(--u)) rgba(0,0,0,.6)}
+  .dream>span{-webkit-text-stroke-width:calc(1.3*var(--u));
+    text-shadow:calc(1.4*var(--u)) calc(2.4*var(--u)) calc(6*var(--u)) rgba(0,0,0,.6)}
+  .dream>span::after{-webkit-text-stroke-width:0}
+  .chris{height:calc(422*var(--u));width:calc(332*var(--u));
+    right:calc(-58*var(--u));bottom:calc(93*var(--u))}
+  .shadowGround{right:calc(-38*var(--u));bottom:calc(99*var(--u));
+    width:calc(299*var(--u));height:calc(59*var(--u));filter:blur(calc(6*var(--u)))}
+  .shadowWall{right:calc(-25*var(--u));bottom:calc(93*var(--u));
+    width:calc(332*var(--u));height:calc(388*var(--u));filter:blur(calc(16*var(--u)))}
+  .rail{display:none}
+  .nav{padding:calc(17*var(--u)) calc(17.5*var(--u))}
+  .logo img{height:calc(46*var(--u))}
+  .links{display:none}
+  .navCta{font-size:calc(11*var(--u));padding:calc(9*var(--u)) calc(15*var(--u))}
+  /* the burger is a fixed 44px tap target, so the nav row stops shrinking
+     the CTA into it */
+  .nav{gap:calc(10*var(--u))}
+  .ctas{left:calc(17.5*var(--u));right:calc(17.5*var(--u));width:auto;bottom:calc(26*var(--u))}
+  .btn{font-size:calc(13*var(--u));padding:calc(15*var(--u)) calc(17*var(--u))}
+}
+
+/* ============================================================
+   UPLOADED HEADLINE ARTWORK
+   Occupies the same slot as the type lines — same z-index, so it still sits
+   BEHIND Chris. Width and top are stage units, so the art scales with the
+   whole composition rather than fighting it.
+   ============================================================ */
+.artWrap{position:absolute;z-index:2;left:calc(38*var(--u));
+  top:calc(var(--art-top, 96) * var(--u));
+  width:calc(var(--art-w, 1030) * var(--u));
+  /* Clamping width alone isn't enough: a wide-aspect file keeps growing
+     downward until it collides with the CTA buttons. This caps the height at
+     the space actually available between the top offset and the buttons, and
+     object-fit keeps the art's proportions while it shrinks to fit. */
+  max-height:calc((640 - var(--art-top, 96)) * var(--u));
+  pointer-events:none}
+.artDesktop,.artMobile{display:block;width:100%;height:auto;
+  max-height:inherit;object-fit:contain;object-position:left top}
+/* aspect-ratio comes from the real file dimensions, captured at upload, so
+   the art can never stretch while the image is still loading */
+.artDesktop{aspect-ratio:var(--art-ratio, auto)}
+.artMobile{display:none;aspect-ratio:var(--art-ratio-m, auto)}
+
+/* An image headline still needs a real H1 in the DOM — for search engines and
+   for anyone using a screen reader. */
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+@media (max-width:820px){
+  .artWrap{left:calc(17*var(--u));top:calc(96*var(--u));
+    width:calc(356*var(--u));
+    max-height:calc(250*var(--u))}
+  /* a desktop lockup is far too wide for a phone, so a mobile variant wins
+     when one has been uploaded */
+  .artMobile{display:block}
+  .artMobile ~ .artDesktop,
+  .artWrap:has(.artMobile) .artDesktop{display:none}
+}
+
+
+/* ============================================================
+   THE ENTRANCE — deliberately lean
+   ============================================================
+   REWRITTEN FOR PERFORMANCE, not for effect count.
+
+   The previous version animated fourteen things at once, and three of them
+   were the expensive kind:
+     - plateSettle scaled a full-bleed photograph every frame
+     - stageShake transformed the ENTIRE stage, meaning the concrete, Chris,
+       and every piece of stroked-and-shadowed display type got recomposited
+       together on every frame
+     - five separate masked line reveals, each carrying a text-stroke, a
+       text-shadow, and (on DREAM) a background-clip gradient overlay
+
+   Painting stroked text with shadows is one of the most expensive things a
+   browser does. Moving it is worse. So now:
+
+     - the plate never moves
+     - nothing transforms the whole stage
+     - the headline rises as ONE element, not five
+     - only four things animate in total
+
+   The logo punch is the moment. Everything else gets out of its way.
+   ============================================================ */
+
+@keyframes logoPunch{
+  /* Starts at RESTING SIZE, punches out toward the viewer on a top-left to
+     bottom-right diagonal, then settles back. Earlier this ran backwards —
+     starting huge and shrinking — which reads as a page loading, not a punch.
+
+     Each keyframe carries its OWN animation-timing-function. A single easing
+     curve on the animation is re-applied between every pair of stops, so it
+     accelerates and decelerates at each one — which is exactly the "stops for
+     a split second a few times" feel. Per-stop easing gives one continuous
+     motion: hard out, float at the peak, snap home. */
+  0%   {transform:scale(1) rotate(0deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.34,0,.66,.4)}      /* wind up, accelerating */
+  34%  {transform:scale(5) rotate(-5deg) translate3d(7%,9%,0);
+        animation-timing-function:cubic-bezier(.25,0,.35,1)}       /* peak, coasting */
+  46%  {transform:scale(4.4) rotate(-4deg) translate3d(6%,8%,0);
+        animation-timing-function:cubic-bezier(.5,0,.2,1)}         /* falls back fast */
+  76%  {transform:scale(.88) rotate(2.5deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.3,0,.2,1)}         /* undershoots */
+  89%  {transform:scale(1.06) rotate(-.8deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.3,0,.3,1)}
+  100% {transform:scale(1) rotate(0deg) translate3d(0,0,0)}
+}
+/* one element, one transform — the whole headline arrives together */
+@keyframes typeIn{
+  from{opacity:0; transform:translate3d(0,34px,0)}
+  to  {opacity:1; transform:translate3d(0,0,0)}
+}
+@keyframes arrive{
+  from{opacity:0; transform:translate3d(0,44px,0)}
+  to  {opacity:1; transform:translate3d(0,0,0)}
+}
+@keyframes fadeUp{
+  from{opacity:0; transform:translate3d(0,16px,0)}
+  to  {opacity:1; transform:translate3d(0,0,0)}
+}
+@keyframes punchFlash{
+  0%,26% {opacity:0}
+  34%    {opacity:.32}   /* peak of the punch */
+  100%   {opacity:0}
+}
+
+.punchFlash{position:absolute;inset:0;z-index:8;pointer-events:none;opacity:0;
+  background:radial-gradient(24% 22% at 13% 12%, rgba(255,255,255,.85) 0%,
+    rgba(235,41,51,.5) 42%, rgba(235,41,51,0) 74%)}
+
+/* four animated elements, full stop */
+.type   {animation:typeIn 620ms var(--ease-out-heavy) 240ms both}
+.chris  {animation:arrive 700ms var(--ease-out-heavy) 340ms both}
+.rail   {animation:fadeUp 460ms var(--ease-out-heavy) 520ms both}
+.ctas   {animation:fadeUp 460ms var(--ease-out-heavy) 580ms both}
+
+/* --- pre-warm: promote the logo before it moves, never during --- */
+.punchReady .logo img{will-change:transform;transform:translateZ(0)}
+
+/* --- first view only --- */
+.punching .logo img{transform-origin:18% 30%;
+  animation:logoPunch 780ms linear both}
+.punching .punchFlash{animation:punchFlash 780ms ease-out both}
+.punching .type {animation-delay:430ms}
+.punching .chris{animation-delay:500ms}
+.punching .rail {animation-delay:660ms}
+.punching .ctas {animation-delay:720ms}
+
+@media (prefers-reduced-motion: reduce){
+  .type,.chris,.rail,.ctas,
+  .punching .logo img,.punching .punchFlash{
+    animation:none !important; opacity:1 !important; transform:none !important}
+}
