@@ -26,13 +26,26 @@ import n from "./SiteNav.module.css";
  * getting them approved — not explain how.
  */
 
-const NAV = [
+/**
+ * Anchor items scroll the homepage; an `href` item leaves for a real page.
+ * Chris has a full About page, so sending the nav to a short teaser section
+ * hid the page that actually answers the question.
+ */
+type NavItem = {
+  label: string;
+  /** scrolls to this section on the homepage */
+  id?: string;
+  /** leaves for a real page instead */
+  href?: string;
+};
+
+const NAV: NavItem[] = [
   { label: "Lending", id: "lending" },
   { label: "Tools", id: "tools" },
   { label: "The Game of Money", id: "money" },
   { label: "The Movement", id: "movement" },
-  { label: "Chris", id: "chris" },
-] as const;
+  { label: "Chris", href: "/about" },
+];
 
 export default function SiteNav() {
   const path = usePathname();
@@ -43,9 +56,9 @@ export default function SiteNav() {
   // which section is in view — drives the underline
   useEffect(() => {
     if (!onHome) return;
-    const targets = NAV.map((i) => document.getElementById(i.id)).filter(
-      Boolean
-    ) as HTMLElement[];
+    const targets = NAV.filter((i) => i.id)
+      .map((i) => document.getElementById(i.id as string))
+      .filter(Boolean) as HTMLElement[];
     if (!targets.length) return;
 
     const io = new IntersectionObserver(
@@ -83,10 +96,10 @@ export default function SiteNav() {
 
       <ul className={n.links}>
         {NAV.map((i) => (
-          <li key={i.id}>
+          <li key={i.label}>
             <Link
-              href={onHome ? `#${i.id}` : `/#${i.id}`}
-              className={active === i.id ? n.on : undefined}
+              href={i.href ?? (onHome ? `#${i.id}` : `/#${i.id}`)}
+              className={i.id && active === i.id ? n.on : undefined}
             >
               {i.label}
             </Link>

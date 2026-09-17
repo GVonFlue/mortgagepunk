@@ -120,7 +120,8 @@ export default function Home() {
 
       <Section
         id="tools"
-        sit="float"
+        sit="open"
+        center
         kicker="Run your own numbers"
         title="No form. No call."
         accent="Just the math."

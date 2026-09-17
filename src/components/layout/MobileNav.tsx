@@ -25,7 +25,7 @@ const LINKS = [
   { label: "Tools", href: "/tools" },
   { label: "The Game of Money", href: "/library" },
   { label: "The Movement", href: "/movement" },
-  { label: "About Chris", href: "/about" },
+  { label: "Chris", href: "/about" },
   { label: "The Team", href: "/team" },
 ];
 
