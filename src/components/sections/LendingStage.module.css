@@ -1,0 +1,21 @@
+/*
+  LendingStage.module.css
+
+  Photo on top, the three ways in underneath. The section is centred, so the
+  photo is capped and centred rather than full-bleed — a full-width image in a
+  centred section fights the centring.
+*/
+
+.wrap{display:flex;flex-direction:column;align-items:center;width:100%}
+
+.shot{width:min(1100px,100%);aspect-ratio:16/9;overflow:hidden;
+  border-radius:clamp(14px,1.6vw,20px);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 30px 70px -38px rgba(0,0,0,.9);
+  margin-bottom:clamp(26px,3.4vw,52px)}
+.shot img{width:100%;height:100%;object-fit:cover;object-position:center 42%;
+  filter:grayscale(1) contrast(1.05);transition:filter .6s}
+.shot:hover img{filter:grayscale(0) contrast(1.02)}
+
+/* the three paths sit under it, full width of the section */
+.wrap > :last-child{width:100%}

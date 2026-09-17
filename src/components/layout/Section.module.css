@@ -129,4 +129,6 @@
 .center .kicker{align-items:center;margin-left:auto;margin-right:auto}
 .center .lede{margin-left:auto;margin-right:auto}
 .center .cta{margin-left:auto;margin-right:auto}
-.center .body{display:flex;justify-content:center;width:100%}
+/* Only the HEAD centres. Content inside — a chat, a form, calculators — still
+   reads left to right, so the body is centred as a block but its text is not. */
+.center .body{display:flex;justify-content:center;width:100%;text-align:left}

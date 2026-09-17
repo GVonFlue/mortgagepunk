@@ -6,7 +6,7 @@ import PageGround from "@/components/layout/PageGround";
 
 import Hero from "@/components/sections/Hero";
 import ThreeDoors from "@/components/sections/ThreeDoors";
-import LendingBrief from "@/components/sections/LendingBrief";
+import LendingStage from "@/components/sections/LendingStage";
 import ToolsTiles from "@/components/tools/ToolsTiles";
 import MoneyWall from "@/components/sections/MoneyWall";
 import MovementBlock from "@/components/sections/MovementBlock";
@@ -85,6 +85,7 @@ export default function Home() {
       <Section
         id="money"
         sit="open"
+        center
         kicker="The Game of Money"
         title="Everything they never taught you"
         accent="about money."
@@ -95,18 +96,20 @@ export default function Home() {
 
       <Section
         id="lending"
-        sit="float"
+        sit="open"
+        center
         kicker="The Lending Team"
         title="A movement out front."
         accent="A serious operation behind it."
         lede="Three ways in. The process is the same either way — what changes is the paperwork and what we're solving for."
       >
-        <LendingBrief />
+        <LendingStage />
       </Section>
 
       <Section
         id="ask"
-        sit="solid"
+        sit="open"
+        center
         kicker="Ask anything"
         title="No dumb questions."
         accent="Only expensive silence."
