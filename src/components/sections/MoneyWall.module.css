@@ -6,7 +6,9 @@
   section should not have.
 */
 
-.wrap{width:100%}
+/* 1184px = the doors' 1280px container minus its 48px padding each side.
+   The two sections sharing an edge is what makes the page feel aligned. */
+.wrap{width:100%;max-width:1184px;margin-inline:auto}
 
 /* Always four across on desktop, so the row is full whether there are three
    videos or eight — empty slots are filled by placeholders, not by collapsing

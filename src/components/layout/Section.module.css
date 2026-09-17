@@ -130,5 +130,8 @@
 .center .lede{margin-left:auto;margin-right:auto}
 .center .cta{margin-left:auto;margin-right:auto}
 /* Only the HEAD centres. Content inside — a chat, a form, calculators — still
-   reads left to right, so the body is centred as a block but its text is not. */
+   reads left to right, so the body is centred as a block but its text is not.
+   Children take the full width: as flex items they would otherwise shrink to
+   their content, which collapses any grid inside to a single column. */
 .center .body{display:flex;justify-content:center;width:100%;text-align:left}
+.center .body > *{width:100%}
