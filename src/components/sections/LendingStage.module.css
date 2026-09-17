@@ -6,9 +6,12 @@
   centred section fights the centring.
 */
 
-.wrap{display:flex;flex-direction:column;align-items:center;width:100%}
+/* 1184px matches the three door tiles under the hero and the video wall:
+   their 1280px container minus 48px padding each side. */
+.wrap{display:flex;flex-direction:column;align-items:center;width:100%;
+  max-width:1184px;margin-inline:auto}
 
-.shot{width:min(1100px,100%);aspect-ratio:16/9;overflow:hidden;
+.shot{width:100%;aspect-ratio:16/9;overflow:hidden;
   border-radius:clamp(14px,1.6vw,20px);
   border:1px solid rgba(255,255,255,.1);
   box-shadow:0 30px 70px -38px rgba(0,0,0,.9);
