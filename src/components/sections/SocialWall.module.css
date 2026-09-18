@@ -28,9 +28,17 @@
   opacity:0;transition:opacity .4s}
 .tile:hover::after{opacity:1}
 
-/* the only two shapes Instagram actually produces */
+/* Instagram shapes, and only these. Four rather than two: with a fixed column
+   width, each distinct ratio is a distinct tile HEIGHT, and it's the variety of
+   heights that makes a column wall read as a feed instead of a grid.
+     1:1    single square post
+     4:5    standard portrait
+     3:4    slightly taller crop
+     9:16   a Reel cover */
 .square{aspect-ratio:1/1}
 .portrait{aspect-ratio:4/5}
+.tallish{aspect-ratio:3/4}
+.reel{aspect-ratio:9/16}
 
 .cta{display:inline-flex;align-items:center;gap:12px;
   margin-top:clamp(28px,3.4vw,48px);padding:17px 32px;border-radius:9px;

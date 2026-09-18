@@ -18,17 +18,21 @@ import s from "./SocialWall.module.css";
  * height, which is what a real feed does.
  */
 
-type Tile = { src: string; alt: string; shape: "square" | "portrait" };
+type Tile = { src: string; alt: string; shape: "square" | "portrait" | "tallish" | "reel" };
 
 const TILES: Tile[] = [
-  { src: "/brand/adc-stage-crowd.jpg", alt: "Chris on stage at the conference", shape: "portrait" },
+  { src: "/brand/adc-stage-crowd.jpg", alt: "Chris on stage at the conference", shape: "reel" },
   { src: "/brand/adc-concert.jpg", alt: "Live music closing the conference", shape: "square" },
   { src: "/brand/adc-phone.jpg", alt: "An attendee filming the keynote", shape: "portrait" },
-  { src: "/brand/adc-panel.jpg", alt: "Panel session on stage", shape: "square" },
+  { src: "/brand/adc-panel.jpg", alt: "Panel session on stage", shape: "tallish" },
   { src: "/brand/chris-stage.jpg", alt: "Chris mid-keynote", shape: "portrait" },
   { src: "/brand/adc-education.jpg", alt: "Breakout session", shape: "square" },
-  { src: "/brand/adc-interview.jpg", alt: "Chris interviewing on stage", shape: "portrait" },
-  { src: "/brand/adc-stageset.jpg", alt: "The stage before doors", shape: "square" },
+  { src: "/brand/adc-interview.jpg", alt: "Chris interviewing on stage", shape: "reel" },
+  { src: "/brand/adc-stageset.jpg", alt: "The stage before doors", shape: "tallish" },
+  { src: "/brand/adc-stage-crowd.jpg", alt: "From the back of the room", shape: "portrait" },
+  { src: "/brand/adc-concert.jpg", alt: "The band mid-set", shape: "square" },
+  { src: "/brand/chris-stage.jpg", alt: "Keynote close", shape: "tallish" },
+  { src: "/brand/adc-education.jpg", alt: "Clarity, strategy, confidence", shape: "portrait" },
 ];
 
 export default function SocialWall() {
