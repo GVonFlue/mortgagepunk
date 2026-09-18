@@ -41,16 +41,18 @@
   background:radial-gradient(80% 60% at 6% 0%, rgba(235,41,51,.14) 0%, rgba(235,41,51,0) 58%)}
 
 /* Chris, right side, behind everything */
-/* A cut-out on transparency, so it sits ON the panel rather than being a photo
-   cropped into it. No fade mask — there is no background to blend away.
-   Sized by HEIGHT, not width: the panel grows as the conversation does, and
-   width-sizing pushed his head above the frame at shorter heights. */
-.stagePhoto{position:absolute;right:clamp(4px,1.5%,26px);bottom:0;z-index:-1;
-  height:min(96%,560px);width:auto;max-width:42%;
-  display:flex;align-items:flex-end;justify-content:flex-end;
-  pointer-events:none;user-select:none;filter:grayscale(1) contrast(1.05)}
-.stagePhoto img{height:100%;width:auto;max-width:100%;
-  object-fit:contain;object-position:bottom right;display:block}
+/* The red motion-blur shot, pre-cropped past the blur so the frame opens on
+   him. Keeps its colour — a grayscale filter here would throw away the one
+   thing that makes this photograph worth using.
+   A soft left edge blends it into the panel; the source has a background, so
+   unlike a cut-out it does need one. */
+.stagePhoto{position:absolute;right:0;top:0;bottom:0;z-index:-1;
+  width:min(42%,440px);overflow:hidden;
+  pointer-events:none;user-select:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 34%);
+  mask-image:linear-gradient(90deg,transparent 0%,#000 34%)}
+.stagePhoto img{width:100%;height:100%;object-fit:cover;
+  object-position:center 16%;display:block}
 /* the panel needs a floor tall enough for him to stand in */
 .stage{min-height:clamp(340px,34vw,460px)}
 @media(max-width:900px){.stagePhoto{display:none}.stage{min-height:0}}

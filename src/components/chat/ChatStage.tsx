@@ -185,10 +185,10 @@ export default function ChatStage({
       {/* Chris, big and grayscale at the right — straight from the demo */}
       <div className={s.stagePhoto} aria-hidden="true">
         <Image
-          src="/brand/askchris.png"
+          src="/brand/chris-chat.jpg"
           alt=""
-          width={900}
-          height={1255}
+          width={760}
+          height={1628}
           sizes="(max-width: 900px) 0px, 40vw"
         />
       </div>
