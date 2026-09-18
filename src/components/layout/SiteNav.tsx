@@ -40,8 +40,7 @@ type NavItem = {
 };
 
 const NAV: NavItem[] = [
-  { label: "Lending", id: "lending" },
-  { label: "Tools", id: "tools" },
+  { label: "Ask Mortgage Punk", id: "ask" },
   { label: "The Game of Money", id: "money" },
   { label: "The Movement", id: "movement" },
   { label: "Chris", href: "/about" },

@@ -21,12 +21,13 @@ import m from "./MobileNav.module.css";
  */
 
 const LINKS = [
+  { label: "Ask Mortgage Punk", href: "/#ask" },
+  { label: "The Game of Money", href: "/#money" },
+  { label: "The Movement", href: "/#movement" },
+  { label: "Chris", href: "/about" },
+  // still reachable, just no longer on the homepage
   { label: "Lending", href: "/lending" },
   { label: "Tools", href: "/tools" },
-  { label: "The Game of Money", href: "/library" },
-  { label: "The Movement", href: "/movement" },
-  { label: "Chris", href: "/about" },
-  { label: "The Team", href: "/team" },
 ];
 
 export default function MobileNav() {

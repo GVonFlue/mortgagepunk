@@ -1,160 +1,68 @@
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
-import SiteFooter from "@/components/layout/SiteFooter";
 import SiteNav from "@/components/layout/SiteNav";
+import SiteFooter from "@/components/layout/SiteFooter";
 import Section from "@/components/layout/Section";
 import PageGround from "@/components/layout/PageGround";
 
 import Hero from "@/components/sections/Hero";
-import ThreeDoors from "@/components/sections/ThreeDoors";
-import LendingStage from "@/components/sections/LendingStage";
-import ToolsTiles from "@/components/tools/ToolsTiles";
-import MoneyWall from "@/components/sections/MoneyWall";
-import MovementBlock from "@/components/sections/MovementBlock";
-import ChrisSection from "@/components/sections/ChrisSection";
 import ChatStage from "@/components/chat/ChatStage";
-import LeadForm from "@/components/sections/LeadForm";
+import MoneyWall from "@/components/sections/MoneyWall";
+import SocialWall from "@/components/sections/SocialWall";
 
 export const metadata = {
   title: "Mortgage Punk — Reimagining the American Dream",
   description:
-    "A world-class lending team and a movement to change the Game of Money. Get approved, run your own numbers, or follow the movement.",
+    "A world-class lending team and a movement to change the Game of Money. Ask anything, watch the library, or follow the movement.",
 };
 
 export const revalidate = 300;
 
 /**
- * ONE PAGE, EIGHT SECTIONS.
+ * THE HOMEPAGE — four things, in order.
  *
- * Restructured so the homepage IS the site rather than a directory pointing at
- * it. Every nav item scrolls to a section here; only Get Approved leaves.
+ * Stripped to the Avril model: land, scroll, understand, leave when ready.
+ * Every nav item scrolls to a section here; only Chris and Get Approved leave.
  *
- * The deep pages all still exist at their own URLs and stay indexed — they are
- * what search finds and what someone clicks for depth. They are simply no
- * longer the path you have to walk to understand the business.
+ *   Hero      the brand and the one commercial action
+ *   Ask       the assistant, immediately — no preamble
+ *   Money     one feature video and three below it
+ *   Movement  a wall of posts, and one way in
  *
- * Each section is a <Section>, which allows exactly one headline and at most
- * one call to action. That constraint is the reason the page reads as one
- * continuous thing instead of eight separately designed blocks: the visitor
- * learns the rhythm in the first section and stops having to work.
+ * WHAT CAME OFF, and where it went:
+ *   Tools, Lending, the three doors, testimonials, the Chris teaser and the
+ *   contact form. Every one of those pages still exists at its own URL and
+ *   stays indexed — /tools, /lending, /about, /testimonials, /contact. They
+ *   stopped being the path and became the depth, which is what protects the
+ *   search traffic while the homepage stays this short.
  *
- * ORDER, and why:
- *   Hero      the brand, and the only two things anyone can do
- *   Proof     four reasons to keep scrolling
- *   Lending   what we actually do — buy, refinance, invest
- *   Tools     something to DO, before anyone is asked for anything
- *   Money     the content itself, not an advert for the content
- *   Movement  the conference, as evidence the movement is real
- *   Chris     one photo and eighty words
- *   Proof     client stories, once we have been useful
- *   Ask       the assistant
- *   Contact   the only form on the page
+ * Headlines carry no supporting line by design. The section names are the
+ * whole message; anything under them was the site explaining itself.
  */
 export default function Home() {
   return (
     <>
       <AnnouncementBar />
-      {/* One sticky nav sitewide. The hero used to carry its own, which lived
-          inside the scaled stage and scrolled away with it.
-
-          Deliberately NOT wrapped in .mp-above-ground: a sticky element is
-          constrained by its parent's box, so a short wrapper would pin it for
-          a few pixels and then release it. It carries z-index:70 itself, which
-          already clears the ground. */}
+      {/* Sticky, and deliberately not wrapped — a sticky element is confined to
+          its parent's box, so a short wrapper would release it immediately. */}
       <SiteNav />
       <Hero />
 
-      {/* Fixed concrete for the whole page below the hero. */}
+      {/* fixed concrete for everything below the hero */}
       <PageGround />
 
-      <ThreeDoors />
-
-      <Section
-        id="movement"
-        sit="open"
-        center
-        kicker="The Movement"
-        title="The American Dream"
-        accent="isn't a checklist."
-        lede="It's the freedom and the opportunity to rewrite your story."
-        cta={{ label: "Enter the movement", href: "/movement" }}
-      >
-        <MovementBlock />
-      </Section>
-
-      {/* open: the video wall IS the design, so no panel competes with it */}
-      <Section
-        id="money"
-        sit="open"
-        center
-        kicker="The Game of Money"
-        title="Everything they never taught you"
-        accent="about money."
-        cta={{ label: "Show me more", href: "/library" }}
-      >
-        <MoneyWall />
-      </Section>
-
-      <Section
-        id="lending"
-        sit="open"
-        center
-        kicker="The Lending Team"
-        title="A movement out front."
-        accent="A serious operation behind it."
-        lede="Three ways in. The process is the same either way — what changes is the paperwork and what we're solving for."
-      >
-        <LendingStage />
-      </Section>
-
-      <Section
-        id="ask"
-        sit="open"
-        center
-        kicker="Ask anything"
-        title="No dumb questions."
-        accent="Only expensive silence."
-        lede="Most people don't ask because they think they should already know. Ask here instead."
-      >
+      <Section id="ask" sit="open" center title="Ask Mortgage Punk">
         <ChatStage variant="inline" />
       </Section>
 
-      <Section
-        id="tools"
-        sit="open"
-        center
-        kicker="Run your own numbers"
-        title="No form. No call."
-        accent="Just the math."
-        lede="Most lender calculators leave out taxes, insurance and mortgage insurance, then hand you a number that's thousands off. These don't."
-      >
-        <ToolsTiles />
+      <Section id="money" sit="open" center title="The Game of Money">
+        <MoneyWall />
       </Section>
 
-      <Section
-        id="chris"
-        sit="float"
-        kicker="Chris"
-        title="Two words that were"
-        accent="never supposed to go together."
-      >
-        <ChrisSection />
+      <Section id="movement" sit="open" center title="The Movement">
+        <SocialWall />
       </Section>
 
-      <Section
-        id="contact"
-        tone="red"
-        sit="solid"
-        kicker="Start here"
-        title="Talk to a person."
-        accent="Not a call center."
-        lede="Tell us where you are and someone from the team comes back to you."
-      >
-        <LeadForm />
-      </Section>
-
-      <div className="mp-above-ground">
-        <SiteFooter />
-      </div>
+      <SiteFooter />
     </>
   );
 }
