@@ -47,6 +47,12 @@
   font-family:var(--font-display),sans-serif;font-weight:400;
   font-size:clamp(24px,3.1vw,46px);line-height:.98;letter-spacing:-.015em;
   text-transform:uppercase}
+/* printed, not set — matches the inked texture of the logo */
+.title,.title em{
+  -webkit-mask-image:url('/brand/grunge.png');mask-image:url('/brand/grunge.png');
+  -webkit-mask-size:560px 560px;mask-size:560px 560px;
+  -webkit-mask-repeat:repeat;mask-repeat:repeat}
+.bone .title,.bone .title em{-webkit-mask-image:none;mask-image:none}
 .title em{font-style:normal;color:var(--mp-red);
   font-size:clamp(44px,6.6vw,104px);line-height:.86;letter-spacing:-.032em}
 .red .title em{color:#fff}

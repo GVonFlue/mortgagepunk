@@ -1,41 +1,36 @@
 /*
   SocialWall.module.css — the movement, as a feed.
 
-  Mixed tile sizes on purpose. A uniform grid reads as a gallery; an uneven one
-  reads as something being posted to, which is the difference between "here are
-  some photos" and "this is happening".
+  COLUMN MASONRY, NOT A ROW GRID. Instagram never posts landscape — everything
+  is square (1:1) or portrait (4:5). An earlier version had `wide` tiles
+  spanning two columns, which can't ever match a real feed. Columns let tiles
+  keep their true portrait shape and stack at natural heights, which is exactly
+  how a feed wall reads.
 */
 
 .wrap{width:100%;max-width:1184px;margin-inline:auto;
   display:flex;flex-direction:column;align-items:center}
 
-.grid{display:grid;width:100%;
-  grid-template-columns:repeat(4,1fr);
-  grid-auto-rows:clamp(130px,13vw,200px);
-  grid-auto-flow:dense;                 /* let small tiles backfill the gaps */
-  gap:clamp(8px,1vw,14px)}
-@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
+.grid{width:100%;column-count:4;column-gap:clamp(8px,1vw,14px)}
+@media(max-width:1000px){.grid{column-count:3}}
+@media(max-width:700px){.grid{column-count:2}}
 
-.tile{position:relative;margin:0;overflow:hidden;
-  border-radius:clamp(8px,.9vw,12px);background:#151515;
-  border:1px solid rgba(255,255,255,.08)}
-.tile img{width:100%;height:100%;object-fit:cover;
+.tile{position:relative;margin:0 0 clamp(8px,1vw,14px);
+  break-inside:avoid;                    /* no tile split across columns */
+  overflow:hidden;border-radius:clamp(8px,.9vw,12px);
+  background:#151515;border:1px solid rgba(255,255,255,.08)}
+.tile img{width:100%;height:100%;object-fit:cover;display:block;
   filter:grayscale(1) contrast(1.04);
   transition:filter .45s,transform .8s cubic-bezier(.16,1,.3,1)}
-.tile:hover img{filter:grayscale(0);transform:scale(1.06)}
-/* a faint red wash on hover, so the wall feels alive rather than static */
+.tile:hover img{filter:grayscale(0);transform:scale(1.05)}
 .tile::after{content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(160deg,rgba(235,41,51,.24),rgba(235,41,51,0) 60%);
+  background:linear-gradient(160deg,rgba(235,41,51,.22),rgba(235,41,51,0) 60%);
   opacity:0;transition:opacity .4s}
 .tile:hover::after{opacity:1}
 
-.box{grid-row:span 1;grid-column:span 1}
-.tall{grid-row:span 2;grid-column:span 1}
-.wide{grid-row:span 1;grid-column:span 2}
-@media(max-width:820px){
-  .wide{grid-column:span 2}
-  .tall{grid-row:span 2}
-}
+/* the only two shapes Instagram actually produces */
+.square{aspect-ratio:1/1}
+.portrait{aspect-ratio:4/5}
 
 .cta{display:inline-flex;align-items:center;gap:12px;
   margin-top:clamp(28px,3.4vw,48px);padding:17px 32px;border-radius:9px;

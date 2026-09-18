@@ -12,21 +12,23 @@ import s from "./SocialWall.module.css";
  * photography — swapping the source for a live feed later touches this one
  * component and nothing else.
  *
- * Sizes are deliberately uneven. A uniform grid reads as a gallery; a mixed
- * one reads as a feed, which is the feeling this section is after.
+ * SHAPES ARE SQUARE OR PORTRAIT ONLY. Instagram never posts landscape, so a
+ * wall containing wide tiles can't read as a feed however good it looks. The
+ * column masonry lets each tile keep its true shape and stack at its natural
+ * height, which is what a real feed does.
  */
 
-type Tile = { src: string; alt: string; span: "tall" | "wide" | "box" };
+type Tile = { src: string; alt: string; shape: "square" | "portrait" };
 
 const TILES: Tile[] = [
-  { src: "/brand/adc-stage-crowd.jpg", alt: "Chris on stage at the conference", span: "tall" },
-  { src: "/brand/adc-concert.jpg", alt: "Live music closing the conference", span: "box" },
-  { src: "/brand/adc-panel.jpg", alt: "Panel session on stage", span: "wide" },
-  { src: "/brand/adc-education.jpg", alt: "Breakout session", span: "box" },
-  { src: "/brand/adc-phone.jpg", alt: "An attendee filming the keynote", span: "tall" },
-  { src: "/brand/adc-interview.jpg", alt: "Chris interviewing on stage", span: "box" },
-  { src: "/brand/adc-stageset.jpg", alt: "The stage before doors", span: "wide" },
-  { src: "/brand/chris-stage.jpg", alt: "Chris mid-keynote", span: "box" },
+  { src: "/brand/adc-stage-crowd.jpg", alt: "Chris on stage at the conference", shape: "portrait" },
+  { src: "/brand/adc-concert.jpg", alt: "Live music closing the conference", shape: "square" },
+  { src: "/brand/adc-phone.jpg", alt: "An attendee filming the keynote", shape: "portrait" },
+  { src: "/brand/adc-panel.jpg", alt: "Panel session on stage", shape: "square" },
+  { src: "/brand/chris-stage.jpg", alt: "Chris mid-keynote", shape: "portrait" },
+  { src: "/brand/adc-education.jpg", alt: "Breakout session", shape: "square" },
+  { src: "/brand/adc-interview.jpg", alt: "Chris interviewing on stage", shape: "portrait" },
+  { src: "/brand/adc-stageset.jpg", alt: "The stage before doors", shape: "square" },
 ];
 
 export default function SocialWall() {
@@ -34,7 +36,7 @@ export default function SocialWall() {
     <div className={s.wrap}>
       <div className={s.grid}>
         {TILES.map((t, i) => (
-          <figure key={t.src + i} className={`${s.tile} ${s[t.span]}`}>
+          <figure key={t.src + i} className={`${s.tile} ${s[t.shape]}`}>
             <Image
               src={t.src}
               alt={t.alt}
