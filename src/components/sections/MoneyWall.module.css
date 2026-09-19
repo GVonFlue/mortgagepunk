@@ -30,8 +30,6 @@
 .artFeature{aspect-ratio:16/9}
 .artCard{aspect-ratio:1/1}
 
-.feature:hover .art img,.card:hover 
-.feature .card .feature:hover .play,.card:hover .feature .card 
 /* the description panel — the "sleeve notes" half of the card */
 .info{display:block;padding:clamp(14px,1.5vw,20px) clamp(2px,.3vw,4px)
   clamp(4px,.5vw,8px)}

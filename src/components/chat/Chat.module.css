@@ -166,22 +166,38 @@
 
 
 /* ---------- intent buttons ----------
-   Three real choices, sized to be pressed rather than read. The label carries
-   the decision and the hint disambiguates it, so nobody has to think about
-   which one they are. */
-.intents{display:grid;gap:9px;margin-top:4px}
-.intent{position:relative;display:grid;grid-template-columns:1fr auto;
-  align-items:center;gap:4px 14px;text-align:left;cursor:pointer;
-  padding:15px 18px;border-radius:12px;
-  background:rgba(255,255,255,.035);border:1px solid var(--mp-line);
+   These sit INSIDE the conversation, not beside it: they are indented to the
+   same left edge as the assistant's bubble and capped to the same width, so
+   they read as the bot offering choices rather than as a menu bolted on. The
+   label is centred because each one is a decision, not a sentence to read. */
+.intents{display:flex;flex-direction:column;align-items:stretch;gap:9px;
+  align-self:flex-start;width:min(88%,460px);margin-top:2px}
+
+.intent{position:relative;display:flex;flex-direction:column;align-items:center;
+  gap:3px;text-align:center;cursor:pointer;
+  padding:14px 38px;border-radius:14px;
+  background:rgba(235,41,51,.10);border:1px solid rgba(235,41,51,.42);
   transition:border-color .22s,background .22s,transform .22s cubic-bezier(.16,1,.3,1)}
-.intent:hover{border-color:var(--mp-red);background:rgba(235,41,51,.09);
-  transform:translateX(3px)}
-.intentLabel{grid-column:1;font-family:var(--font-display),sans-serif;
-  font-weight:400;font-size:clamp(16px,1.35vw,20px);line-height:1.1;
-  text-transform:uppercase;letter-spacing:.005em;color:var(--mp-bone)}
-.intentHint{grid-column:1;font-family:var(--font-body),sans-serif;
-  font-size:12.5px;line-height:1.35;color:#8E8E8E}
-.intentGo{grid-column:2;grid-row:1 / span 2;font-size:19px;color:var(--mp-red);
+.intent:hover{border-color:var(--mp-red);background:rgba(235,41,51,.2);
+  transform:translateY(-2px)}
+
+.intentLabel{font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(15px,1.25vw,19px);line-height:1.1;text-transform:uppercase;
+  letter-spacing:.01em;color:var(--mp-bone)}
+.intentHint{font-family:var(--font-body),sans-serif;font-size:12px;
+  line-height:1.3;color:#9A9A9A}
+
+/* the arrow sits out of the centred stack so it can't shift the label */
+.intentGo{position:absolute;right:15px;top:50%;transform:translateY(-50%);
+  font-size:17px;color:var(--mp-red);
   transition:transform .26s cubic-bezier(.16,1,.3,1)}
-.intent:hover .intentGo{transform:translateX(4px)}
+.intent:hover .intentGo{transform:translateY(-50%) translateX(4px)}
+
+/* a typing-style tail under the last bubble, so the buttons read as a reply
+   the assistant is waiting on rather than a form */
+.intents::before{content:'';align-self:flex-start;width:0;height:0;
+  margin:-12px 0 3px 12px;
+  border-left:7px solid transparent;border-right:7px solid transparent;
+  border-top:8px solid rgba(22,22,22,.92)}
+
+@media(max-width:560px){.intents{width:100%}}
