@@ -24,7 +24,7 @@
 
 /* framed artwork, inset from the sleeve edge — the detail that makes this
    read as a record rather than a video tile */
-.art{border-radius:clamp(6px,.6vw,9px);
+.art{display:block;width:100%;border-radius:clamp(6px,.6vw,9px);
   border:1px solid rgba(255,255,255,.14);
   box-shadow:0 14px 34px -18px rgba(0,0,0,.9)}
 .artFeature{aspect-ratio:16/9}

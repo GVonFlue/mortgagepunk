@@ -1,0 +1,42 @@
+/*
+  VideoPlayer.module.css
+
+  The frame is deliberately unopinionated — each section passes its own class
+  for shape, border and radius. This file only handles the swap between
+  thumbnail and player, so the two states line up exactly and nothing shifts
+  when someone presses play.
+*/
+
+.frame{position:relative;display:block;width:100%;overflow:hidden;
+  background:#151515;cursor:pointer;text-decoration:none;color:inherit}
+
+.thumb{width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(1) contrast(1.04);
+  transition:filter .45s,transform .7s cubic-bezier(.16,1,.3,1)}
+.frame:hover .thumb{filter:grayscale(0);transform:scale(1.04)}
+
+/* The iframe fills the frame absolutely rather than sitting in flow, so the
+   player occupies exactly the space the thumbnail did — no layout shift at
+   the moment of pressing play. */
+.iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+
+.play{position:absolute;left:50%;top:50%;border-radius:50%;
+  width:clamp(46px,4vw,72px);height:clamp(46px,4vw,72px);
+  transform:translate(-50%,-50%) scale(.9);background:var(--mp-red);
+  box-shadow:0 12px 34px rgba(235,41,51,.45);
+  transition:transform .35s cubic-bezier(.16,1,.3,1),background .25s}
+.play::after{content:'';position:absolute;left:56%;top:50%;
+  transform:translate(-50%,-50%);border-style:solid;border-color:transparent;
+  border-left-color:#fff;
+  border-width:clamp(8px,.72vw,11px) 0 clamp(8px,.72vw,11px) clamp(13px,1.1vw,18px)}
+.frame:hover .play{transform:translate(-50%,-50%) scale(1);
+  background:var(--mp-red-deep)}
+
+.missing{position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--font-body),sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.15em;text-transform:uppercase;color:#5A5A5A}
+
+@media(prefers-reduced-motion:reduce){
+  .thumb,.play{transition:none}
+  .frame:hover .thumb{transform:none}
+}
