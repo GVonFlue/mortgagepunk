@@ -83,12 +83,12 @@ export default function Section({
   return (
     <section
       id={id}
-      className={`${s.sec} ${floating ? s.onGround : s[tone]}`}
+      className={`${s.sec} ${floating ? s.onGround : s[tone]} ${
+        full ? s.secFull : ""
+      }`}
     >
       <div
-        className={`${s.wrap} ${panel} ${center ? s.center : ""} ${
-          full ? s.fullWrap : ""
-        }`}
+        className={`${s.wrap} ${panel} ${center ? s.center : ""}`}
       >
         {hasHead && (
           <header className={s.head}>

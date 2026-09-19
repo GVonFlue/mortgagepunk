@@ -6,7 +6,7 @@
   site. That framing treats the videos as a body of work rather than a list.
 */
 
-.wrap{width:100%;padding-inline:clamp(8px,1vw,16px);
+.wrap{width:100%;
   display:flex;flex-direction:column;align-items:center}
 
 /* ---------- shared card anatomy ---------- */

@@ -1,3 +1,7 @@
+/* 100vw includes the scrollbar width, so a full-bleed section is a few pixels
+   wider than the page. Clipping here stops that becoming a horizontal scroll. */
+:global(html),:global(body){overflow-x:clip}
+
 /* Anchor navigation glides rather than jumps, which is what makes a long
    single-page site feel like one continuous thing. Off for anyone who has
    asked the OS to reduce motion — for some people smooth scrolling causes

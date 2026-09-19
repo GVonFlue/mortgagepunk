@@ -8,7 +8,7 @@
   how a feed wall reads.
 */
 
-.wrap{width:100%;padding-inline:clamp(8px,1vw,16px);
+.wrap{width:100%;
   display:flex;flex-direction:column;align-items:center}
 
 /* full-bleed now, so more columns on a wide screen — four huge tiles across

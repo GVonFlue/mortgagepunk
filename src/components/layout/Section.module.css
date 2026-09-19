@@ -7,7 +7,7 @@
 */
 
 /* ---------- the shell ---------- */
-.sec{position:relative;
+.sec{position:relative;--sec-x:clamp(20px,4vw,64px);
   /* Identical top and bottom on every section. Uneven padding is what makes a
      long page feel assembled from parts instead of designed as one thing. */
   padding:clamp(64px,8vw,132px) clamp(20px,4vw,64px);
@@ -99,8 +99,9 @@
      open   no panel at all. Content sits directly on the ground, which makes
             the ground itself part of that section's design.
    ============================================================ */
-.onGround{background:transparent;border-top:0;position:relative;z-index:1;
-  padding:clamp(28px,4vw,64px) clamp(16px,4vw,48px)}
+.onGround{--sec-x:clamp(16px,4vw,48px);
+  background:transparent;border-top:0;position:relative;z-index:1;
+  padding:clamp(28px,4vw,64px) var(--sec-x)}
 .onGround .wrap{position:relative}
 
 .panel{position:relative;border-radius:clamp(18px,2vw,28px);
@@ -143,22 +144,22 @@
 .center .body > *{width:100%}
 
 /* ---------- full-bleed sections ----------
-   Content runs the whole screen rather than the 1184px column.
+   The modifier goes on the SECTION, not the inner wrap.
 
-   Negative margins rather than removing the parent's padding: the section sets
-   its own padding, and cancelling it from a child with :has() left 116px on
-   each side because the padding is declared in two places. Pulling out by the
-   exact padding value reaches the true screen edge whatever the viewport.
+   Three earlier attempts put it on the wrap — negative margins, then 100vw
+   with a transform — and each was overridden by something later in the
+   cascade, leaving the content inset by exactly the section's padding. Zeroing
+   that padding at its source cannot be fought by anything inside.
 
-   The HEAD stays in the column. A headline stretched edge to edge on a wide
-   monitor is unreadable — it is the media that benefits from the width. */
-.fullWrap{max-width:none!important;width:auto;
-  padding-left:0;padding-right:0;
-  margin-left:calc(-1 * clamp(16px,4vw,48px));
-  margin-right:calc(-1 * clamp(16px,4vw,48px))}
-/* the inner column also caps at 1400px, which survives the negative margins —
-   max-width holds the measured width even when the box is pulled wider */
-.fullWrap .body,
-.fullWrap .body > *{max-width:none;width:100%}
-.fullWrap .head{max-width:60ch;margin-left:auto;margin-right:auto;
-  padding-left:clamp(16px,4vw,48px);padding-right:clamp(16px,4vw,48px)}
+   The HEAD keeps its own padding and column. A headline stretched edge to edge
+   on a wide monitor is unreadable; it is the media that wants the width. */
+.secFull{padding-left:0;padding-right:0}
+/* every wrapper inside, not just the direct one: the sections render their own
+   inner .wrap from a different CSS module, and its cap is what held the
+   content at 1400px once the viewport grew past it */
+.secFull .wrap,
+.secFull .body,
+.secFull .body > *{max-width:none;width:100%}
+.secFull .head{max-width:60ch;margin-left:auto;margin-right:auto;
+  padding-left:var(--sec-x);padding-right:var(--sec-x)}
+
