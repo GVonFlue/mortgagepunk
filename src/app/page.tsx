@@ -54,11 +54,11 @@ export default function Home() {
         <ChatStage variant="inline" />
       </Section>
 
-      <Section id="money" sit="open" center title="The Game of Money">
+      <Section id="money" sit="open" center full title="The Game of Money">
         <MoneyWall />
       </Section>
 
-      <Section id="movement" sit="open" center title="The Movement">
+      <Section id="movement" sit="open" center full title="The Movement">
         <SocialWall />
       </Section>
 

@@ -141,3 +141,24 @@
    their content, which collapses any grid inside to a single column. */
 .center .body{display:flex;justify-content:center;width:100%;text-align:left}
 .center .body > *{width:100%}
+
+/* ---------- full-bleed sections ----------
+   Content runs the whole screen rather than the 1184px column.
+
+   Negative margins rather than removing the parent's padding: the section sets
+   its own padding, and cancelling it from a child with :has() left 116px on
+   each side because the padding is declared in two places. Pulling out by the
+   exact padding value reaches the true screen edge whatever the viewport.
+
+   The HEAD stays in the column. A headline stretched edge to edge on a wide
+   monitor is unreadable — it is the media that benefits from the width. */
+.fullWrap{max-width:none!important;width:auto;
+  padding-left:0;padding-right:0;
+  margin-left:calc(-1 * clamp(16px,4vw,48px));
+  margin-right:calc(-1 * clamp(16px,4vw,48px))}
+/* the inner column also caps at 1400px, which survives the negative margins —
+   max-width holds the measured width even when the box is pulled wider */
+.fullWrap .body,
+.fullWrap .body > *{max-width:none;width:100%}
+.fullWrap .head{max-width:60ch;margin-left:auto;margin-right:auto;
+  padding-left:clamp(16px,4vw,48px);padding-right:clamp(16px,4vw,48px)}

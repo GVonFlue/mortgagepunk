@@ -31,11 +31,9 @@ export default async function TestimonialsPage() {
       <section className={`${s.sec} ${s.dark}`} style={{ paddingTop: 0 }}>
         <div className={s.wrap}>
           {items.length === 0 ? (
-            <div className={s.todo}>
-              TODO: no published testimonials yet. Add them in Backstage —
-              they start as drafts and only appear here once published, because
-              these are real people being quoted by name.
-            </div>
+            <p className={s.lede}>
+              Client stories are being collected now. Check back soon.
+            </p>
           ) : (
             <div className={s.tGrid}>
               {items.map((t) => (

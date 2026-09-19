@@ -84,14 +84,6 @@ export default function Freebies() {
               </div>
             ))}
           </div>
-
-          <div className={s.todo} style={{ marginTop: 30 }}>
-            TODO: the guides themselves need writing and designing — six PDFs and
-            two spreadsheets. The page, the cards and the download wiring are
-            done; each card becomes a real download the moment a file lands in
-            <code> /public/guides/</code>. Worth deciding with Chris which three
-            to build first rather than all six at once.
-          </div>
         </div>
       </section>
 

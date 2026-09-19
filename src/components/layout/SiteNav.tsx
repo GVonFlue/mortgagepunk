@@ -51,6 +51,7 @@ export default function SiteNav() {
   const onHome = path === "/";
   const [active, setActive] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   // which section is in view — drives the underline
   useEffect(() => {
@@ -73,16 +74,50 @@ export default function SiteNav() {
     return () => io.disconnect();
   }, [onHome]);
 
-  // the bar only earns a background once it is over content
+  /**
+   * Hide on the way down, return on the way up.
+   *
+   * Scrolling down means "show me more of the page", so the bar gets out of
+   * the way. Scrolling up is the gesture people already make when they want
+   * navigation, so it comes straight back rather than waiting for the top.
+   *
+   * The 6px threshold ignores the sub-pixel jitter of a trackpad, which would
+   * otherwise flicker the bar constantly. It never hides within the first
+   * 120px, so the nav is always there when the page loads.
+   */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    let last = window.scrollY;
+    let frame = 0;
+
+    const onScroll = () => {
+      if (frame) return;                 // one update per painted frame
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const y = window.scrollY;
+        const delta = y - last;
+
+        setScrolled(y > 24);
+        if (Math.abs(delta) > 6) {
+          setHidden(delta > 0 && y > 120);
+          last = y;
+        }
+      });
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
-    <nav className={`${n.nav} ${scrolled ? n.navSolid : ""}`}>
+    <nav
+      className={`${n.nav} ${scrolled ? n.navSolid : ""} ${
+        hidden ? n.navHidden : ""
+      }`}
+    >
       <Link href="/" className={n.logo} aria-label="Mortgage Punk, home">
         <Image
           src="/brand/mortgagepunk-logo@3x.png"

@@ -50,6 +50,7 @@ export default function Section({
   bleed = false,
   sit,
   center = false,
+  full = false,
 }: {
   id?: string;
   tone?: Tone;
@@ -69,6 +70,8 @@ export default function Section({
   /** Centre the head and content. For sections that are a statement rather
    *  than a block of information to be read left to right. */
   center?: boolean;
+  /** Content runs the full width of the screen rather than the 1184px column. */
+  full?: boolean;
 }) {
   const hasHead = Boolean(kicker || title || lede);
 
@@ -82,7 +85,11 @@ export default function Section({
       id={id}
       className={`${s.sec} ${floating ? s.onGround : s[tone]}`}
     >
-      <div className={`${s.wrap} ${panel} ${center ? s.center : ""}`}>
+      <div
+        className={`${s.wrap} ${panel} ${center ? s.center : ""} ${
+          full ? s.fullWrap : ""
+        }`}
+      >
         {hasHead && (
           <header className={s.head}>
             {kicker && <span className={s.kicker}>{kicker}</span>}

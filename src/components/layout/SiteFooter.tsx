@@ -87,10 +87,6 @@ export default function SiteFooter() {
         conducted through Neighborhood Loans.
         <br />
         &copy; {new Date().getFullYear()} Mortgage Punk. Site by ProyTech.
-        <div className={s.todo}>
-          TODO: exact legal entity wording, disclosure language and required
-          marks pending Andrew Richels / Neighborhood Loans compliance.
-        </div>
       </div>
     </footer>
   );

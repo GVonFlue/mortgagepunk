@@ -86,12 +86,6 @@ export default async function MemberPage({
               {m.bio.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
-              {m.pending && (
-                <div className={s.todo}>
-                  TODO: this is a placeholder. Send the name, title, NMLS number,
-                  market, bio and headshot and this becomes a real page.
-                </div>
-              )}
             </div>
           </div>
         </div>

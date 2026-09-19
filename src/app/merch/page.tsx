@@ -28,12 +28,6 @@ export default function Merch() {
       />
       <section className={`${s.sec} ${s.dark}`} style={{ paddingTop: 0 }}>
         <div className={s.wrap}>
-          <div className={s.todo}>
-            TODO: the full merch store (catalog, inventory, fulfilment) is on the
-            horizon in the proposal, not in this build. Platform recommendation
-            pending from ProyTech. Do not expand this page without a scope
-            conversation.
-          </div>
         </div>
       </section>
       <SiteFooter />

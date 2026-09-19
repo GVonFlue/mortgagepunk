@@ -17,10 +17,6 @@ export default function LeadSection() {
               Tell us where you are and someone from the team gets back to you.
               Not a call center, not a drip campaign.
             </p>
-            <div className={s.todo}>
-              TODO before launch: compliance disclosures pending from Andrew
-              Richels at Neighborhood Loans. Do not go live without them.
-            </div>
           </div>
           <LeadForm />
         </div>

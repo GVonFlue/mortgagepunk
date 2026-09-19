@@ -29,15 +29,35 @@ type Msg = { role: "user" | "assistant"; content: string };
 /** Survives reloads, unlike sessionStorage — a dismissal should stick. */
 const DISMISS_KEY = "mp_chat_capture_dismissed";
 
-const OPENERS = [
-  "What do I actually need to get pre-approved?",
-  "What's the difference between pre-qualified and pre-approved?",
-  "How much should I have saved?",
-  "What is the American Dream Conference?",
+/**
+ * The three things somebody arrives wanting.
+ *
+ * Named intents rather than sample questions. A question list asks the visitor
+ * to think of something; three intents ask them to recognise themselves, which
+ * is a far lower bar and routes the conversation somewhere useful from the
+ * first tap. `send` carries a fuller sentence than the label so the assistant
+ * gets real context rather than three words.
+ */
+const INTENTS = [
+  {
+    label: "Buy a New Home",
+    hint: "First place or next one",
+    send: "I want to buy a home. Walk me through what happens first and what I need to have ready.",
+  },
+  {
+    label: "Refinance my Home",
+    hint: "Lower the payment or the term",
+    send: "I already own and I'm thinking about refinancing. How do I work out whether it makes sense for me?",
+  },
+  {
+    label: "Access my Equity",
+    hint: "Put what you've built to work",
+    send: "I want to access the equity in my home. What are my options and what would I need to qualify?",
+  },
 ];
 
-const GREETING =
-  "Hey. Ask me anything about how mortgages actually work, what the process looks like, or what Mortgage Punk is about. I can't quote rates or tell you what you'd qualify for — but I can explain almost everything else, and I'll get you to a person the moment that's more useful.";
+/** Deliberately short. The buttons do the explaining. */
+const GREETING = "What are you trying to do?";
 
 export default function ChatStage({
   variant = "inline",
@@ -221,10 +241,17 @@ export default function ChatStage({
           ))}
 
           {msgs.length === 1 && (
-            <div className={s.openers}>
-              {OPENERS.map((q) => (
-                <button key={q} type="button" onClick={() => send(q)}>
-                  {q}
+            <div className={s.intents}>
+              {INTENTS.map((i) => (
+                <button
+                  key={i.label}
+                  type="button"
+                  className={s.intent}
+                  onClick={() => send(i.send)}
+                >
+                  <span className={s.intentLabel}>{i.label}</span>
+                  <span className={s.intentHint}>{i.hint}</span>
+                  <span className={s.intentGo} aria-hidden="true">&rarr;</span>
                 </button>
               ))}
             </div>

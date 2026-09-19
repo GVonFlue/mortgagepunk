@@ -8,11 +8,15 @@
   how a feed wall reads.
 */
 
-.wrap{width:100%;max-width:1184px;margin-inline:auto;
+.wrap{width:100%;padding-inline:clamp(8px,1vw,16px);
   display:flex;flex-direction:column;align-items:center}
 
-.grid{width:100%;column-count:4;column-gap:clamp(8px,1vw,14px)}
-@media(max-width:1000px){.grid{column-count:3}}
+/* full-bleed now, so more columns on a wide screen — four huge tiles across
+   a 2560px monitor would read as a slideshow, not a feed */
+.grid{width:100%;column-count:6;column-gap:clamp(8px,.8vw,12px)}
+@media(max-width:1600px){.grid{column-count:5}}
+@media(max-width:1280px){.grid{column-count:4}}
+@media(max-width:980px){.grid{column-count:3}}
 @media(max-width:700px){.grid{column-count:2}}
 
 .tile{position:relative;margin:0 0 clamp(8px,1vw,14px);

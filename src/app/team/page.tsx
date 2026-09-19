@@ -26,11 +26,6 @@ export default function Team() {
       <section className={`${s.sec} ${s.dark}`} style={{ paddingTop: 0 }}>
         <div className={s.wrap}>
           <TeamGrid />
-          <div className={s.todo} style={{ marginTop: 30 }}>
-            TODO: names, titles, NMLS numbers, markets, short bios and headshots
-            needed for the two loan officers alongside Chris. Each one gets its
-            own page — that is what makes a team page worth having for search.
-          </div>
         </div>
       </section>
       <LoudLead

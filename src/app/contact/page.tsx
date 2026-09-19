@@ -48,11 +48,6 @@ export default function Contact() {
               </p>
             </div>
           </div>
-          <div className={s.todo} style={{ marginTop: 26 }}>
-            TODO: final inbox architecture pending. Ashley to confirm whether
-            Chris@MortgagePunk.com is the public address or whether dedicated
-            speaking and press inboxes get created.
-          </div>
         </div>
       </section>
 

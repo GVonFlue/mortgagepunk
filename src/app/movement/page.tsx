@@ -284,13 +284,6 @@ export default async function Movement() {
               </div>
             </div>
           ))}
-
-          <div className={c.todo}>
-            TODO: this two-day running order is a reasonable draft, not
-            confirmed. Ashley needs to supply the real schedule for both days,
-            the other two keynote speakers, and the breakout and workshop
-            titles.
-          </div>
         </div>
       </section>
 
@@ -314,12 +307,6 @@ export default async function Movement() {
                 <h3>{p}</h3>
               </div>
             ))}
-          </div>
-
-          <div className={c.todo}>
-            TODO: sponsor logos and prize artwork needed. The current live site
-            has images for each of these — pull them across before the domain
-            redirect goes in, because they disappear when it does.
           </div>
         </div>
       </section>
