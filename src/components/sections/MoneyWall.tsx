@@ -1,15 +1,25 @@
 import Link from "next/link";
 import s from "./MoneyWall.module.css";
-import { thumbnail } from "@/lib/library";
+import VideoArt from "./VideoArt";
 import { getVideos } from "@/lib/db";
 
 /**
  * The Game of Money, as a record shelf.
  *
- * One feature video at full width, three below it as album-style cards:
- * artwork on top, a description panel underneath. That shape is borrowed
- * from a music site on purpose — it treats the content as a body of work
- * rather than as a list of links.
+ * One feature video across the full width of the screen, three below it as
+ * album-style cards: artwork on top, a description panel underneath. That
+ * shape is borrowed from a music site on purpose — it treats the content as a
+ * body of work rather than as a list of links.
+ *
+ * The feature deliberately has no sleeve. The three cards sit in tinted
+ * panels, the feature does not, which is what makes it read as the headline
+ * release rather than as a larger version of the same card.
+ *
+ * ASPECT RATIO IS SET BY THE COMPONENT, not by the image. Every card reserves
+ * its own box — 16/9 for the feature, 1/1 for the three — so the layout is
+ * final before a single thumbnail arrives and nothing reflows on load. An
+ * earlier version defined .artFeature and .artCard but never applied them,
+ * which left the artwork at its intrinsic 480px inside a full-width box.
  *
  * Empty slots render as marked placeholders so the finished shape is visible
  * while Chris is still filling the library through Backstage.
@@ -35,13 +45,8 @@ function VideoCard({
       rel="noopener noreferrer"
       className={feature ? s.feature : s.card}
     >
-      <span className={s.art}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={v.youtube_id ? thumbnail(v.youtube_id) : "/brand/hero-plate.jpg"}
-          alt=""
-          loading={feature ? "eager" : "lazy"}
-        />
+      <span className={`${s.art} ${feature ? s.artFeature : s.artCard}`}>
+        <VideoArt youtubeId={v.youtube_id} feature={feature} />
         <span className={s.play} aria-hidden="true" />
       </span>
       <span className={s.info}>
@@ -55,7 +60,9 @@ function VideoCard({
 function Slot({ feature = false }: { feature?: boolean }) {
   return (
     <div className={feature ? s.feature : s.card} aria-hidden="true">
-      <span className={`${s.art} ${s.slotArt}`}>
+      <span
+        className={`${s.art} ${feature ? s.artFeature : s.artCard} ${s.slotArt}`}
+      >
         <span className={s.slotMark} />
       </span>
       <span className={s.info}>

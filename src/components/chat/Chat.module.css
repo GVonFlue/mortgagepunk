@@ -87,12 +87,40 @@
 .stageClose:hover{color:var(--mp-bone)}
 .stageClose svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
 
+/* ---------- the conversation box ---------- */
+/*
+  One outlined surface holding the message list and the input row.
+
+  The panel's red border marks the whole assistant, photograph included, which
+  is a large area to attribute to a chat window — visitors were reading the
+  buttons as page navigation rather than as a conversation. This inner edge
+  draws the line around the part you actually talk to, so the thing looks like
+  a messaging surface at a glance and before any text is typed.
+
+  Deliberately NOT a second red border. Two reds nested inside each other read
+  as a rendering error; a light edge over a darker inset reads as a well made
+  window. The red is kept for the frame and the send button.
+
+  min-height:0 matters: this is a flex child that contains a scrolling list,
+  and without it the box refuses to shrink and the list never scrolls.
+*/
+.convo{flex:1;min-height:0;display:flex;flex-direction:column;
+  padding:clamp(12px,1.4vw,17px);border-radius:15px;
+  background:rgba(0,0,0,.42);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),
+             0 18px 40px -30px rgba(0,0,0,.9)}
+
 /* ---------- conversation ---------- */
 /* The list is the only thing that scrolls. Capping it in dvh means the input
    row stays pinned above the keyboard rather than being pushed below it. */
 .msgs{flex:1;min-height:0;max-height:min(46dvh,460px);
   overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column;gap:11px;
   padding-right:6px;scroll-behavior:smooth}
+/* The box below is the visible edge now, so the row's own top rule would draw
+   a second line a few pixels inside it. The list's gap does the separating. */
+.convo .inrow{margin-top:13px;padding-top:13px;
+  border-top:1px solid rgba(255,255,255,.10)}
 .msgBot,.msgMe{max-width:88%;padding:12px 15px;border-radius:14px;
   font-size:14.5px;line-height:1.6;animation:rise .24s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}

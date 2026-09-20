@@ -231,111 +231,118 @@ export default function ChatStage({
           )}
         </div>
 
-        <div className={s.msgs} ref={listRef}>
-          {msgs.map((m, i) => (
-            <div key={i} className={m.role === "user" ? s.msgMe : s.msgBot}>
-              {m.content.split("\n").filter(Boolean).map((p, j) => (
-                <p key={j}>{p}</p>
-              ))}
-            </div>
-          ))}
+        {/* Everything the visitor actually talks to lives inside one outlined
+            box — the message list and the input row together. The panel border
+            says "this area of the page is the assistant"; this inner edge says
+            "this is the part you type into", which is the distinction a first
+            time visitor was not making. */}
+        <div className={s.convo}>
+          <div className={s.msgs} ref={listRef}>
+            {msgs.map((m, i) => (
+              <div key={i} className={m.role === "user" ? s.msgMe : s.msgBot}>
+                {m.content.split("\n").filter(Boolean).map((p, j) => (
+                  <p key={j}>{p}</p>
+                ))}
+              </div>
+            ))}
 
-          {msgs.length === 1 && (
-            <div className={s.intents}>
-              {INTENTS.map((i) => (
+            {msgs.length === 1 && (
+              <div className={s.intents}>
+                {INTENTS.map((i) => (
+                  <button
+                    key={i.label}
+                    type="button"
+                    className={s.intent}
+                    onClick={() => send(i.send)}
+                  >
+                    <span className={s.intentLabel}>{i.label}</span>
+                    <span className={s.intentHint}>{i.hint}</span>
+                    <span className={s.intentGo} aria-hidden="true">&rarr;</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {busy && (
+              <div className={s.msgBot}>
+                <span className={s.dots}>
+                  <i /><i /><i />
+                </span>
+              </div>
+            )}
+
+            {showCapture && (
+              <div className={s.capture}>
                 <button
-                  key={i.label}
                   type="button"
-                  className={s.intent}
-                  onClick={() => send(i.send)}
+                  className={s.captureClose}
+                  onClick={dismissCapture}
+                  aria-label="Dismiss, and don't ask again"
                 >
-                  <span className={s.intentLabel}>{i.label}</span>
-                  <span className={s.intentHint}>{i.hint}</span>
-                  <span className={s.intentGo} aria-hidden="true">&rarr;</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
                 </button>
-              ))}
-            </div>
-          )}
-
-          {busy && (
-            <div className={s.msgBot}>
-              <span className={s.dots}>
-                <i /><i /><i />
-              </span>
-            </div>
-          )}
-
-          {showCapture && (
-            <div className={s.capture}>
-              <button
-                type="button"
-                className={s.captureClose}
-                onClick={dismissCapture}
-                aria-label="Dismiss, and don't ask again"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6 6l12 12M18 6L6 18" />
-                </svg>
-              </button>
-              <strong>Want a person to pick this up?</strong>
-              <p>
-                Leave these and someone from the team follows up. No obligation,
-                and you can keep asking either way.
-              </p>
-              <div className={s.captureRow}>
-                <input
-                  placeholder="First name"
-                  value={lead.first}
-                  onChange={(e) => setLead({ ...lead, first: e.target.value })}
-                  aria-label="First name"
-                />
-                <input
-                  placeholder="Email"
-                  type="email"
-                  value={lead.email}
-                  onChange={(e) => setLead({ ...lead, email: e.target.value })}
-                  aria-label="Email"
-                />
-                <input
-                  placeholder="Mobile"
-                  type="tel"
-                  value={lead.phone}
-                  onChange={(e) => setLead({ ...lead, phone: e.target.value })}
-                  aria-label="Mobile"
-                />
+                <strong>Want a person to pick this up?</strong>
+                <p>
+                  Leave these and someone from the team follows up. No obligation,
+                  and you can keep asking either way.
+                </p>
+                <div className={s.captureRow}>
+                  <input
+                    placeholder="First name"
+                    value={lead.first}
+                    onChange={(e) => setLead({ ...lead, first: e.target.value })}
+                    aria-label="First name"
+                  />
+                  <input
+                    placeholder="Email"
+                    type="email"
+                    value={lead.email}
+                    onChange={(e) => setLead({ ...lead, email: e.target.value })}
+                    aria-label="Email"
+                  />
+                  <input
+                    placeholder="Mobile"
+                    type="tel"
+                    value={lead.phone}
+                    onChange={(e) => setLead({ ...lead, phone: e.target.value })}
+                    aria-label="Mobile"
+                  />
+                </div>
+                {leadErr && <p className={s.captureErr}>{leadErr}</p>}
+                <div className={s.captureBtns}>
+                  <button type="button" className={s.captureGo} onClick={submitLead} disabled={busy}>
+                    Have someone reach out
+                  </button>
+                  <button type="button" className={s.captureSkip} onClick={dismissCapture}>
+                    Not yet
+                  </button>
+                </div>
               </div>
-              {leadErr && <p className={s.captureErr}>{leadErr}</p>}
-              <div className={s.captureBtns}>
-                <button type="button" className={s.captureGo} onClick={submitLead} disabled={busy}>
-                  Have someone reach out
-                </button>
-                <button type="button" className={s.captureSkip} onClick={dismissCapture}>
-                  Not yet
-                </button>
-              </div>
-            </div>
-          )}
+            )}
 
-        </div>
+          </div>
 
-        <div className={s.inrow}>
-          <input
-            value={input}
-            placeholder="Ask anything about the process..."
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send(input)}
-            aria-label="Your question"
-          />
-          <button
-            type="button"
-            onClick={() => send(input)}
-            disabled={busy || !input.trim()}
-            aria-label="Send"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 12h15M13 6l6 6-6 6" />
-            </svg>
-          </button>
+          <div className={s.inrow}>
+            <input
+              value={input}
+              placeholder="Ask anything about the process..."
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && send(input)}
+              aria-label="Your question"
+            />
+            <button
+              type="button"
+              onClick={() => send(input)}
+              disabled={busy || !input.trim()}
+              aria-label="Send"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 12h15M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <p className={s.stageNote}>

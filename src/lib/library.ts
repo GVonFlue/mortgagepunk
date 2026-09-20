@@ -34,6 +34,19 @@ export function thumbnail(youtubeId: string): string {
   return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
 }
 
+/**
+ * The same thumbnail at 1280x720, for anywhere it runs wider than a card.
+ *
+ * hqdefault is 480x360 — a 4:3 frame with letterbox bars baked into the
+ * pixels, which is invisible at card size and obvious across a full-width
+ * feature. maxresdefault is true 16:9 with no bars, but YouTube only makes it
+ * for uploads with a high-resolution source, so callers must be ready for a
+ * 404. See VideoArt.tsx, which falls back on error.
+ */
+export function thumbnailLarge(youtubeId: string): string {
+  return `https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`;
+}
+
 export function topicSlug(t: string): string {
   return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
