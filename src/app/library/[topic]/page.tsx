@@ -5,7 +5,8 @@ import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import s from "@/components/Site.module.css";
-import { thumbnail, topicSlug } from "@/lib/library";
+import VideoPlay from "@/components/sections/VideoPlay";
+import { topicSlug } from "@/lib/library";
 import { getVideos, getTopics } from "@/lib/db";
 
 export const revalidate = 300;
@@ -75,25 +76,17 @@ export default async function TopicPage({
           ) : (
             <div className={s.vids}>
               {videos.map((v) => (
-                <a
-                  key={v.id}
-                  href={`https://www.youtube.com/watch?v=${v.youtube_id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={s.vid}
-                >
-                  <div className={s.thumb}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={v.youtube_id ? thumbnail(v.youtube_id) : "/brand/hero-plate.jpg"}
-                      alt=""
-                    />
-                    <span className={s.play} aria-hidden="true" />
-                  </div>
+                <article key={v.id} className={s.vid}>
+                  <VideoPlay
+                    youtubeId={v.youtube_id}
+                    title={v.title}
+                    frameClassName={s.thumb}
+                    playClassName={s.play}
+                  />
                   <div className={s.tp}>{(v.topics ?? []).join(" \u00b7 ")}</div>
                   <h4>{v.title}</h4>
                   <p>{v.blurb}</p>
-                </a>
+                </article>
               ))}
             </div>
           )}

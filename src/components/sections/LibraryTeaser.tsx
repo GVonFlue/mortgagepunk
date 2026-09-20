@@ -1,6 +1,7 @@
 import Link from "next/link";
 import s from "../Site.module.css";
-import { thumbnail, topicSlug } from "@/lib/library";
+import VideoPlay from "./VideoPlay";
+import { topicSlug } from "@/lib/library";
 import { getVideos, getTopics } from "@/lib/db";
 
 /**
@@ -8,7 +9,9 @@ import { getVideos, getTopics } from "@/lib/db";
  * brand's desaturated-world / colour-where-the-energy-is rule, applied to UI.
  *
  * Server component: reads straight from the database so whatever Chris
- * featured in /backstage shows up here without a rebuild.
+ * featured in /backstage shows up here without a rebuild. The thumbnails
+ * themselves are the shared click-to-play facade, so a featured video opens
+ * in the card rather than on youtube.com.
  */
 export default async function LibraryTeaser() {
   const [all, topics] = await Promise.all([
@@ -47,25 +50,17 @@ export default async function LibraryTeaser() {
         ) : (
           <div className={s.vids}>
             {featured.map((v) => (
-              <a
-                key={v.id}
-                href={`https://www.youtube.com/watch?v=${v.youtube_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.vid}
-              >
-                <div className={s.thumb}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={v.youtube_id ? thumbnail(v.youtube_id) : "/brand/hero-plate.jpg"}
-                    alt=""
-                  />
-                  <span className={s.play} aria-hidden="true" />
-                </div>
+              <article key={v.id} className={s.vid}>
+                <VideoPlay
+                  youtubeId={v.youtube_id}
+                  title={v.title}
+                  frameClassName={s.thumb}
+                  playClassName={s.play}
+                />
                 <div className={s.tp}>{v.topics?.[0]}</div>
                 <h4>{v.title}</h4>
                 <p>{v.blurb}</p>
-              </a>
+              </article>
             ))}
           </div>
         )}

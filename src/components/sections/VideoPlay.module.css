@@ -1,0 +1,22 @@
+/*
+  VideoPlay.module.css — the two rules the facade needs and nothing else.
+
+  Every visible decision about a video frame (ratio, radius, border, the play
+  badge) belongs to the stylesheet that placed it. This file exists only so a
+  <button> stops looking like a button and an <iframe> fills the box it lands
+  in. Adding anything decorative here would mean two stylesheets arguing over
+  the same element.
+*/
+
+/* A transparent shell. The frame class sits on the span inside it. */
+.btn{display:block;width:100%;padding:0;margin:0;border:0;background:none;
+  cursor:pointer;font:inherit;color:inherit;text-align:inherit;
+  -webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent}
+.btn:focus-visible{outline:2px solid var(--mp-red);outline-offset:3px;
+  border-radius:4px}
+
+/* Supplies what a <span> lacks. Callers that already set these win nothing
+   and lose nothing — the values are identical. */
+.box{display:block;position:relative}
+
+.frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
