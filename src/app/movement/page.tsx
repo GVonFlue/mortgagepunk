@@ -31,6 +31,14 @@ export const revalidate = 300;
  * when, how do I get in.
  *
  * Date, venue, keynote, stats and prizes all come from Backstage → Conference.
+ *
+ * SECTION TITLES. The first four content sections carry one centred title and
+ * nothing else — no second headline underneath. The old pattern was a small
+ * label, then a two-line headline, then sometimes a paragraph, which put three
+ * layers of heading in front of every section. The label was the part people
+ * actually navigate by, so it became the title (.secTitle) and the rest went.
+ * The later sections — giveaways, venue, why it exists — still use the full
+ * pattern and can move over the same way if wanted.
  */
 
 const WHO = [
@@ -188,12 +196,11 @@ export default async function Movement() {
       {/* ---------- what it is ---------- */}
       <section className={`${c.sec} ${c.secWhite}`}>
         <div className={c.wrap}>
-          <span className={c.kick}>What it is</span>
-          <h2 className={c.h2}>
-            Not a sit-in-a-chair
-            <em>seminar.</em>
-          </h2>
-          <p className={c.lede}>{conf.blurb}</p>
+          <h2 className={c.secTitle}>What it is</h2>
+          {/* The line under the title is Backstage → Conference → "One line
+              on what it is". Kept editable rather than typed in here, because
+              the homepage Movement block reads the same field. */}
+          <p className={`${c.lede} ${c.ledeCenter}`}>{conf.blurb}</p>
 
           <div className={c.stats}>
             {conf.stats.map((s) => (
@@ -209,11 +216,7 @@ export default async function Movement() {
       {/* ---------- what it actually looked like ---------- */}
       <section className={`${c.sec} ${c.secInk} ${c.wash} ${c.washStage}`}>
         <div className={c.wrap}>
-          <span className={c.kick}>Last year</span>
-          <h2 className={c.h2} style={{ color: "var(--mp-bone)" }}>
-            This is what
-            <em>it looks like.</em>
-          </h2>
+          <h2 className={c.secTitle}>Last year</h2>
           <div className={c.shots}>
             {[
               { src: "/brand/adc-stage-crowd.jpg", cap: "Keynote, room full" },
@@ -233,15 +236,7 @@ export default async function Movement() {
       {/* ---------- who it's for ---------- */}
       <section className={`${c.sec} ${c.secPaper}`}>
         <div className={c.wrap}>
-          <span className={c.kick}>Who it&rsquo;s for</span>
-          <h2 className={c.h2}>
-            You don&rsquo;t need to know
-            <em>anything yet.</em>
-          </h2>
-          <p className={c.lede}>
-            There is no prerequisite and no assumed knowledge. Come with the
-            questions you have been too embarrassed to ask.
-          </p>
+          <h2 className={c.secTitle}>Who it&rsquo;s for</h2>
 
           <div className={c.who}>
             {WHO.map((w) => (
@@ -258,11 +253,7 @@ export default async function Movement() {
       <section className={`${c.sec} ${c.secWhite}`} id="day">
         <div className={c.wrap} style={{ position: "relative" }}>
           <GfxNote where="evt" />
-          <span className={c.kick}>The day</span>
-          <h2 className={c.h2}>
-            How it
-            <em>actually runs.</em>
-          </h2>
+          <h2 className={c.secTitle}>The day</h2>
 
           {SCHEDULE.map((d) => (
             <div key={d.day} className={c.dayBlock}>

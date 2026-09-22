@@ -2,7 +2,7 @@ import Link from "next/link";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
-import Statement, { Kicker, Punch } from "@/components/brand/Statement";
+import Statement, { Punch } from "@/components/brand/Statement";
 import s from "@/components/Site.module.css";
 import VideoPlay from "@/components/sections/VideoPlay";
 import { topicSlug } from "@/lib/library";
@@ -26,19 +26,22 @@ export default async function Library() {
     <>
       <AnnouncementBar />
       <SiteNav />
-      {/* Teaching page, so the hero gives before it asks. Set with the
-          size-jump treatment from his posters rather than a flat two-tone
-          heading. */}
-      <section className={`${s.sec} ${s.dark} ${s.photoBg} ${s.photoEducation}`}>
-        <div className={s.wrap}>
-          <Kicker>The Game of Money</Kicker>
+      {/* The page is named after the series, so the series name is the
+          headline: stacked, centred, set in the same size-jump Statement face
+          as the rest of the site. The kicker that used to sit above it said
+          "The Game of Money" too, which made the name appear twice before the
+          first sentence. The photograph is lifted for this hero only — see
+          .photoLift in Site.module.css. */}
+      <section
+        className={`${s.sec} ${s.dark} ${s.photoBg} ${s.photoEducation} ${s.photoLift}`}
+      >
+        <div className={`${s.wrap} ${s.heroCenter}`}>
           <Statement
             as="h1"
+            align="center"
             lines={[
-              { t: "Nobody", size: "md" },
-              { t: "taught you", size: "xl" },
-              { t: "any of this.", size: "xl", tone: "red" },
-              { t: "So here it is. Free. All of it.", size: "sm" },
+              { t: "The Game", size: "xl" },
+              { t: "of Money", size: "xl", tone: "red" },
             ]}
           />
           <Punch>

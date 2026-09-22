@@ -1005,3 +1005,24 @@
 .photoEducation::before{background-image:url('/brand/adc-education.jpg')}
 .photoCrowd::before{background-image:url('/brand/adc-stage-crowd.jpg')}
 .photoConcert::before{background-image:url('/brand/adc-concert.jpg')}
+
+
+/* ---------- the /library hero ----------
+   A centred, stacked title over a photograph that is allowed to show.
+
+   .photoBg was tuned for left-aligned copy: the image at .34 and a gradient
+   that runs dark on the left, where the words were, and lighter on the right.
+   With the title centred, that left-heavy gradient just darkens half the
+   picture for no reason. This lifts the image and swaps the sideways fade for
+   a soft pool of shadow behind the middle, where the words are now.
+
+   Scoped to one modifier so every other .photoBg section — the homepage
+   teaser uses the same photograph — keeps the treatment it was designed with.
+   Doubled class selectors on purpose: equal specificity with .photoBg would
+   leave the winner to source order, and this should win regardless. */
+.heroCenter{display:flex;flex-direction:column;align-items:center;text-align:center}
+.photoBg.photoLift::before{opacity:.58;filter:grayscale(.3) contrast(1.05)}
+.photoBg.photoLift::after{background:
+    linear-gradient(180deg,var(--mp-black) 0%,rgba(10,10,10,.34) 20%,
+      rgba(10,10,10,.34) 78%,var(--mp-black) 100%),
+    radial-gradient(58% 52% at 50% 50%,rgba(10,10,10,.5) 0%,rgba(10,10,10,0) 100%)}

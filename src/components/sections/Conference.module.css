@@ -225,3 +225,27 @@
   background:linear-gradient(0deg,rgba(10,10,10,.88) 0%,rgba(10,10,10,0) 100%);
   font-family:var(--font-body),sans-serif;font-size:11px;font-weight:800;
   letter-spacing:.14em;text-transform:uppercase;color:var(--mp-bone)}
+
+
+/* ---------- single centred section title ----------
+   One line, centred, in the same display face and size as .h2, with the red
+   brush stroke from .kick underneath so the section keeps the mark it had.
+
+   This replaces a stack of label → two-line headline → paragraph. No
+   margin-bottom: every block that follows (.stats, .shots, .who, .dayBlock)
+   already brings its own top margin, and adding one here doubled the gap.
+
+   color:inherit rather than a set colour, so it is ink on the light sections
+   and bone on .secInk without a second class or an inline style. */
+.secTitle{margin:0;display:flex;flex-direction:column;align-items:center;
+  text-align:center;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(28px,3.8vw,58px);line-height:.94;text-transform:uppercase;
+  letter-spacing:-.02em;color:inherit}
+.secTitle::after{content:'';display:block;width:130px;height:5px;
+  margin-top:clamp(10px,1.1vw,14px);background:var(--mp-red);
+  clip-path:polygon(0 38%,6% 8%,16% 44%,28% 10%,41% 42%,55% 8%,68% 40%,
+    80% 12%,92% 36%,100% 22%,100% 66%,93% 92%,82% 58%,69% 88%,
+    56% 56%,43% 90%,30% 58%,17% 86%,6% 60%,0 78%)}
+
+/* a lede under a centred title has to centre with it */
+.ledeCenter{margin-left:auto;margin-right:auto;text-align:center}
