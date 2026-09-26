@@ -163,3 +163,19 @@
 .secFull .head{max-width:60ch;margin-left:auto;margin-right:auto;
   padding-left:var(--sec-x);padding-right:var(--sec-x)}
 
+
+/* ---------- drawn wordmark in place of a typeset heading ----------
+   The artwork sits inside the h2 next to screen-reader-only text, so the
+   heading still has words in it. width:100% against a per-mark max-width
+   lets each one fill a phone and stop at its own size on a desktop.
+
+   No margin-inline:auto here: a wordmark on a left-aligned section should
+   stay left. .center supplies the centring, the same way it does for the
+   typeset title, the kicker and the lede. */
+.titleArt{display:block;width:100%}
+.titleArt img{display:block;width:100%;height:auto}
+.center .titleArt{margin-left:auto;margin-right:auto}
+
+/* Visually gone, still read aloud and still indexed. */
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}

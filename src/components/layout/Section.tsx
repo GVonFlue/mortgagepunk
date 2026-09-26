@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import s from "./Section.module.css";
 
 /**
@@ -26,6 +27,13 @@ import s from "./Section.module.css";
  *
  * Anchor targets live here too: `id` plus a scroll-margin so a section never
  * lands underneath the sticky nav.
+ *
+ * TITLE ARTWORK. A section can swap its typeset heading for a drawn wordmark
+ * with `titleArt`. `title` stays required alongside it and is rendered
+ * screen-reader-only, so the heading is still a real h2 with real words in it
+ * for search engines and assistive tech — the artwork is decorative and
+ * carries alt="". No font will ever match the hand-drawn logo, which is why
+ * these are images rather than a webfont.
  */
 
 export type Tone = "dark" | "ink" | "bone" | "red";
@@ -51,6 +59,7 @@ export default function Section({
   sit,
   center = false,
   full = false,
+  titleArt,
 }: {
   id?: string;
   tone?: Tone;
@@ -72,6 +81,14 @@ export default function Section({
   center?: boolean;
   /** Content runs the full width of the screen rather than the 1184px column. */
   full?: boolean;
+  /**
+   * Drawn wordmark in place of the typeset heading. `width`/`height` are the
+   * asset's own pixels and only set the aspect ratio, so the space is reserved
+   * before it loads. `cap` is how wide it is allowed to get on a big screen —
+   * set per mark so three wordmarks of different proportions land at roughly
+   * the same visual height rather than the same width.
+   */
+  titleArt?: { src: string; width: number; height: number; cap: number };
 }) {
   const hasHead = Boolean(kicker || title || lede);
 
@@ -93,17 +110,48 @@ export default function Section({
         {hasHead && (
           <header className={s.head}>
             {kicker && <span className={s.kicker}>{kicker}</span>}
-            {title && (
-              <h2 className={s.title}>
-                {title}
-                {accent && (
-                  <>
-                    <br />
-                    <em>{accent}</em>
-                  </>
-                )}
-              </h2>
-            )}
+            {title &&
+              (titleArt ? (
+                <h2 className={s.title}>
+                  <span className={s.srOnly}>
+                    {title}
+                    {accent ? ` ${accent}` : ""}
+                  </span>
+                  <span className={s.titleArt} style={{ maxWidth: titleArt.cap }}>
+                    {titleArt.src.endsWith(".svg") ? (
+                      // An SVG gains nothing from the image optimiser and
+                      // serving one through it needs SVG explicitly allowed in
+                      // next.config, which is a security setting this does not
+                      // need to touch. Straight tag.
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={titleArt.src}
+                        alt=""
+                        width={titleArt.width}
+                        height={titleArt.height}
+                      />
+                    ) : (
+                      <Image
+                        src={titleArt.src}
+                        alt=""
+                        width={titleArt.width}
+                        height={titleArt.height}
+                        sizes={`(max-width: 760px) 92vw, ${titleArt.cap}px`}
+                      />
+                    )}
+                  </span>
+                </h2>
+              ) : (
+                <h2 className={s.title}>
+                  {title}
+                  {accent && (
+                    <>
+                      <br />
+                      <em>{accent}</em>
+                    </>
+                  )}
+                </h2>
+              ))}
             {lede && <p className={s.lede}>{lede}</p>}
           </header>
         )}

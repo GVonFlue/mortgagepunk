@@ -50,15 +50,50 @@ export default function Home() {
       {/* fixed concrete for everything below the hero */}
       <PageGround />
 
-      <Section id="ask" sit="open" center title="Ask Mortgage Punk">
+      <Section
+        id="ask"
+        sit="open"
+        center
+        title="Ask Mortgage Punk"
+        titleArt={{
+          src: "/brand/wordmark-ask.svg",
+          width: 2171,
+          height: 724,
+          cap: 760,
+        }}
+      >
         <ChatStage variant="inline" />
       </Section>
 
-      <Section id="money" sit="open" center full title="The Game of Money">
+      <Section
+        id="money"
+        sit="open"
+        center
+        full
+        title="The Game of Money"
+        titleArt={{
+          src: "/brand/wordmark-game-of-money.png",
+          width: 743,
+          height: 278,
+          cap: 660,
+        }}
+      >
         <MoneyWall />
       </Section>
 
-      <Section id="movement" sit="open" center full title="The Movement">
+      <Section
+        id="movement"
+        sit="open"
+        center
+        full
+        title="The Movement"
+        titleArt={{
+          src: "/brand/wordmark-movement.png",
+          width: 724,
+          height: 303,
+          cap: 620,
+        }}
+      >
         <SocialWall />
       </Section>
 
