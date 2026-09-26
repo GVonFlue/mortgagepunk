@@ -94,8 +94,8 @@ export default function MobileNav() {
             <a href={APPLY_URL} {...EXTERNAL} className={m.apply}>
               Get approved <span aria-hidden="true">&rarr;</span>
             </a>
-            <Link href="/contact" className={m.secondary} onClick={() => setOpen(false)}>
-              Talk to a person
+            <Link href="/book" className={m.secondary} onClick={() => setOpen(false)}>
+              Book Chris
             </Link>
           </div>
         </div>

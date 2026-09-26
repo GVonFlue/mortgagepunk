@@ -16,7 +16,14 @@
   at whatever cap is added — that is the failure this section has hit before.
 */
 
-.wrap{width:100%;display:flex;flex-direction:column;align-items:center}
+/* A quarter inch down each side. The section is <Section full>, which strips
+   the page gutter so the shelf CAN reach the edge; this decides that it
+   should stop just short of it instead. 24px because CSS treats 1in as 96px
+   regardless of the actual screen, so 0.25in is exactly 24 — written as the
+   number rather than "0.25in" so it reads as a layout value next to the
+   other paddings here rather than a print measurement. */
+.wrap{width:100%;display:flex;flex-direction:column;align-items:center;
+  padding-inline:24px}
 
 /* ---------- the two shapes ---------- */
 .feature,.card{display:block;width:100%;text-align:left;color:inherit}

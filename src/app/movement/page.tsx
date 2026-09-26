@@ -4,6 +4,8 @@ import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import GfxNote from "@/components/ui/GfxNote";
+import WaitlistButton from "@/components/sections/WaitlistButton";
+import { TICKET_PRICE } from "@/lib/event";
 import c from "@/components/sections/Conference.module.css";
 import { getConference } from "@/lib/db";
 
@@ -178,14 +180,10 @@ export default async function Movement() {
           </p>
 
           <div className={c.heroBtns}>
-            <a
-              href={conf.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${c.btn} ${c.btnRed}`}
-            >
-              Get tickets &rarr;
-            </a>
+            {/* Tickets are not on sale, so the button collects the lead
+                instead of sending people to a page that cannot sell them
+                anything. See WaitlistButton. */}
+            <WaitlistButton className={`${c.btn} ${c.btnRed}`} />
             <Link href="#day" className={`${c.btn} ${c.btnLine}`}>
               See the day &rarr;
             </Link>
@@ -351,19 +349,12 @@ export default async function Movement() {
         />
         <h2>Be in the room.</h2>
         <p>
-          Tickets, sponsorship, or tell us to shout when the next date lands.
-          Either way you hear from a person.
+          Tickets open soon at {TICKET_PRICE}. Get on the waitlist for first
+          access, or sponsor the event and get in front of the whole room.
         </p>
         <div className={c.heroBtns}>
-          <a
-            href={conf.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${c.btn} ${c.btnInk}`}
-          >
-            Get tickets &rarr;
-          </a>
-          <Link href="/contact" className={`${c.btn} ${c.btnLine}`}>
+          <WaitlistButton className={`${c.btn} ${c.btnInk}`} />
+          <Link href="/book?type=sponsorship" className={`${c.btn} ${c.btnLine}`}>
             Sponsor the event &rarr;
           </Link>
         </div>

@@ -174,7 +174,7 @@ export default async function About() {
         </div>
         <div className={a.dateList}>
           {talks.map((t, i) => (
-            <Link key={t.id} href="/contact" className={a.dateRow}>
+            <Link key={t.id} href={`/book?talk=${t.id}`} className={a.dateRow}>
               <span className={a.dateNo}>{String(i + 1).padStart(2, "0")}</span>
               <div>
                 <h3 className={a.dateTitle}>{t.title}</h3>
@@ -256,10 +256,10 @@ export default async function About() {
                 the date and someone comes back to you.
               </p>
               <div className={a.bookBtns}>
-                <Link href="/contact" className={`${a.btn} ${a.btnDark}`}>
+                <Link href="/book?type=speaking" className={`${a.btn} ${a.btnDark}`}>
                   Book Chris to speak &rarr;
                 </Link>
-                <Link href="/contact" className={`${a.btn} ${a.btnOutline}`}>
+                <Link href="/book?type=press" className={`${a.btn} ${a.btnOutline}`}>
                   Press enquiries &rarr;
                 </Link>
               </div>

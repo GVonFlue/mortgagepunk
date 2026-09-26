@@ -1,58 +1,19 @@
-import AnnouncementBar from "@/components/layout/AnnouncementBar";
-import SiteNav from "@/components/layout/SiteNav";
-import SiteFooter from "@/components/layout/SiteFooter";
-import PageHead from "@/components/layout/PageHead";
-import LeadSection from "@/components/sections/LeadSection";
-import s from "@/components/Site.module.css";
+import { permanentRedirect } from "next/navigation";
 
-export const metadata = {
-  title: "Contact — Mortgage Punk",
-  description: "Get in touch with the Mortgage Punk team.",
-};
-
+/**
+ * /contact — retired. Permanently redirects to /book.
+ *
+ * This was a generic lead form: a lending intake with three cards above it
+ * saying speaking and press go to Ashley. Every booking link on the site sent
+ * people here and then asked them whether they were buying a home. Booking
+ * requests now have their own page, and lending has the application portal
+ * and the assistant.
+ *
+ * Kept as a redirect rather than deleted because /contact has been live and
+ * indexed, and has been pasted into emails and printed materials. A 308 hands
+ * any search standing to /book and sends every old link somewhere that works;
+ * a deleted page would 404 all of them.
+ */
 export default function Contact() {
-  return (
-    <>
-      <AnnouncementBar />
-      <SiteNav />
-      <PageHead
-        kicker="Contact"
-        title="Reach a person."
-        accent="Not a queue."
-        lede="Lending questions, speaking requests, press, or partnerships — here is where each one goes."
-      />
-
-      <section className={`${s.sec} ${s.ink}`}>
-        <div className={s.wrap}>
-          <div className={s.lend} style={{ background: "#2A2A2A" }}>
-            <div className={s.c} style={{ background: "var(--mp-black)", color: "var(--mp-bone)" }}>
-              <div className={s.n}>01</div>
-              <h3>Lending</h3>
-              <p style={{ color: "#8E8E8E" }}>
-                Buying, refinancing, or investing. Use the form below and the team picks
-                it up.
-              </p>
-            </div>
-            <div className={s.c} style={{ background: "var(--mp-black)", color: "var(--mp-bone)" }}>
-              <div className={s.n}>02</div>
-              <h3>Speaking</h3>
-              <p style={{ color: "#8E8E8E" }}>
-                Booking and stage inquiries are coordinated by Ashley Thill.
-              </p>
-            </div>
-            <div className={s.c} style={{ background: "var(--mp-black)", color: "var(--mp-bone)" }}>
-              <div className={s.n}>03</div>
-              <h3>Press</h3>
-              <p style={{ color: "#8E8E8E" }}>
-                Media, interviews, and appearances also route through Ashley.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <LeadSection />
-      <SiteFooter />
-    </>
-  );
+  permanentRedirect("/book");
 }

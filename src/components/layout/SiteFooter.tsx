@@ -38,7 +38,7 @@ const COLS = [
       ["Speaking", "/about#speaking"],
       ["Press", "/about#press"],
       ["Client stories", "/testimonials"],
-      ["Contact", "/contact"],
+      ["Book Chris", "/book"],
     ],
   },
 ];
