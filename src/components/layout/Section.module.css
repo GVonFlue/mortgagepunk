@@ -181,62 +181,50 @@
   overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 
-/* ---------- misregistered print, the wordmark version ----------
-   Two tinted copies of the same artwork sit behind the mark and jump between
-   offsets, the way a cheap screen print lands out of register on each pass.
+/* ---------- the echo ----------
+   Three copies of the same wordmark: the real one on top, and two faded
+   copies staggered out behind it to the right, each a beat behind the last.
 
-   THE COPIES ARE THE SAME FILE. Each ghost masks itself with --mark, the
-   wordmark's own URL, and paints a flat colour through that mask. Any
-   transparent PNG or SVG works, nothing extra is downloaded, and replacing a
-   wordmark cannot leave a stale ghost behind.
+   COPIES OF THE ARTWORK, NOT SILHOUETTES. An earlier version masked the mark
+   and filled it with a flat colour. That reduces the artwork to one solid
+   shape, which is survivable on a simple wordmark and ruins a busy one — Ask
+   Mortgage Punk is white letters, red letters and spray texture interlocking,
+   and flattening it to a red blob threw away everything that makes it
+   readable. background-image keeps every colour in the file, so the echo is
+   recognisably the logo rather than its outline.
 
-   OFFSETS ARE PERCENTAGES, NEVER em. A percentage in a transform is measured
-   against the element's own box, so 4% of a 585px wordmark is 23px and 4% of
-   a small one stays proportionate. em looks like the same idea and is not:
-   it resolves against the heading's font-size, which is about 44px here, so
-   the first version of this asked for two pixels of movement on a mark six
-   hundred wide and was invisible.
+   ONE AXIS, NO ROTATION. The trailing copies move right and only right. The
+   rotation and the two-direction scatter in the earlier attempt read as
+   damage rather than as depth.
 
-   steps(1) IS THE WHOLE EFFECT. Interpolated movement reads as a slide,
-   which looks like software. Jumping between discrete positions reads as
-   separate printed passes — the same reason the reference site's headings
-   are frame-based GIFs rather than tweened animation.
+   THE STAGGER IS THE ANIMATION. Both copies run the same cycle; the far one
+   is half a second behind the near one, so the echo travels outward instead
+   of both copies pulsing together.
 
-   Durations are deliberately unequal, 2.4s against 3.1s, so the two ghosts
-   drift in and out of phase instead of locking into an obvious two-beat
-   pulse. */
+   Percentages, never em — a transform percentage measures against the
+   element's own box, so it stays proportionate at any heading size. em
+   resolves against font-size, which here is about 44px against a 585px mark,
+   and produced movement too small to see. */
 .titleArt{position:relative}
 .titleArt img{position:relative;z-index:1}
 
-.ghost{position:absolute;inset:0;z-index:0;pointer-events:none;
-  -webkit-mask-image:var(--mark);mask-image:var(--mark);
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-position:center;mask-position:center}
+.ghost{position:absolute;inset:0;pointer-events:none;
+  background-image:var(--mark);background-size:100% 100%;
+  background-repeat:no-repeat;background-position:center}
 
-/* Red against bone. A dark ghost was the other half of why this did not
-   register — grey on dark concrete is grey on dark concrete. Two light,
-   saturated passes are what make the misregistration visible at a glance. */
-.ghostA{background:var(--mp-red);opacity:.95;
-  animation:ghostA 2.4s steps(1) infinite}
-.ghostB{background:var(--mp-bone);opacity:.55;
-  animation:ghostB 3.1s steps(1) infinite}
+/* near copy: closer, stronger. far copy: further, fainter, half a beat late */
+.ghostA{z-index:0;opacity:.45;animation:echo 1.8s steps(1) infinite}
+.ghostB{z-index:0;opacity:.22;animation:echo 1.8s steps(1) -.5s infinite}
 
-@keyframes ghostA{
-  0%  {transform:translate(-4.2%,-3.4%) rotate(-1.4deg)}
-  34% {transform:translate(-1.6%,3.8%)  rotate(1deg)}
-  67% {transform:translate(-5.2%,1.2%)  rotate(-.5deg)}
-}
-@keyframes ghostB{
-  0%  {transform:translate(4%,3.2%)    rotate(1.2deg)}
-  40% {transform:translate(5.6%,-1.6%) rotate(-.9deg)}
-  72% {transform:translate(2%,4.4%)    rotate(.6deg)}
+@keyframes echo{
+  0%   {transform:translateX(3.5%)}
+  50%  {transform:translateX(6.5%)}
 }
 
-/* Three headings jittering forever is a lot of motion for anyone who did not
-   ask for it. Off entirely under reduced motion, with the ghosts holding one
-   offset so the print still looks misregistered rather than vanishing. */
+/* Held at rest for anyone who asked their system for less motion — the
+   staggered offset still reads, it just stops travelling. */
 @media(prefers-reduced-motion:reduce){
-  .ghostA{animation:none;transform:translate(-4%,-3%) rotate(-1deg)}
-  .ghostB{animation:none;transform:translate(4%,3%) rotate(1deg)}
+  .ghostA,.ghostB{animation:none}
+  .ghostA{transform:translateX(3.5%)}
+  .ghostB{transform:translateX(6.5%)}
 }
