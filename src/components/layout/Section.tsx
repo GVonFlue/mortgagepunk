@@ -117,7 +117,23 @@ export default function Section({
                     {title}
                     {accent ? ` ${accent}` : ""}
                   </span>
-                  <span className={s.titleArt} style={{ maxWidth: titleArt.cap }}>
+                  <span
+                    className={s.titleArt}
+                    style={
+                      {
+                        maxWidth: titleArt.cap,
+                        "--mark": `url(${titleArt.src})`,
+                      } as React.CSSProperties
+                    }
+                  >
+                    {/* Two offset copies of the same artwork sitting behind
+                        it, recoloured and jumping between fixed positions —
+                        the misregistered screen-print look. They are the SAME
+                        file as the wordmark, tinted through a mask, so there
+                        is nothing extra to load and nothing to keep in sync
+                        when the artwork is replaced. */}
+                    <span className={`${s.ghost} ${s.ghostA}`} aria-hidden="true" />
+                    <span className={`${s.ghost} ${s.ghostB}`} aria-hidden="true" />
                     {titleArt.src.endsWith(".svg") ? (
                       // An SVG gains nothing from the image optimiser and
                       // serving one through it needs SVG explicitly allowed in

@@ -179,3 +179,58 @@
 /* Visually gone, still read aloud and still indexed. */
 .srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
   overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+
+/* ---------- misregistered print, the wordmark version ----------
+   Two tinted copies of the same artwork sit behind the mark and jump between
+   fixed offsets, the way a cheap screen print lands slightly out of register
+   on each pass.
+
+   THE COPIES ARE THE SAME FILE. Each ghost masks itself with --mark, the
+   wordmark's own URL, and paints a flat colour through that mask. Any
+   transparent PNG or SVG works, nothing extra is downloaded, and replacing a
+   wordmark cannot leave a stale ghost behind — there is only ever one asset
+   per heading.
+
+   steps(1) IS THE WHOLE EFFECT. Interpolated movement reads as a slide,
+   which looks like software. Jumping between discrete positions reads as
+   separate printed passes. Same reason the reference site's headings are
+   four-frame GIFs rather than tweened animation.
+
+   The timings are deliberately not equal — 2.4s against 3.1s, both prime-ish
+   against each other — so the two ghosts drift in and out of phase instead
+   of locking into an obvious two-beat pulse. */
+.titleArt{position:relative}
+.titleArt img{position:relative;z-index:1}
+
+.ghost{position:absolute;inset:0;z-index:0;pointer-events:none;
+  -webkit-mask-image:var(--mark);mask-image:var(--mark);
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center}
+
+.ghostA{background:var(--mp-red);opacity:.85;
+  animation:ghostA 2.4s steps(1) infinite}
+.ghostB{background:#3C3C3C;opacity:.7;
+  animation:ghostB 3.1s steps(1) infinite}
+
+/* Offsets in em so they scale with the heading rather than sitting at a fixed
+   pixel distance that looks heavy on a phone and timid on a monitor. */
+@keyframes ghostA{
+  0%  {transform:translate(-.055em,-.045em) rotate(-.35deg)}
+  34% {transform:translate(-.02em,.05em)   rotate(.25deg)}
+  67% {transform:translate(-.07em,.015em)  rotate(-.1deg)}
+}
+@keyframes ghostB{
+  0%  {transform:translate(.05em,.04em)    rotate(.3deg)}
+  40% {transform:translate(.075em,-.02em)  rotate(-.2deg)}
+  72% {transform:translate(.025em,.06em)   rotate(.15deg)}
+}
+
+/* Three headings jittering forever is a lot of motion for anyone who did not
+   ask for it. Off entirely under reduced motion, and the ghosts hold one
+   offset so the print still looks misregistered rather than vanishing. */
+@media(prefers-reduced-motion:reduce){
+  .ghostA{animation:none;transform:translate(-.05em,-.04em)}
+  .ghostB{animation:none;transform:translate(.05em,.04em)}
+}
