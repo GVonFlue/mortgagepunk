@@ -39,48 +39,92 @@
   min-width:340px}
 
 /* Both sections are one image each; the ratio comes from the file. */
-.hero{aspect-ratio:1206/883;background-image:url("/brand/comp-hero.jpg")}
-.ask{aspect-ratio:1206/790;background-image:url("/brand/comp-ask.jpg")}
+.hero{aspect-ratio:1206/906;background-image:url("/brand/comp-hero.jpg")}
+.ask{aspect-ratio:1206/767;background-image:url("/brand/comp-ask.jpg")}
 
 /* ---------- hotspots ----------
-   Invisible anchors sitting exactly over buttons that are painted into the
-   image. The paint supplies the look, these supply the behaviour. They carry
-   real labels, so a screen reader announces a link even though the words on
-   screen are pixels. */
-.hot{position:absolute;display:block;border-radius:6px;
-  -webkit-tap-highlight-color:transparent}
-.hot:focus-visible{outline:3px solid #fff;outline-offset:3px}
+   Anchors sitting exactly over buttons that are painted into the image.
 
-/* hero: the two stacked calls to action, lower left */
-.heroCta1{left:3.3%;top:75.2%;width:21.5%;height:10.2%}
-.heroCta2{left:3.3%;top:87.4%;width:21.5%;height:7.6%}
+   THEY CANNOT MOVE, SO THEY LIGHT UP INSTEAD. The obvious hover for a button
+   is a lift, but a lift means moving the button away from its painted twin
+   underneath, which shows the old one behind it. backdrop-filter works on the
+   pixels already on screen, so the painted button itself brightens and warms
+   in place with nothing to come apart. The ring and the glow sit on top of
+   that and give the edge a real button has.
+
+   Radius is in percent so the corners stay in proportion as the stage scales;
+   a fixed pixel radius turns square on a phone. */
+.hot{position:absolute;display:block;cursor:pointer;
+  border-radius:8%/22%;
+  -webkit-tap-highlight-color:transparent;
+  box-shadow:0 0 0 0 rgba(235,41,51,0);
+  transition:backdrop-filter .22s ease, box-shadow .22s ease, filter .22s ease}
+.hot:hover{
+  backdrop-filter:brightness(1.18) saturate(1.12) contrast(1.04);
+  box-shadow:0 0 0 2px rgba(255,255,255,.55),
+             0 10px 30px -10px rgba(235,41,51,.75)}
+.hot:active{backdrop-filter:brightness(1.05) saturate(1.05)}
+.hot:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.hot{transition:none}}
+/* A touch screen has no hover, and a sticky highlight after a tap looks
+   broken, so the treatment is limited to devices with a real pointer. */
+@media(hover:none){.hot:hover{backdrop-filter:none;box-shadow:none}}
+
+/* hero: the two stacked calls to action, lower left.
+   Measured off the artwork with a red/dark mask rather than estimated — the
+   first pass was eyeballed and sat about 90px high, so the hover ring lit up
+   empty concrete above the button and clicks missed it entirely. If either
+   image is re-exported, re-measure; do not adjust these by eye. */
+.heroCta1{left:3.32%;top:83.00%;width:21.14%;height:9.60%}
+.heroCta2{left:2.49%;top:93.27%;width:23.96%;height:6.62%}
 
 /* ask: the two cards under the button */
-.askApprove{left:50.5%;top:63.9%;width:20.8%;height:26.5%}
-.askSchedule{left:74.5%;top:63.9%;width:23.5%;height:26.5%}
+.askApprove{left:50.5%;top:62.84%;width:20.8%;height:27.25%}
+.askSchedule{left:74.5%;top:62.84%;width:23.5%;height:27.25%}
 
 /* ---------- the live input ----------
-   Sits in the painted box. The box's own placeholder text was removed from
-   the image so this one shows through; if the art is ever re-exported that
-   erasure has to be redone or two placeholders will overlap.
+   The painted field is a plain white rounded rectangle with a red square on
+   the end, which is trivial to draw in CSS. So this draws its own, slightly
+   larger than the painted one and with a tighter radius, and lays it exactly
+   on top. The paint underneath is completely covered, which is why nothing
+   had to be erased from the image and why there is no seam to notice.
 
-   Transparent background on purpose — the paper texture underneath is the
-   design, and a flat fill would show as a patch. */
-.field{position:absolute;left:55.5%;top:39.3%;width:35.5%;height:6.6%;
-  background:none;border:0;padding:0 .6%;
+   That is what makes this feel like a control rather than a text box taped
+   over a picture: the border, the focus ring and the send button are real
+   elements that respond, not pixels.
+
+   If the artwork is ever re-exported at a different size, these percentages
+   are the only things that need re-measuring. */
+.fieldBox{position:absolute;left:54.6%;top:36.7%;width:43.4%;height:10.0%;
+  display:flex;align-items:center;gap:0;
+  background:#FFF;border:1px solid #C6C2BA;border-radius:12px;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.06);
+  transition:border-color .18s ease, box-shadow .18s ease}
+.fieldBox:focus-within{border-color:var(--mp-red);
+  box-shadow:0 0 0 3px rgba(235,41,51,.18), inset 0 1px 2px rgba(0,0,0,.06)}
+
+.field{flex:1;min-width:0;height:100%;
+  background:none;border:0;padding:0 2% 0 3.2%;
   font-family:var(--font-body),sans-serif;
-  font-size:clamp(11px,1.15vw,17px);color:#1A1A1A}
-.field::placeholder{color:#8C8477}
-.field:focus{outline:none}
-.field:focus-visible{outline:2px solid var(--mp-red);outline-offset:4px}
+  font-size:clamp(11px,1.18vw,17px);color:#1A1A1A;line-height:1}
+.field::placeholder{color:#9A958C}
+/* The wrapper shows focus for the whole control, so the input itself does
+   not draw a second ring inside it. */
+.field:focus,.field:focus-visible{outline:none}
 
-/* the paper-plane send square at the right end of the painted box */
-.send{position:absolute;left:91.6%;top:38.3%;width:6.2%;height:8.4%;
-  background:none;border:0;cursor:pointer;border-radius:8px}
-.send:focus-visible{outline:3px solid #fff;outline-offset:3px}
+/* the red send square, drawn rather than painted */
+.send{flex:none;height:78%;aspect-ratio:1.18;margin-right:1.6%;
+  display:grid;place-items:center;cursor:pointer;
+  background:var(--mp-red);border:0;border-radius:9px;color:#fff;
+  transition:background .18s ease, transform .18s cubic-bezier(.16,1,.3,1)}
+.send:hover{background:var(--mp-red-deep);transform:scale(1.05)}
+.send:active{transform:scale(.98)}
+.send svg{width:52%;height:52%;fill:currentColor}
+.send:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.send{transition:background .18s ease}}
 
 /* the big red button under it */
-.askBtn{position:absolute;left:54.2%;top:50.6%;width:43.5%;height:9.4%;
+.askBtn{position:absolute;left:54.2%;top:49.15%;width:43.5%;height:9.65%;
   background:none;border:0;cursor:pointer;border-radius:10px}
 .askBtn:focus-visible{outline:3px solid #fff;outline-offset:3px}
 

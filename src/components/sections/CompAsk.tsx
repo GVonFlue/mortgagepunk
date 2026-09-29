@@ -42,20 +42,29 @@ export default function CompAsk() {
           mortgage questions you would normally ask him.
         </h2>
 
-        <input
-          className={s.field}
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && launch()}
-          placeholder="Ask me anything about mortgages..."
-          aria-label="Ask a question about mortgages"
-        />
-        <button
-          type="button"
-          className={s.send}
-          onClick={launch}
-          aria-label="Send your question"
-        />
+        {/* Drawn, not painted. This sits exactly over the field in the
+            artwork and covers it completely, which is why the image needed
+            no editing and why there is no seam. */}
+        <div className={s.fieldBox}>
+          <input
+            className={s.field}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && launch()}
+            placeholder="Ask me anything about mortgages..."
+            aria-label="Ask a question about mortgages"
+          />
+          <button
+            type="button"
+            className={s.send}
+            onClick={launch}
+            aria-label="Send your question"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2.4 20.4 22 12 2.4 3.6 2.4 10.2 16 12 2.4 13.8z" />
+            </svg>
+          </button>
+        </div>
         <button
           type="button"
           className={s.askBtn}

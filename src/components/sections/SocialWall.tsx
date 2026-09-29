@@ -12,11 +12,19 @@ import s from "./SocialWall.module.css";
  * photography — swapping the source for a live feed later touches this one
  * component and nothing else.
  *
+ * EVERY TILE LINKS TO THE PROFILE, not to an individual post. These are
+ * stand-in photographs rather than real posts, so there is no per-post
+ * permalink to send anyone to; the profile is the only honest destination.
+ * When the live feed lands, each tile gets its own post URL and this constant
+ * becomes the fallback.
+ *
  * SHAPES ARE SQUARE OR PORTRAIT ONLY. Instagram never posts landscape, so a
  * wall containing wide tiles can't read as a feed however good it looks. The
  * column masonry lets each tile keep its true shape and stack at its natural
  * height, which is what a real feed does.
  */
+
+const INSTAGRAM = "https://www.instagram.com/mortgagepunk";
 
 type Tile = { src: string; alt: string; shape: "square" | "portrait" | "tallish" | "reel" };
 
@@ -40,7 +48,14 @@ export default function SocialWall() {
     <div className={s.wrap}>
       <div className={s.grid}>
         {TILES.map((t, i) => (
-          <figure key={t.src + i} className={`${s.tile} ${s[t.shape]}`}>
+          <a
+            key={t.src + i}
+            href={INSTAGRAM}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${s.tile} ${s[t.shape]}`}
+            aria-label={`${t.alt} — open Mortgage Punk on Instagram`}
+          >
             <Image
               src={t.src}
               alt={t.alt}
@@ -48,7 +63,7 @@ export default function SocialWall() {
               height={1200}
               sizes="(max-width: 700px) 50vw, 25vw"
             />
-          </figure>
+          </a>
         ))}
       </div>
 
