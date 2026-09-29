@@ -24,9 +24,11 @@ import a from "./AskPanel.module.css";
  * competing titles on screen and made the panel look like a widget parked on
  * the collage rather than another scrap of paper in it.
  *
- * The panel covers the two cards while a conversation is open, on purpose —
- * they are a distraction mid-answer — and links to both sit in the footer so
- * nothing is lost.
+ * IT DOES NOT COVER THE CARDS. Get Approved and Talk to Chris are painted
+ * into the collage below, already themed in its own hand, and they keep
+ * working while a conversation is open. An earlier version ran the panel down
+ * over them and rebuilt them as small text links in its footer — two of the
+ * best-looking buttons on the page swapped for the plainest thing on it.
  */
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -40,13 +42,7 @@ const GREETING =
   "What are you trying to do — buy, refinance, or pull equity out? " +
   "Ask me anything and I'll give it to you straight.";
 
-export default function AskPanel({
-  applyHref,
-  scheduleHref,
-}: {
-  applyHref: string;
-  scheduleHref: string;
-}) {
+export default function AskPanel() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
@@ -197,14 +193,6 @@ export default function AskPanel({
             <path d="M2.4 20.4 22 12 2.4 3.6 2.4 10.2 16 12 2.4 13.8z" />
           </svg>
         </button>
-      </div>
-
-      <div className={a.foot}>
-        <a href={applyHref} target="_blank" rel="noopener noreferrer">
-          Get approved &rarr;
-        </a>
-        <a href={scheduleHref}>Talk to Chris &rarr;</a>
-        <span>Not a rate quote or a pre-approval. NMLS #339232.</span>
         </div>
       </div>
     </div>

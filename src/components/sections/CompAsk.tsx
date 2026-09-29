@@ -34,7 +34,7 @@ export default function CompAsk() {
           mortgage questions you would normally ask him.
         </h2>
 
-        <AskPanel applyHref={APPLY_URL} scheduleHref="/book" />
+        <AskPanel />
 
         <a
           href={APPLY_URL}
