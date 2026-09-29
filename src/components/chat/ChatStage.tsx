@@ -62,9 +62,16 @@ const GREETING = "What are you trying to do?";
 export default function ChatStage({
   variant = "inline",
   onClose,
+  seed,
 }: {
   variant?: "inline" | "overlay";
   onClose?: () => void;
+  /**
+   * A question typed somewhere else — the box on the Ask section — which is
+   * sent as soon as this opens. Without it the visitor types their question,
+   * the conversation opens, and they have to type it again.
+   */
+  seed?: string;
 }) {
   const [msgs, setMsgs] = useState<Msg[]>([{ role: "assistant", content: GREETING }]);
   const [input, setInput] = useState("");
@@ -113,6 +120,18 @@ export default function ChatStage({
       setDismissed(false);
     }
   }, []);
+
+  // Fire the seeded question once, on open. sentSeed guards against the
+  // double-invoke that React does in development and against a re-render
+  // sending the same sentence twice.
+  const sentSeed = useRef(false);
+  useEffect(() => {
+    if (seed && !sentSeed.current) {
+      sentSeed.current = true;
+      void send(seed);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seed]);
 
   // Offer the follow-up once there's a real conversation, and only ever once.
   // Asking again after someone has said no is how a helpful prompt turns into
@@ -246,22 +265,11 @@ export default function ChatStage({
               </div>
             ))}
 
-            {msgs.length === 1 && (
-              <div className={s.intents}>
-                {INTENTS.map((i) => (
-                  <button
-                    key={i.label}
-                    type="button"
-                    className={s.intent}
-                    onClick={() => send(i.send)}
-                  >
-                    <span className={s.intentLabel}>{i.label}</span>
-                    <span className={s.intentHint}>{i.hint}</span>
-                    <span className={s.intentGo} aria-hidden="true">&rarr;</span>
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* The three intent buttons that used to sit here — Buy a New
+                Home, Refinance, Access my Equity — were removed with the
+                redesign. They gave a visitor something to press instead of a
+                question to invent, so if engagement drops this is the first
+                thing to put back. INTENTS above is kept for that. */}
 
             {busy && (
               <div className={s.msgBot}>

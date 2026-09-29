@@ -4,8 +4,8 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import Section from "@/components/layout/Section";
 import PageGround from "@/components/layout/PageGround";
 
-import Hero from "@/components/sections/Hero";
-import ChatStage from "@/components/chat/ChatStage";
+import CompHero from "@/components/sections/CompHero";
+import CompAsk from "@/components/sections/CompAsk";
 import MoneyWall from "@/components/sections/MoneyWall";
 import SocialWall from "@/components/sections/SocialWall";
 
@@ -45,25 +45,17 @@ export default function Home() {
       {/* Sticky, and deliberately not wrapped — a sticky element is confined to
           its parent's box, so a short wrapper would release it immediately. */}
       <SiteNav />
-      <Hero />
+      <CompHero />
 
       {/* fixed concrete for everything below the hero */}
       <PageGround />
 
-      <Section
-        id="ask"
-        sit="open"
-        center
-        title="Ask Mortgage Punk"
-        titleArt={{
-          src: "/brand/wordmark-ask.svg",
-          width: 2171,
-          height: 724,
-          cap: 760,
-        }}
-      >
-        <ChatStage variant="inline" />
-      </Section>
+      {/* The Ask section is the approved mockup with live controls on top,
+          so it brings its own headline artwork and needs no Section wrapper
+          or titleArt. id stays for the nav anchor. */}
+      <div id="ask" style={{ scrollMarginTop: "84px" }}>
+        <CompAsk />
+      </div>
 
       <Section
         id="money"
