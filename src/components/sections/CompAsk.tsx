@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import ChatStage from "@/components/chat/ChatStage";
+import AskPanel from "./AskPanel";
 import s from "./CompStage.module.css";
 import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
@@ -15,9 +14,11 @@ import { APPLY_URL, EXTERNAL } from "@/lib/links";
  * of a question and a lot of people will not bother. If the ask rate drops
  * after this goes live, that is the first thing to look at.
  *
- * Typing and submitting opens the full conversation over the page, seeded
- * with the question, so the visitor never types the same sentence twice. The
- * big red button with nothing typed opens it empty.
+ * THE CONVERSATION HAPPENS IN THE PAPER, NOT OVER IT. Submitting used to
+ * open the old dark chat panel on top of the page, which threw the design
+ * away the second anyone used it. AskPanel owns both states now: the field
+ * sitting in the artwork, and the paper panel that covers the right-hand
+ * column once a question is asked.
  *
  * Everything visible here is painted into the image. The input, the send
  * square and the two cards are real elements positioned over their painted
@@ -25,15 +26,6 @@ import { APPLY_URL, EXTERNAL } from "@/lib/links";
  * what this shortcut costs.
  */
 export default function CompAsk() {
-  const [q, setQ] = useState("");
-  const [open, setOpen] = useState(false);
-  const [seed, setSeed] = useState("");
-
-  function launch() {
-    setSeed(q.trim());
-    setOpen(true);
-  }
-
   return (
     <>
       <section className={s.stage + " " + s.ask} aria-label="Ask Mortgage Punk">
@@ -42,35 +34,7 @@ export default function CompAsk() {
           mortgage questions you would normally ask him.
         </h2>
 
-        {/* Drawn, not painted. This sits exactly over the field in the
-            artwork and covers it completely, which is why the image needed
-            no editing and why there is no seam. */}
-        <div className={s.fieldBox}>
-          <input
-            className={s.field}
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && launch()}
-            placeholder="Ask me anything about mortgages..."
-            aria-label="Ask a question about mortgages"
-          />
-          <button
-            type="button"
-            className={s.send}
-            onClick={launch}
-            aria-label="Send your question"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M2.4 20.4 22 12 2.4 3.6 2.4 10.2 16 12 2.4 13.8z" />
-            </svg>
-          </button>
-        </div>
-        <button
-          type="button"
-          className={s.askBtn}
-          onClick={launch}
-          aria-label="Ask Mortgage Punk"
-        />
+        <AskPanel applyHref={APPLY_URL} scheduleHref="/book" />
 
         <a
           href={APPLY_URL}
@@ -91,11 +55,6 @@ export default function CompAsk() {
         advice. Chris Waipa &middot; NMLS #339232.
       </p>
 
-      {open && (
-        <div className={s.scrimHost}>
-          <ChatStage variant="overlay" seed={seed} onClose={() => setOpen(false)} />
-        </div>
-      )}
     </>
   );
 }

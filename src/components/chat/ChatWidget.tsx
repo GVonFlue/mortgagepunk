@@ -3,6 +3,7 @@
 // Client component: launcher state and the overlay shell.
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import ChatStage from "./ChatStage";
 import s from "./Chat.module.css";
 
@@ -17,6 +18,19 @@ import s from "./Chat.module.css";
  * arrives mid-read, and a section would mean scrolling back to ask.
  */
 export default function ChatWidget() {
+  /**
+   * NOT ON THE HOME PAGE. The Ask section there runs the conversation inside
+   * its own paper panel, in the artwork. This launcher opens the older dark
+   * stage on top of the page, and having both meant the same assistant
+   * answered in two completely different designs depending on which button
+   * you happened to press.
+   *
+   * It stays everywhere else, where it is the only way to reach the
+   * assistant at all. When the paper panel is generalised, this goes.
+   */
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+
   const [open, setOpen] = useState(false);
 
   // Esc closes it, and the page behind must not scroll while it's up
@@ -26,11 +40,16 @@ export default function ChatWidget() {
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };
   }, [open]);
+
+  // Hooks first, then bail — an early return above them would change the
+  // hook order between renders and React would throw.
+  if (onHome) return null;
 
   return (
     <>

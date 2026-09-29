@@ -1,0 +1,173 @@
+/*
+  AskPanel.module.css — the conversation, as torn paper in the collage.
+
+  WHAT WAS WRONG WITH THE LAST ONE. It was a rounded beige rectangle with a
+  thin border and clean bubbles: a generic chat widget tinted to match, laid
+  on top of a hand-made collage. Every edge in this artwork is torn, every
+  underline is a marker stroke, nothing is square to anything else. A panel
+  with 10px corners and a 2px border belongs to a different site.
+
+  THREE THINGS FIX IT.
+
+  1. IT DOES NOT COVER THE HEADLINE. The panel starts below "WHAT CAN I HELP
+     YOU WITH?" and its red marker underline, so the artwork's own lettering
+     titles the conversation. That also removes the need to imitate a marker
+     font we do not have, which is what made the old header look wrong.
+
+  2. THE EDGES ARE TORN. Two stacked layers, dark under cream, each clipped
+     with an irregular polygon, so the panel has a rough dark edge like every
+     other piece of paper in the collage. A border cannot do this — clip-path
+     clips the border too — which is why it is built as layers.
+
+  3. NOTHING IS SQUARE. Scraps get uneven corner radii and a fraction of a
+     degree of rotation, the way something stuck down by hand sits. The
+     rotations are deliberately tiny; past about a degree it reads as broken
+     rather than hand-placed.
+
+  Positions are percentages of the ask stage, measured off the artwork.
+*/
+
+/* ---------- resting: the field, drawn over the painted one ---------- */
+/* Slightly larger than the paint with a tighter radius, so the painted field
+   underneath is covered completely and there is no seam. */
+.fieldBox{position:absolute;left:54.6%;top:36.7%;width:43.4%;height:10.0%;
+  display:flex;align-items:center;
+  background:#FFF;border:1px solid #C6C2BA;border-radius:12px;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.06);
+  transition:border-color .18s ease, box-shadow .18s ease}
+.fieldBox:focus-within{border-color:var(--mp-red);
+  box-shadow:0 0 0 3px rgba(235,41,51,.18), inset 0 1px 2px rgba(0,0,0,.06)}
+
+/* ---------- active ---------- */
+/* Starts under the painted headline and runs to the bottom of the card row. */
+.panel{position:absolute;left:51.4%;top:35.4%;width:46.8%;height:54.3%;
+  background:#17110E;
+  clip-path:polygon(
+    0% 1.4%, 4% 0%, 11% 1.5%, 19% .2%, 27% 1.6%, 36% .3%, 45% 1.5%,
+    54% .2%, 63% 1.6%, 72% .4%, 81% 1.5%, 90% .2%, 96% 1.4%, 100% 0%,
+    98.8% 9%, 100% 19%, 98.9% 29%, 100% 39%, 98.8% 49%, 100% 59%,
+    98.9% 69%, 100% 79%, 98.8% 89%, 100% 100%,
+    96% 98.6%, 90% 99.9%, 81% 98.5%, 72% 99.7%, 63% 98.4%, 54% 99.8%,
+    45% 98.5%, 36% 99.8%, 27% 98.4%, 19% 99.8%, 11% 98.5%, 4% 100%,
+    0% 98.6%, 1.2% 89%, 0% 79%, 1.1% 69%, 0% 59%, 1.2% 49%, 0% 39%,
+    1.1% 29%, 0% 19%, 1.2% 9%);
+  filter:drop-shadow(0 14px 26px rgba(0,0,0,.6));
+  animation:panelIn .18s ease both}
+@keyframes panelIn{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.panel{animation:none}}
+
+/* the cream sheet, inset so the dark layer shows through as a rough edge */
+.sheet{position:absolute;inset:3px;
+  background:#EFE8DE;
+  clip-path:polygon(
+    0% 1.6%, 5% 0%, 13% 1.7%, 22% .3%, 31% 1.8%, 41% .3%, 51% 1.7%,
+    61% .3%, 70% 1.8%, 79% .4%, 88% 1.6%, 95% .3%, 100% 1.2%,
+    98.6% 11%, 100% 22%, 98.7% 33%, 100% 44%, 98.6% 55%, 100% 66%,
+    98.7% 77%, 100% 88%, 98.8% 100%,
+    95% 99.7%, 88% 98.4%, 79% 99.8%, 70% 98.3%, 61% 99.8%, 51% 98.4%,
+    41% 99.8%, 31% 98.3%, 22% 99.8%, 13% 98.4%, 5% 100%, 0% 98.5%,
+    1.3% 88%, 0% 77%, 1.4% 66%, 0% 55%, 1.3% 44%, 0% 33%, 1.4% 22%, 0% 11%);
+  display:flex;flex-direction:column;padding:3.6% 4% 3%}
+
+.close{position:absolute;top:2.5%;right:3%;z-index:2;
+  background:none;border:0;cursor:pointer;padding:3px;color:#17110E;
+  line-height:0;opacity:.55;transition:opacity .18s, transform .18s}
+.close:hover{opacity:1;transform:rotate(90deg)}
+.close svg{width:clamp(13px,1.15vw,18px);height:clamp(13px,1.15vw,18px);
+  stroke:currentColor;fill:none;stroke-width:3}
+
+/* The only thing that scrolls, so the field stays put however long the
+   answer runs. */
+.list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  display:flex;flex-direction:column;gap:3%;padding:0 1% 3% 0}
+
+.bot,.me{max-width:90%;padding:2.6% 3.2%;
+  font-family:var(--font-body),sans-serif;
+  font-size:clamp(10px,1.02vw,15px);line-height:1.5}
+
+/* a scrap of paper with a hard dark edge, cut by hand rather than chosen
+   from a radius picker */
+.bot{align-self:flex-start;background:#FFFCF6;color:#241C18;
+  border:2px solid #17110E;border-radius:13px 4px 11px 3px;
+  transform:rotate(-.45deg);
+  box-shadow:2px 3px 0 rgba(23,17,14,.18)}
+
+/* the visitor's own words, in the brand red, leaning the other way */
+.me{align-self:flex-end;background:var(--mp-red);color:#fff;font-weight:600;
+  border:2px solid #17110E;border-radius:4px 12px 3px 11px;
+  transform:rotate(.5deg);
+  box-shadow:-2px 3px 0 rgba(23,17,14,.25)}
+
+.bot p,.me p{margin:0 0 .55em}
+.bot p:last-child,.me p:last-child{margin:0}
+
+.dots{display:flex;gap:5px;align-items:center;height:1em}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--mp-red);
+  animation:pulse 1.3s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.16s}
+.dots i:nth-child(3){animation-delay:.32s}
+@keyframes pulse{0%,60%,100%{opacity:.25}30%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.dots i{animation:none;opacity:.6}}
+
+/* the field, matching the one painted into the artwork above it */
+.fieldRow{flex:none;display:flex;align-items:center;
+  background:#FFF;border:2px solid #17110E;border-radius:10px;
+  height:17%;min-height:34px;
+  transition:box-shadow .18s ease}
+.fieldRow:focus-within{box-shadow:0 0 0 3px rgba(235,41,51,.3)}
+
+.field{flex:1;min-width:0;height:100%;background:none;border:0;
+  padding:0 2% 0 3.2%;font-family:var(--font-body),sans-serif;
+  font-size:clamp(11px,1.18vw,17px);color:#1A1A1A;line-height:1}
+.field::placeholder{color:#9A958C}
+.field:focus,.field:focus-visible{outline:none}
+
+.send{flex:none;height:76%;aspect-ratio:1.18;margin-right:1.6%;
+  display:grid;place-items:center;cursor:pointer;
+  background:var(--mp-red);border:0;border-radius:7px;color:#fff;
+  transition:background .18s ease, transform .18s cubic-bezier(.16,1,.3,1)}
+.send:hover:not(:disabled){background:var(--mp-red-deep);transform:scale(1.06)}
+.send:active:not(:disabled){transform:scale(.98)}
+.send:disabled{opacity:.45;cursor:not-allowed}
+.send svg{width:52%;height:52%;fill:currentColor}
+.send:focus-visible{outline:3px solid #17110E;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.send{transition:background .18s ease}}
+
+/* The panel covers the two cards while it is open, so their destinations go
+   here. The red rule under each link is the brush stroke used across the
+   site, not an underline. */
+.foot{flex:none;display:flex;align-items:baseline;gap:5%;flex-wrap:wrap;
+  padding-top:2.4%;
+  font-family:var(--font-body),sans-serif;
+  font-size:clamp(8px,.76vw,11.5px);color:#8A8078}
+.foot a{position:relative;color:#17110E;font-weight:800;
+  letter-spacing:.04em;text-transform:uppercase;text-decoration:none;
+  padding-bottom:.45em}
+.foot a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;
+  background:var(--mp-red);
+  clip-path:polygon(0 38%,6% 8%,16% 44%,28% 10%,41% 42%,55% 8%,68% 40%,
+    80% 12%,92% 36%,100% 22%,100% 66%,93% 92%,82% 58%,69% 88%,
+    56% 56%,43% 90%,30% 58%,17% 86%,6% 60%,0 78%)}
+.foot a:hover{color:var(--mp-red)}
+.foot span{margin-left:auto}
+
+@media(max-width:700px){.foot span{display:none}}
+
+/* ---------- the painted red button ----------
+   Transparent, over "ASK MORTGAGE PUNK" in the artwork. It cannot lift on
+   hover without sliding off its painted twin and showing the old one
+   underneath, so it brightens the pixels already on screen instead. The touch
+   guard matters: a phone has no hover and a highlight that sticks after a tap
+   reads as broken. */
+.bigBtn{position:absolute;left:54.2%;top:49.15%;width:43.5%;height:9.65%;
+  background:none;border:0;cursor:pointer;border-radius:6%/24%;
+  -webkit-tap-highlight-color:transparent;
+  transition:backdrop-filter .22s ease, box-shadow .22s ease}
+.bigBtn:hover{backdrop-filter:brightness(1.16) saturate(1.1);
+  box-shadow:0 0 0 2px rgba(255,255,255,.5),
+             0 10px 30px -10px rgba(235,41,51,.8)}
+.bigBtn:active{backdrop-filter:brightness(1.05)}
+.bigBtn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(hover:none){.bigBtn:hover{backdrop-filter:none;box-shadow:none}}
+@media(prefers-reduced-motion:reduce){.bigBtn{transition:none}}

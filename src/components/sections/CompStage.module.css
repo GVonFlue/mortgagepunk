@@ -82,51 +82,10 @@
 .askApprove{left:50.5%;top:62.84%;width:20.8%;height:27.25%}
 .askSchedule{left:74.5%;top:62.84%;width:23.5%;height:27.25%}
 
-/* ---------- the live input ----------
-   The painted field is a plain white rounded rectangle with a red square on
-   the end, which is trivial to draw in CSS. So this draws its own, slightly
-   larger than the painted one and with a tighter radius, and lays it exactly
-   on top. The paint underneath is completely covered, which is why nothing
-   had to be erased from the image and why there is no seam to notice.
-
-   That is what makes this feel like a control rather than a text box taped
-   over a picture: the border, the focus ring and the send button are real
-   elements that respond, not pixels.
-
-   If the artwork is ever re-exported at a different size, these percentages
-   are the only things that need re-measuring. */
-.fieldBox{position:absolute;left:54.6%;top:36.7%;width:43.4%;height:10.0%;
-  display:flex;align-items:center;gap:0;
-  background:#FFF;border:1px solid #C6C2BA;border-radius:12px;
-  box-shadow:inset 0 1px 2px rgba(0,0,0,.06);
-  transition:border-color .18s ease, box-shadow .18s ease}
-.fieldBox:focus-within{border-color:var(--mp-red);
-  box-shadow:0 0 0 3px rgba(235,41,51,.18), inset 0 1px 2px rgba(0,0,0,.06)}
-
-.field{flex:1;min-width:0;height:100%;
-  background:none;border:0;padding:0 2% 0 3.2%;
-  font-family:var(--font-body),sans-serif;
-  font-size:clamp(11px,1.18vw,17px);color:#1A1A1A;line-height:1}
-.field::placeholder{color:#9A958C}
-/* The wrapper shows focus for the whole control, so the input itself does
-   not draw a second ring inside it. */
-.field:focus,.field:focus-visible{outline:none}
-
-/* the red send square, drawn rather than painted */
-.send{flex:none;height:78%;aspect-ratio:1.18;margin-right:1.6%;
-  display:grid;place-items:center;cursor:pointer;
-  background:var(--mp-red);border:0;border-radius:9px;color:#fff;
-  transition:background .18s ease, transform .18s cubic-bezier(.16,1,.3,1)}
-.send:hover{background:var(--mp-red-deep);transform:scale(1.05)}
-.send:active{transform:scale(.98)}
-.send svg{width:52%;height:52%;fill:currentColor}
-.send:focus-visible{outline:3px solid #fff;outline-offset:2px}
-@media(prefers-reduced-motion:reduce){.send{transition:background .18s ease}}
-
-/* the big red button under it */
-.askBtn{position:absolute;left:54.2%;top:49.15%;width:43.5%;height:9.65%;
-  background:none;border:0;cursor:pointer;border-radius:10px}
-.askBtn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+/* The field, the send button, the big red button and the conversation panel
+   all live in AskPanel now — one component owning one set of coordinates.
+   They were here first and drifted out of sync with the markup, which is the
+   argument for keeping them together. */
 
 /* ---------- compliance ----------
    The comp has no disclosure on it. This is an AI answering mortgage
@@ -148,15 +107,3 @@
   .field{font-size:11px}
   .disclosure{font-size:10.5px}
 }
-
-/* ---------- host for the conversation overlay ----------
-   ChatStage's overlay variant expects to be dropped into a full-screen scrim;
-   the floating launcher supplies one from its own stylesheet, so this section
-   supplies its own rather than reaching into another module's classes.
-   z-index clears the sticky nav. */
-.scrimHost{position:fixed;inset:0;z-index:120;display:flex;
-  align-items:center;justify-content:center;
-  padding:clamp(10px,2.4vw,40px);
-  background:rgba(6,6,6,.88);backdrop-filter:blur(6px)}
-@media(max-width:560px){.scrimHost{padding:0;align-items:flex-end}}
-
