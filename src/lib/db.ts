@@ -5,6 +5,7 @@ import {
   type Video, type LibraryTopic, type PressItem, type Talk, type Conference,
   type Announcement, type Lead, type Testimonial, type Hero,
 } from "./content";
+import { type SiteImage } from "./images";
 
 /**
  * Supabase access via PostgREST over plain fetch.
@@ -275,6 +276,42 @@ export async function getHero(): Promise<Hero> {
 
 export async function saveHero(h: Hero): Promise<void> {
   await rest("site_hero?id=eq.1", "PATCH", h);
+}
+
+// ---------------------------------------------------------------------------
+// SECTION PHOTOGRAPHY
+// ---------------------------------------------------------------------------
+// One row per slot, and only for slots that have actually been overridden.
+// An empty table is the normal state: every slot then resolves to the file
+// that shipped with the build. See lib/images.ts for the slot registry and
+// pickImage().
+
+/** Keyed by slot so a page can look one up without scanning an array. */
+export async function getImages(): Promise<Record<string, SiteImage>> {
+  return safeRead(
+    async () => {
+      const rows = await rest<SiteImage[]>("site_images?select=*");
+      return Object.fromEntries(rows.map((r) => [r.slot, r]));
+    },
+    {},
+    "site_images"
+  );
+}
+
+/**
+ * Upsert one slot.
+ *
+ * resolution=merge-duplicates makes this a true upsert on the primary key, so
+ * Backstage does not have to know whether a slot has ever been set before —
+ * which it cannot know without an extra read it would only use for branching.
+ */
+export async function saveImage(img: SiteImage): Promise<void> {
+  await rest("site_images", "POST", img, "resolution=merge-duplicates");
+}
+
+/** Drop an override and fall back to the file that shipped with the build. */
+export async function clearImage(slot: string): Promise<void> {
+  await rest(`site_images?slot=eq.${encodeURIComponent(slot)}`, "DELETE");
 }
 
 // ---------------------------------------------------------------------------

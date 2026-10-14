@@ -5,7 +5,8 @@ import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PhotoSlot from "@/components/ui/PhotoSlot";
 import a from "@/components/sections/About.module.css";
-import { getPress, getTalks } from "@/lib/db";
+import { getPress, getTalks, getImages } from "@/lib/db";
+import { pickImage } from "@/lib/images";
 
 export const metadata = {
   title: "About Chris Waipa — Mortgage Punk",
@@ -48,10 +49,19 @@ const MARQUEE = [
 export const revalidate = 300;
 
 export default async function About() {
-  const [talks, press] = await Promise.all([
+  const [talks, press, images] = await Promise.all([
     getTalks(),
     getPress({ publicOnly: false }),
+    getImages(),
   ]);
+
+  // Photographs are swappable from Backstage → Photos. pickImage falls back
+  // to the file that shipped with the build, so an empty table, an
+  // unreachable database and a fresh install all render exactly what is on
+  // the site today. See lib/images.ts.
+  const heroPhoto = pickImage(images, "about-hero");
+  const portrait = pickImage(images, "about-portrait");
+  const bookingPhoto = pickImage(images, "about-booking");
 
   return (
     <>
@@ -62,7 +72,7 @@ export default async function About() {
       <section className={a.hero}>
         <div className={a.heroImg}>
           <Image
-            src="/brand/chris-red.jpg"
+            src={heroPhoto.src}
             alt="Chris Waipa"
             fill
             priority
@@ -146,11 +156,14 @@ export default async function About() {
             </div>
           </div>
           <div className={a.portrait}>
+            {/* The shipped default here is 1080x1200. The previous file was
+                630x954 and was being drawn larger than its own pixels, which
+                is what made it look soft against everything around it. */}
             <Image
-              src="/brand/chris-suit.png"
+              src={portrait.src}
               alt="Chris Waipa"
-              width={630}
-              height={954}
+              width={portrait.width}
+              height={portrait.height}
               sizes="(max-width: 900px) 80vw, 34vw"
             />
             <span className={a.portraitTag}>Wichita, Kansas</span>
@@ -268,10 +281,10 @@ export default async function About() {
                 at the American Dream Conference, the screen behind him. */}
             <div className={a.bookSlot} style={{ border: 0, padding: 0 }}>
               <Image
-                src="/brand/chris-stage.jpg"
+                src={bookingPhoto.src}
                 alt="Chris Waipa speaking at the American Dream Conference"
-                width={1600}
-                height={1067}
+                width={bookingPhoto.width}
+                height={bookingPhoto.height}
                 sizes="(max-width: 900px) 92vw, 46vw"
                 style={{ width: "100%", height: "100%", objectFit: "cover",
                          borderRadius: 0 }}

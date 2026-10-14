@@ -10,9 +10,10 @@
   reason this dashboard is safe to hand over.
 */
 
+/* A single column now. The navigation moved out of a sidebar and onto the
+   home screen as tiles, so the frame is one bar above full-width content. */
 .shell{position:relative;min-height:100svh;background:#0A0A0A;color:var(--mp-bone);
-  font-family:var(--font-body),sans-serif;display:grid;
-  grid-template-columns:264px 1fr;isolation:isolate}
+  font-family:var(--font-body),sans-serif;isolation:isolate}
 
 /* The doodle field, lifted from chriswaipanational — the same seamless 600px
    tile of hand-drawn punk objects. Dialled right down and pinned so it drifts
@@ -29,19 +30,38 @@
   background:
     radial-gradient(70% 55% at 8% 0%, rgba(235,41,51,.10) 0%, rgba(235,41,51,0) 60%),
     radial-gradient(60% 50% at 100% 100%, rgba(235,41,51,.07) 0%, rgba(235,41,51,0) 60%)}
-@media(max-width:900px){.shell{grid-template-columns:1fr}}
 
-/* ---------- sidebar ---------- */
-.side{position:relative;z-index:1;background:rgba(12,12,12,.86);
-  backdrop-filter:blur(3px);border-right:1px solid #232323;
-  padding:26px 20px;display:flex;flex-direction:column;gap:28px;
-  position:sticky;top:0;height:100svh}
-@media(max-width:900px){.side{position:static;height:auto;
-  border-right:0;border-bottom:1px solid #232323}}
-.brand{display:flex;align-items:center;gap:11px}
-.brand img{height:38px;width:auto;display:block}
+/* ---------- top bar ----------
+   Deliberately almost empty: the logo, the way back to the tiles, the live
+   site and sign out. Anything else in here competes with the page, and this
+   is a tool somebody opens to do one specific job. */
+.topbar{position:sticky;top:0;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:14px clamp(16px,3vw,32px);
+  background:rgba(10,10,10,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid #232323}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.brand img{height:34px;width:auto;display:block}
 .brandTag{font-family:var(--font-display),sans-serif;font-size:12px;
   letter-spacing:.22em;text-transform:uppercase;color:var(--mp-red)}
+
+.topbarRight{display:flex;align-items:center;gap:clamp(10px,1.6vw,20px)}
+
+/* The only navigation outside the tiles. Shown on every page except the
+   tiles themselves, where there is nothing to go back to. */
+.backLink{display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--mp-bone);text-decoration:none;
+  padding:8px 13px;border:1px solid #2A2A2A;border-radius:8px;transition:.18s}
+.backLink:hover{border-color:var(--mp-red);background:rgba(235,41,51,.08)}
+.backLink svg{width:15px;height:15px;stroke:currentColor;fill:none;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+@media(max-width:620px){
+  .brandTag{display:none}
+  .viewSite{display:none}
+}
+
 .navList{list-style:none;margin:0;padding:0;display:grid;gap:3px}
 .navList a{display:flex;align-items:center;gap:11px;padding:11px 13px;
   border-radius:8px;text-decoration:none;color:#9A9A9A;font-size:14px;
@@ -49,7 +69,6 @@
 .navList a:hover{background:#161616;color:var(--mp-bone)}
 .navActive{background:var(--mp-red)!important;color:#fff!important}
 .navList svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9}
-.sideFoot{margin-top:auto;display:grid;gap:10px}
 .viewSite{font-size:12.5px;color:#7A7A7A;text-decoration:none}
 .viewSite:hover{color:var(--mp-bone)}
 .logout{background:none;border:1px solid #2A2A2A;color:#9A9A9A;border-radius:8px;
@@ -58,7 +77,8 @@
 .logout:hover{border-color:var(--mp-red);color:var(--mp-bone)}
 
 /* ---------- main ---------- */
-.main{position:relative;z-index:1;padding:clamp(22px,3vw,40px);max-width:1180px}
+.main{position:relative;z-index:1;padding:clamp(22px,3vw,40px);
+  max-width:1240px;margin-inline:auto}
 .head{display:flex;align-items:flex-end;justify-content:space-between;
   gap:20px;flex-wrap:wrap;margin-bottom:26px}
 .h1{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
@@ -253,3 +273,98 @@
 .swatch code{display:block;margin:2px 0 4px;font-size:12px;color:var(--mp-red);
   font-family:ui-monospace,monospace}
 .swatch span{display:block;font-size:11.5px;line-height:1.5;color:#6E6E6E}
+
+/* ---------- the tile grid ----------
+   The navigation, as the home screen. An eleven-item sidebar made every
+   section look identical and meant reading the whole list to find one thing;
+   a tile carries an icon, a plain-language name and a sentence saying what
+   it changes, so the right one is recognised rather than searched for.
+
+   auto-fill with a 280px floor rather than a fixed column count: three across
+   on a laptop, two on a tablet, one on a phone, with no breakpoints to keep
+   in sync. */
+.tiles{display:grid;gap:clamp(10px,1.2vw,16px);
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  margin-bottom:clamp(18px,2.4vw,28px)}
+
+.tile{position:relative;display:flex;align-items:flex-start;gap:14px;
+  padding:clamp(16px,1.6vw,22px);
+  background:rgba(20,20,20,.82);backdrop-filter:blur(3px);
+  border:1px solid #232323;border-radius:14px;
+  text-decoration:none;color:inherit;
+  transition:border-color .18s ease, transform .18s cubic-bezier(.16,1,.3,1),
+             background .18s ease}
+.tile:hover{border-color:var(--mp-red);transform:translateY(-2px);
+  background:rgba(28,22,22,.9)}
+.tile:focus-visible{outline:2px solid var(--mp-red);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.tile{transition:border-color .18s ease}
+  .tile:hover{transform:none}}
+
+/* The one or two jobs worth doing first get a red edge rather than a louder
+   fill — a page of shouting tiles prioritises nothing. */
+.tileAccent{border-color:rgba(235,41,51,.45)}
+
+.tileIcon{flex:none;display:grid;place-items:center;
+  width:42px;height:42px;border-radius:10px;
+  background:rgba(235,41,51,.12);border:1px solid rgba(235,41,51,.3)}
+.tileIcon svg{width:21px;height:21px;stroke:var(--mp-red);fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.tileBody{display:flex;flex-direction:column;gap:5px;min-width:0}
+.tileTitle{font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(16px,1.3vw,20px);line-height:1.1;text-transform:uppercase;
+  letter-spacing:.01em;color:var(--mp-bone)}
+.tileBlurb{font-size:13px;line-height:1.5;color:#8E8E8E}
+
+/* Top-right so it reads as a status on the tile rather than part of the
+   sentence. */
+.tileMeta{position:absolute;top:12px;right:12px;
+  font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mp-red);background:rgba(235,41,51,.1);
+  border:1px solid rgba(235,41,51,.28);border-radius:999px;padding:3px 9px}
+
+/* ---------- the photo manager ----------
+   One card per swappable picture. The preview is the point: somebody
+   recognises the photo they want to change far faster than they read a label
+   for it, so the image comes first and large. */
+.photoGrid{display:grid;gap:clamp(12px,1.4vw,18px);
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+
+.photoCard{display:flex;flex-direction:column;
+  background:rgba(14,14,14,.7);border:1px solid #232323;border-radius:12px;
+  overflow:hidden}
+
+/* A checkerboard behind the preview, so a cut-out with a transparent
+   background is visibly a cut-out — on a flat dark panel a PNG with alpha and
+   a JPEG with a black box look identical, which is exactly the mistake this
+   screen exists to prevent. */
+/* flex:none is load-bearing. The cards sit in a grid row and stretch to the
+   tallest one; without it the thumbnail stretches with the card and the
+   declared 4/3 is ignored, so three photos in a row each end up a different
+   height. */
+.photoThumb{flex:none;position:relative;aspect-ratio:4/3;background:#151515;
+  background-image:
+    linear-gradient(45deg,#1C1C1C 25%,transparent 25%,transparent 75%,#1C1C1C 75%),
+    linear-gradient(45deg,#1C1C1C 25%,transparent 25%,transparent 75%,#1C1C1C 75%);
+  background-size:18px 18px;background-position:0 0,9px 9px}
+/* Absolutely positioned, not just height:100%. The thumb is a flex item, and
+   a flex item will not shrink below its content's intrinsic size — so a tall
+   portrait pushed the box past its own 4/3 and the three cards in a row each
+   came out a different height. Out of flow, the image cannot influence the
+   box at all and the declared ratio always wins. */
+.photoThumb img{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;display:block}
+.photoThumb .pill{position:absolute;top:9px;right:9px}
+
+.photoBody{display:flex;flex-direction:column;gap:7px;
+  padding:clamp(13px,1.3vw,18px)}
+.photoTitle{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(15px,1.2vw,19px);line-height:1.15;text-transform:uppercase;
+  color:var(--mp-bone)}
+/* Where it appears, in Chris's words. This is the line that makes a card
+   findable, so it is set brighter than the guidance under it. */
+.photoWhere{margin:0;font-size:12.5px;line-height:1.5;color:#A5A5A5}
+
+.photoBody .btnRow{margin-top:5px}
+.photoOk{margin:4px 0 0;font-size:12.5px;line-height:1.45;color:#5FD497}
+.photoErr{margin:4px 0 0;font-size:12.5px;line-height:1.45;color:#E0757C}

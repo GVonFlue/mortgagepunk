@@ -3,11 +3,11 @@ import Link from "next/link";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
-import GfxNote from "@/components/ui/GfxNote";
 import WaitlistButton from "@/components/sections/WaitlistButton";
 import { TICKET_PRICE } from "@/lib/event";
 import c from "@/components/sections/Conference.module.css";
-import { getConference } from "@/lib/db";
+import { getConference, getImages } from "@/lib/db";
+import { pickImage } from "@/lib/images";
 
 export const metadata = {
   title: "The American Dream Conference — Mortgage Punk",
@@ -29,18 +29,28 @@ export const revalidate = 300;
  * need to shout on top of it.
  *
  * Second, the order answers questions in the order somebody actually asks
- * them: what is this, is it for me, what happens, what could I win, where and
- * when, how do I get in.
+ * them: what is this, is it for me, how do I get in.
  *
- * Date, venue, keynote, stats and prizes all come from Backstage → Conference.
+ * CUT BACK TO A WAITLIST PAGE. This used to run on through a two-day
+ * schedule, the giveaway list, the venue details and a closing mission
+ * statement. None of that is settled — the schedule was still a draft pending
+ * Ashley — and a page selling a date that might move does more harm than a
+ * page that says what the event is and takes a name. So it now stops after
+ * "Who it's for" and closes on the waitlist.
  *
- * SECTION TITLES. The first four content sections carry one centred title and
- * nothing else — no second headline underneath. The old pattern was a small
- * label, then a two-line headline, then sometimes a paragraph, which put three
+ * Everything cut is in git, not rewritten: restoring a section is a revert of
+ * this commit, not a rebuild. The CSS for all of it is untouched in
+ * Conference.module.css for the same reason.
+ *
+ * Date, venue and stats still come from Backstage → Conference. The prizes
+ * and keynote fields there are no longer rendered anywhere on this page;
+ * leave them filled in, because they come straight back with the sections.
+ *
+ * SECTION TITLES. Each content section carries one centred title and nothing
+ * else — no second headline underneath. The old pattern was a small label,
+ * then a two-line headline, then sometimes a paragraph, which put three
  * layers of heading in front of every section. The label was the part people
  * actually navigate by, so it became the title (.secTitle) and the rest went.
- * The later sections — giveaways, venue, why it exists — still use the full
- * pattern and can move over the same way if wanted.
  */
 
 const WHO = [
@@ -62,79 +72,6 @@ const WHO = [
   },
 ];
 
-/**
- * Two days, not one. The event runs the 16th and 17th.
- *
- * Split into named days rather than one long list, because a visitor deciding
- * whether to take two days off work needs to see what each day is FOR before
- * they see the running order. Still a draft until Ashley confirms.
- */
-const SCHEDULE = [
-  {
-    day: "Day one",
-    date: "Friday",
-    theme: "The Game of Money",
-    rows: [
-      {
-        when: "Morning",
-        what: "Doors and the opening keynote",
-        p: "It starts loud. No twenty minutes of housekeeping — the first session is the reason you came.",
-      },
-      {
-        when: "Late morning",
-        what: "Breakout sessions",
-        p: "Smaller rooms, specific problems. Buying your first place, financing a rental, dealing with debt, keeping more of what you earn.",
-      },
-      {
-        when: "Midday",
-        what: "Lunch and the floor",
-        p: "The part most people say they got the most from. A room full of people solving the same problems you are.",
-      },
-      {
-        when: "Afternoon",
-        what: "Keynote two",
-        p: "What the American Dream actually looks like now, and what it takes to build one.",
-      },
-      {
-        when: "Evening",
-        what: "Live music",
-        p: "Day one closes with a concert, because of course it does.",
-      },
-    ],
-  },
-  {
-    day: "Day two",
-    date: "Saturday",
-    theme: "Putting it to work",
-    rows: [
-      {
-        when: "Morning",
-        what: "Keynote three",
-        p: "The big-picture session. Ownership, leverage, and building a life that does not depend on the next paycheck.",
-      },
-      {
-        when: "Late morning",
-        what: "Workshops",
-        p: "Hands on rather than sit and listen. Bring your actual numbers and work them with someone who does this for a living.",
-      },
-      {
-        when: "Midday",
-        what: "Lunch and the floor",
-        p: "Second day, warmer room. This is where most of the connections actually get made.",
-      },
-      {
-        when: "Late afternoon",
-        what: "The giveaways",
-        p: "Given away live, on stage, to people in the room. Not a raffle you hear about in an email a week later.",
-      },
-      {
-        when: "Close",
-        what: "Where you go from here",
-        p: "You leave with a plan you wrote, not a folder of notes you never open again.",
-      },
-    ],
-  },
-];
 
 function Icon({ d }: { d: string }) {
   return (
@@ -145,7 +82,16 @@ function Icon({ d }: { d: string }) {
 }
 
 export default async function Movement() {
-  const conf = await getConference();
+  const [conf, images] = await Promise.all([getConference(), getImages()]);
+
+  // The "Last year" row is swappable from Backstage → Photos. Captions stay
+  // in code: they describe a specific photograph, so letting them drift from
+  // the picture would be worse than not editing them at all.
+  const shots = [
+    { ...pickImage(images, "movement-shot-1"), cap: "Keynote, room full" },
+    { ...pickImage(images, "movement-shot-2"), cap: "Panel sessions" },
+    { ...pickImage(images, "movement-shot-3"), cap: "Everybody filming it" },
+  ];
 
   return (
     <div className={c.page}>
@@ -183,10 +129,10 @@ export default async function Movement() {
             {/* Tickets are not on sale, so the button collects the lead
                 instead of sending people to a page that cannot sell them
                 anything. See WaitlistButton. */}
+            {/* One action, not two. The second button here anchored to the
+                schedule section, which came off the page — and with the page
+                this short there is nothing left worth jumping to. */}
             <WaitlistButton className={`${c.btn} ${c.btnRed}`} />
-            <Link href="#day" className={`${c.btn} ${c.btnLine}`}>
-              See the day &rarr;
-            </Link>
           </div>
         </div>
       </section>
@@ -216,15 +162,13 @@ export default async function Movement() {
         <div className={c.wrap}>
           <h2 className={c.secTitle}>Last year</h2>
           <div className={c.shots}>
-            {[
-              { src: "/brand/adc-stage-crowd.jpg", cap: "Keynote, room full" },
-              { src: "/brand/adc-panel.jpg", cap: "Panel sessions" },
-              { src: "/brand/adc-phone.jpg", cap: "Everybody filming it" },
-            ].map((s) => (
-              <figure key={s.src} className={c.shot}>
-                <Image src={s.src} alt="" width={1800} height={1200}
+            {shots.map((shot) => (
+              /* Keyed on the caption, not the src: two slots could legitimately
+                 hold the same photo, and duplicate keys drop list items. */
+              <figure key={shot.cap} className={c.shot}>
+                <Image src={shot.src} alt="" width={shot.width} height={shot.height}
                   sizes="(max-width: 700px) 92vw, 32vw" />
-                <figcaption className={c.shotCap}>{s.cap}</figcaption>
+                <figcaption className={c.shotCap}>{shot.cap}</figcaption>
               </figure>
             ))}
           </div>
@@ -243,97 +187,6 @@ export default async function Movement() {
                 <p>{w.p}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- the day ---------- */}
-      <section className={`${c.sec} ${c.secWhite}`} id="day">
-        <div className={c.wrap} style={{ position: "relative" }}>
-          <GfxNote where="evt" />
-          <h2 className={c.secTitle}>The day</h2>
-
-          {SCHEDULE.map((d) => (
-            <div key={d.day} className={c.dayBlock}>
-              <div className={c.dayHead}>
-                <span className={c.dayNo}>{d.day}</span>
-                <span className={c.dayDate}>{d.date}</span>
-                <span className={c.dayTheme}>{d.theme}</span>
-              </div>
-              <div className={c.day}>
-                {d.rows.map((r) => (
-                  <div key={r.when} className={c.dayRow}>
-                    <span className={c.dayWhen}>{r.when}</span>
-                    <div className={c.dayWhat}>
-                      <h3>{r.what}</h3>
-                      <p>{r.p}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ---------- giveaways, the one dark band ---------- */}
-      <section className={`${c.sec} ${c.secInk} ${c.wash} ${c.washCrowd}`}>
-        <div className={c.wrap}>
-          <span className={c.kick}>Given away live</span>
-          <h2 className={c.h2} style={{ color: "var(--mp-bone)" }}>
-            Somebody in that room
-            <em>goes home with this.</em>
-          </h2>
-          <p className={c.lede}>
-            On stage, on the day, to people in the seats. Not a raffle you hear
-            about in an email a week later.
-          </p>
-
-          <div className={c.prizes}>
-            {conf.prizes.map((p, i) => (
-              <div key={p} className={c.prize}>
-                <span className={c.prizeNo}>{String(i + 1).padStart(2, "0")}</span>
-                <h3>{p}</h3>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- venue ---------- */}
-      <section className={`${c.sec} ${c.secPaper}`}>
-        <div className={c.wrap}>
-          <div className={c.venue}>
-            <div>
-              <span className={c.kick}>Where and when</span>
-              <h2 className={c.h2}>
-                Wichita.
-                <em>Two days.</em>
-              </h2>
-              <p className={c.lede}>
-                Both days happen in one building, so there is no running between
-                venues and nothing missed because you were in the wrong room.
-              </p>
-            </div>
-
-            <dl className={c.venueFacts}>
-              <div className={c.venueFact}>
-                <dt>Date</dt>
-                <dd>{conf.date_label}</dd>
-              </div>
-              <div className={c.venueFact}>
-                <dt>Venue</dt>
-                <dd>{conf.venue}</dd>
-              </div>
-              <div className={c.venueFact}>
-                <dt>Keynote</dt>
-                <dd>{conf.keynote}</dd>
-              </div>
-              <div className={c.venueFact}>
-                <dt>Host</dt>
-                <dd>Chris Waipa</dd>
-              </div>
-            </dl>
           </div>
         </div>
       </section>
@@ -357,33 +210,6 @@ export default async function Movement() {
           <Link href="/book?type=sponsorship" className={`${c.btn} ${c.btnLine}`}>
             Sponsor the event &rarr;
           </Link>
-        </div>
-      </section>
-
-      {/* ---------- the mission, underneath ---------- */}
-      <section className={`${c.sec} ${c.secWhite}`}>
-        <div className={c.wrap}>
-          <span className={c.kick}>Why it exists</span>
-          <h2 className={c.h2}>
-            The American Dream
-            <em>isn&rsquo;t a checklist.</em>
-          </h2>
-          <p className={c.lede}>
-            It is the freedom and the opportunity to rewrite your story. That
-            sentence is why the conference exists, and it is the same reason
-            Mortgage Punk does. It started by challenging a broken mortgage
-            experience and grew into a lending team, a media platform, an
-            education community, a live event, and a movement built around
-            helping people think bigger than the next transaction.
-          </p>
-          <div style={{ marginTop: 28, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link href="/about" className={`${c.btn} ${c.btnInk}`}>
-              Chris&rsquo;s story &rarr;
-            </Link>
-            <Link href="/library" className={`${c.btn} ${c.btnLine}`}>
-              The Game of Money &rarr;
-            </Link>
-          </div>
         </div>
       </section>
 

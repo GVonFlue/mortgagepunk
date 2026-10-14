@@ -30,6 +30,13 @@ export default function ChatWidget() {
    */
   const pathname = usePathname();
   const onHome = pathname === "/";
+  /**
+   * Backstage is the admin area. A customer-facing "Ask a question" bubble
+   * floating over it is confusing at best — it invites Chris to chat with his
+   * own assistant while editing his own site — and it sits on top of the
+   * controls in the bottom-right corner, which is where save buttons live.
+   */
+  const inBackstage = pathname?.startsWith("/backstage") ?? false;
 
   const [open, setOpen] = useState(false);
 
@@ -49,7 +56,7 @@ export default function ChatWidget() {
 
   // Hooks first, then bail — an early return above them would change the
   // hook order between renders and React would throw.
-  if (onHome) return null;
+  if (onHome || inBackstage) return null;
 
   return (
     <>
