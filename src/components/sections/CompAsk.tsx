@@ -36,17 +36,24 @@ export default function CompAsk() {
 
         <AskPanel />
 
+        {/* Each span carries the hover highlight, masked to its card's own
+            silhouette. It has to be a child: a mask on the anchor would clip
+            the focus ring as well. See CompStage.module.css. */}
         <a
           href={APPLY_URL}
           {...EXTERNAL}
           className={`${s.hot} ${s.askApprove}`}
           aria-label="Get approved. Start your application."
-        />
+        >
+          <span className={s.lift} aria-hidden="true" />
+        </a>
         <Link
           href="/book"
           className={`${s.hot} ${s.askSchedule}`}
           aria-label="Schedule a call with Chris"
-        />
+        >
+          <span className={s.lift} aria-hidden="true" />
+        </Link>
       </section>
 
       <p className={s.disclosure}>

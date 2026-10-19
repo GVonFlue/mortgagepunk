@@ -47,32 +47,49 @@
 .ask{aspect-ratio:2600/1477;background-image:url("/brand/comp-ask-v2.jpg")}
 
 /* ---------- hotspots ----------
-   Anchors sitting exactly over buttons that are painted into the image.
+   Anchors sitting exactly over controls that are painted into the image.
 
    THEY CANNOT MOVE, SO THEY LIGHT UP INSTEAD. The obvious hover for a button
    is a lift, but a lift means moving the button away from its painted twin
    underneath, which shows the old one behind it. backdrop-filter works on the
-   pixels already on screen, so the painted button itself brightens and warms
-   in place with nothing to come apart. The ring and the glow sit on top of
-   that and give the edge a real button has.
+   pixels already on screen, so the painted control itself brightens in place
+   with nothing to come apart.
 
-   Radius is in percent so the corners stay in proportion as the stage scales;
-   a fixed pixel radius turns square on a phone. */
+   THE LIGHT HAS TO STOP WHERE THE PAINT STOPS. The first version put a white
+   ring and a red glow on top of that, which drew a rounded RECTANGLE over
+   cards whose edges are torn and brush-drawn — it read as a browser artefact
+   parked on the artwork, and that is the thing being fixed here.
+
+   So there is no ring. The brightening is masked to each control's own
+   silhouette, cut from the artwork itself (scripts rendered mask-card-*.png
+   straight off comp-ask-v2.jpg), so the light follows every torn edge exactly
+   and never spills onto the background behind it.
+
+   THE MASK IS ON A CHILD, NOT THE ANCHOR, because a mask clips everything an
+   element paints — the focus ring included. The anchor stays unmasked so
+   keyboard focus is still visible. Hit area is the full rectangle either way:
+   masking changes painting, not hit testing, which is what lets the tap
+   target stay generous while the highlight stays exact.
+
+   EACH HOTSPOT SUPPLIES ITS OWN --mask. A hotspot without one gets no
+   highlight rather than a rectangular one, which is the right failure. */
 .hot{position:absolute;display:block;cursor:pointer;
-  border-radius:8%/22%;
-  -webkit-tap-highlight-color:transparent;
-  box-shadow:0 0 0 0 rgba(235,41,51,0);
-  transition:backdrop-filter .22s ease, box-shadow .22s ease, filter .22s ease}
-.hot:hover{
-  backdrop-filter:brightness(1.18) saturate(1.12) contrast(1.04);
-  box-shadow:0 0 0 2px rgba(255,255,255,.55),
-             0 10px 30px -10px rgba(235,41,51,.75)}
-.hot:active{backdrop-filter:brightness(1.05) saturate(1.05)}
-.hot:focus-visible{outline:3px solid #fff;outline-offset:3px}
-@media(prefers-reduced-motion:reduce){.hot{transition:none}}
+  -webkit-tap-highlight-color:transparent}
+.hot:focus-visible{outline:3px solid #fff;outline-offset:3px;border-radius:3px}
+
+.lift{position:absolute;inset:0;pointer-events:none;opacity:0;
+  -webkit-mask-image:var(--mask);mask-image:var(--mask);
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-backdrop-filter:brightness(1.17) saturate(1.16) contrast(1.03);
+  backdrop-filter:brightness(1.17) saturate(1.16) contrast(1.03);
+  transition:opacity .2s ease}
+.hot:hover .lift{opacity:1}
+.hot:active .lift{opacity:.55}
+@media(prefers-reduced-motion:reduce){.lift{transition:none}}
 /* A touch screen has no hover, and a sticky highlight after a tap looks
    broken, so the treatment is limited to devices with a real pointer. */
-@media(hover:none){.hot:hover{backdrop-filter:none;box-shadow:none}}
+@media(hover:none){.hot:hover .lift{opacity:0}}
 
 /* THE HERO HAS NO BUTTONS ANY MORE. The v2 design moved Get Approved up into
    the navigation and left the hero as one image with a single hand-drawn
@@ -82,13 +99,37 @@
    Measured off the artwork with a grid overlay, not estimated — the first
    version of these was eyeballed and sat about 90px above the real button, so
    the hover lit up empty concrete and clicks missed entirely. If the image is
-   re-exported, re-measure; never nudge these by eye. */
-.heroAsk{left:42.8%;top:81.5%;width:15%;height:13.5%}
+   re-exported, re-measure; never nudge these by eye.
 
-/* ask: the two cards under the button */
-/* the two cards under the panel, measured off the v2 artwork */
-.askApprove{left:48.9%;top:74.9%;width:18.6%;height:12.5%}
-.askSchedule{left:68.5%;top:74.9%;width:26.5%;height:12%}
+   EVERY RECT BELOW IS ALSO THE FRAME ITS MASK WAS CUT IN. The mask is painted
+   at 100% 100% of the hotspot, so moving one of these without re-cutting the
+   mask slides the highlight off the thing it is meant to light up. They move
+   together or not at all. */
+
+/* Hand-lettered "Have questions? Let's go!" and the arrow under it. The mask
+   here is the lettering dilated and blurred, so hovering blooms the dark
+   around the strokes — brightening white lettering does nothing, the glow has
+   to come from the background it sits on. Hence the heavier brightness. */
+.heroAsk{left:42.44%;top:81.56%;width:16.01%;height:13.26%;
+  --mask:url("/brand/mask-hero-ask.png")}
+.heroAsk .lift{-webkit-backdrop-filter:brightness(1.5) saturate(1.1);
+  backdrop-filter:brightness(1.5) saturate(1.1)}
+
+/* The two cards under the panel. Rects are the tight bounds of each card
+   plus a little bleed for its brushed edge, measured off the v2 artwork. */
+.askApprove{left:48.5%;top:73.9%;width:19.3%;height:14.6%;
+  --mask:url("/brand/mask-card-approve.png")}
+.askSchedule{left:68.3%;top:73.3%;width:27.2%;height:15.7%;
+  --mask:url("/brand/mask-card-schedule.png")}
+/* Schedule a Call is a WHITE card, and brightening white does nothing — the
+   paper is already at the top of the range, so the shared treatment moved
+   about four percent of the pixels and read as nothing happening. It gets a
+   wash of the card red instead, masked to the same silhouette, which lights
+   the card without putting an edge anywhere. The saturation lift is what
+   makes the red phone icon jump. */
+.askSchedule .lift{background:rgba(207,10,34,.14);
+  -webkit-backdrop-filter:brightness(1.04) saturate(1.3) contrast(1.04);
+  backdrop-filter:brightness(1.04) saturate(1.3) contrast(1.04)}
 
 /* The field, the send button, the big red button and the conversation panel
    all live in AskPanel now — one component owning one set of coordinates.

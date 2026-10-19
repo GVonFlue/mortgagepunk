@@ -31,11 +31,16 @@ export default function CompHero() {
           into the navigation. What is left is a hand-drawn "Have questions?
           Let's go!" with an arrow pointing down at the Ask section, so that
           prompt is the one thing here worth clicking. */}
+      {/* The span carries the hover bloom. It is masked to the lettering, so
+          it has to be a child — a mask on the anchor would clip the focus
+          ring too. See CompStage.module.css. */}
       <a
         href="#ask"
         className={`${s.hot} ${s.heroAsk}`}
         aria-label="Have questions? Jump to Ask Mortgage Punk"
-      />
+      >
+        <span className={s.lift} aria-hidden="true" />
+      </a>
 
     </section>
   );
