@@ -1,35 +1,71 @@
 /*
   Backstage.module.css — the /backstage dashboard.
 
-  On brand but deliberately calmer than the marketing site: Anton for headings
-  only, red reserved for state and primary actions, everything else quiet. A
-  tool Chris uses weekly should feel steady, not loud.
+  ---------------------------------------------------------------------------
+  THIS WAS DARK AND IS NOW LIGHT. The reasoning, because "lighten it up" is
+  the kind of instruction that gets undone by the next person who thinks the
+  marketing site's palette should apply everywhere.
+
+  Dark UI earns its place in short-dwell, media-forward contexts. That is the
+  public site exactly. This is the opposite: sustained, text-heavy, form
+  filling work that one person does weekly. Three consequences:
+
+   - ACUITY. Dark text on a light ground constricts the pupil, which deepens
+     focus and sharpens small text. It is why nearly every tool people live
+     in — mail, spreadsheets, CMSes — is light by default.
+   - HALATION. Light text on dark optically bleeds, markedly worse with
+     astigmatism, which is common and increases with age. The sole user of
+     this screen is in his forties.
+   - WHERE THE CONTRAST WENT. Body copy was #8E8E8E on #0A0A0A — about 5.1:1,
+     the floor — while the decoration (a doodle tile and two red radial
+     glows) competed at the same visual weight. Finding the content meant
+     looking past the texture. Both are gone; contrast is spent on text now.
+
+  And one reason that is not optical. This is the only screen where Chris can
+  change a live site. Near-black with red accents reads as a console, as
+  somewhere things break. Light, calm and generously spaced reads as safe to
+  poke at — which matters, because a dashboard somebody is wary of is a
+  dashboard that goes unused, and then it may as well not exist.
+
+  THE PALETTE IS THE BRAND'S OWN MATERIALS, not a generic light theme. The
+  collage is torn newsprint, photocopied black and a hard red, so the surface
+  is paper on a desk: a cool newsprint grey, white cards, the artwork's actual
+  ink black, and the red sampled off the painted Get Approved card. The step
+  between desk and paper does the structural work, which is why the borders
+  can stay almost invisible.
+
+  WHAT CAME OFF: tracked-out uppercase on every label, pill, button and stat.
+  Caps cost legibility at small sizes and make every element shout equally,
+  which flattens hierarchy rather than creating it. One uppercase element is
+  kept — the Backstage tag in the top bar — as the tie back to the brand.
 
   Every editable field is capped in the UI (see LIMITS in lib/content.ts) so no
   entry Chris makes can break a public layout. That constraint is the whole
   reason this dashboard is safe to hand over.
 */
 
-/* A single column now. The navigation moved out of a sidebar and onto the
-   home screen as tiles, so the frame is one bar above full-width content. */
-.shell{position:relative;min-height:100svh;background:#0A0A0A;color:var(--mp-bone);
-  font-family:var(--font-body),sans-serif;isolation:isolate}
+/* The tokens live on both roots, not just .shell. The login screen is its own
+   top-level element rather than a child of the shell, so a token block on
+   .shell alone leaves every var() on that page unresolved — and an unresolved
+   var() in `background:var(--red)` is an invalid declaration, which would
+   have shipped a sign-in button with no fill. */
+.shell,.login{
+  --bg:#E9E7E2;        /* the desk — newsprint grey, not cream */
+  --paper:#FFFFFF;     /* cards, sitting on the desk */
+  --ink:#17110E;       /* the artwork's black. 16.8:1 on paper */
+  --ink2:#5A524D;      /* secondary text. 7.4:1 on paper */
+  --ink3:#8A817A;      /* captions and placeholders. 4.6:1 on paper */
+  --rule:#E2DED6;      /* containment, not information */
+  --rule2:#D2CCC2;     /* the one step up, for inputs */
+  --red:#CF0A22;       /* actions and attention. Nothing decorative */
+  --redInk:#A50A1C;    /* red that has to sit on white as text */
 
-/* The doodle field, lifted from chriswaipanational — the same seamless 600px
-   tile of hand-drawn punk objects. Dialled right down and pinned so it drifts
-   under the content rather than competing with it: this is a tool Chris uses
-   weekly, and a loud background gets tiring fast.
+  font-family:var(--font-body),sans-serif;
+  /* Dark UI needed antialiasing help; light does not, and forcing it here
+     thins the text and undoes some of what the switch was for. */
+  -webkit-font-smoothing:auto}
 
-   background-attachment:fixed keeps the pattern still while the page scrolls,
-   which reads as depth instead of a moving texture. */
-.shell::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:url('/brand/doodle-tile.svg') 0 0 / 420px 420px repeat;
-  opacity:.05}
-/* a warm bloom top-left and a red one bottom-right, so the field isn't flat */
-.shell::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:
-    radial-gradient(70% 55% at 8% 0%, rgba(235,41,51,.10) 0%, rgba(235,41,51,0) 60%),
-    radial-gradient(60% 50% at 100% 100%, rgba(235,41,51,.07) 0%, rgba(235,41,51,0) 60%)}
+.shell{position:relative;min-height:100svh;background:var(--bg);color:var(--ink)}
 
 /* ---------- top bar ----------
    Deliberately almost empty: the logo, the way back to the tiles, the live
@@ -37,23 +73,26 @@
    is a tool somebody opens to do one specific job. */
 .topbar{position:sticky;top:0;z-index:5;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:14px clamp(16px,3vw,32px);
-  background:rgba(10,10,10,.92);backdrop-filter:blur(8px);
-  border-bottom:1px solid #232323}
+  padding:13px clamp(16px,3vw,32px);
+  background:rgba(255,255,255,.88);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule)}
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
-.brand img{height:34px;width:auto;display:block}
-.brandTag{font-family:var(--font-display),sans-serif;font-size:12px;
-  letter-spacing:.22em;text-transform:uppercase;color:var(--mp-red)}
+.brand img{height:32px;width:auto;display:block}
+/* The one piece of uppercase left in the file, and the only thing here that
+   is brand rather than function. */
+.brandTag{font-family:var(--font-display),sans-serif;font-size:11.5px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
 
-.topbarRight{display:flex;align-items:center;gap:clamp(10px,1.6vw,20px)}
+.topbarRight{display:flex;align-items:center;gap:clamp(8px,1.4vw,16px)}
 
 /* The only navigation outside the tiles. Shown on every page except the
    tiles themselves, where there is nothing to go back to. */
 .backLink{display:inline-flex;align-items:center;gap:6px;
-  font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--mp-bone);text-decoration:none;
-  padding:8px 13px;border:1px solid #2A2A2A;border-radius:8px;transition:.18s}
-.backLink:hover{border-color:var(--mp-red);background:rgba(235,41,51,.08)}
+  font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none;
+  padding:8px 13px;border:1px solid var(--rule2);border-radius:8px;
+  background:var(--paper);transition:.16s}
+.backLink:hover{border-color:var(--ink);background:#F6F4F0}
+.backLink:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .backLink svg{width:15px;height:15px;stroke:currentColor;fill:none;
   stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 
@@ -64,120 +103,136 @@
 
 .navList{list-style:none;margin:0;padding:0;display:grid;gap:3px}
 .navList a{display:flex;align-items:center;gap:11px;padding:11px 13px;
-  border-radius:8px;text-decoration:none;color:#9A9A9A;font-size:14px;
-  font-weight:600;transition:background .18s,color .18s}
-.navList a:hover{background:#161616;color:var(--mp-bone)}
-.navActive{background:var(--mp-red)!important;color:#fff!important}
+  border-radius:8px;text-decoration:none;color:var(--ink2);font-size:14px;
+  font-weight:600;transition:background .16s,color .16s}
+.navList a:hover{background:#F1EEE9;color:var(--ink)}
+.navActive{background:var(--red)!important;color:#fff!important}
 .navList svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9}
-.viewSite{font-size:12.5px;color:#7A7A7A;text-decoration:none}
-.viewSite:hover{color:var(--mp-bone)}
-.logout{background:none;border:1px solid #2A2A2A;color:#9A9A9A;border-radius:8px;
-  padding:10px 13px;font-family:inherit;font-size:12.5px;font-weight:700;
-  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.18s}
-.logout:hover{border-color:var(--mp-red);color:var(--mp-bone)}
+.viewSite{font-size:13px;color:var(--ink2);text-decoration:none}
+.viewSite:hover{color:var(--ink);text-decoration:underline}
+.logout{background:none;border:1px solid var(--rule2);color:var(--ink2);
+  border-radius:8px;padding:9px 13px;font-family:inherit;font-size:13px;
+  font-weight:600;cursor:pointer;transition:.16s}
+.logout:hover{border-color:var(--ink);color:var(--ink)}
+.logout:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 
 /* ---------- main ---------- */
-.main{position:relative;z-index:1;padding:clamp(22px,3vw,40px);
-  max-width:1240px;margin-inline:auto}
+.main{position:relative;z-index:1;padding:clamp(22px,3vw,40px) clamp(16px,3vw,40px) 64px;
+  max-width:1180px;margin-inline:auto}
 .head{display:flex;align-items:flex-end;justify-content:space-between;
-  gap:20px;flex-wrap:wrap;margin-bottom:26px}
+  gap:20px;flex-wrap:wrap;margin-bottom:24px}
 .h1{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:clamp(28px,3.4vw,44px);line-height:1;text-transform:uppercase;
-  letter-spacing:-.01em}
-.sub{margin:8px 0 0;font-size:14.5px;line-height:1.6;color:#8E8E8E;max-width:62ch}
+  font-size:clamp(27px,3.2vw,40px);line-height:1.02;text-transform:uppercase;
+  letter-spacing:-.01em;color:var(--ink)}
+.sub{margin:9px 0 0;font-size:15px;line-height:1.6;color:var(--ink2);max-width:62ch}
 
+/* An advisory, not an alarm: amber carries "check this" without the red that
+   is reserved for actions. */
 .notice{display:flex;gap:11px;align-items:flex-start;
-  border:1px dashed #5A4A2A;background:#1A1610;color:#D2AE3A;
-  border-radius:10px;padding:13px 15px;font-size:13px;line-height:1.6;
+  border:1px solid #E6D6A6;background:#FDF8E8;color:#6B5518;
+  border-radius:10px;padding:13px 15px;font-size:13.5px;line-height:1.6;
   margin-bottom:22px}
-.notice b{color:#EFC94C}
+.notice b{color:#4D3D0F}
 .notice svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;
   stroke-width:1.9;margin-top:1px}
 
-/* ---------- cards & forms ---------- */
-.card{background:rgba(16,16,16,.9);backdrop-filter:blur(3px);
-  border:1px solid #232323;border-radius:12px;
+/* ---------- cards & forms ----------
+   One hairline and the paper/desk value step. No shadow: a soft grey shadow
+   under every card is the SaaS-kit default, and on this background it would
+   be doing a job the value step already does. */
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:12px;
   padding:clamp(16px,1.8vw,24px);margin-bottom:16px}
 .cardHead{display:flex;align-items:center;justify-content:space-between;
   gap:14px;margin-bottom:16px}
 .cardTitle{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:19px;text-transform:uppercase;letter-spacing:.01em}
+  font-size:21px;line-height:1.1;letter-spacing:.005em;color:var(--ink)}
 
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
 
-.field{display:block;margin-bottom:14px}
+.field{display:block;margin-bottom:16px}
+/* Sentence case at a readable size. This was 11px uppercase with .15em
+   tracking, which is the hardest way to set the one string that tells
+   somebody what a box is for. */
 .label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-  font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
-  color:#8E8E8E;margin-bottom:7px}
-.count{font-weight:700;letter-spacing:.06em;color:#5E5E5E;font-size:10.5px}
-.countOver{color:var(--mp-red)}
-.input,.select,.textarea{width:100%;background:#0A0A0A;border:1px solid #262626;
-  border-radius:8px;color:var(--mp-bone);padding:11px 13px;
-  font-family:inherit;font-size:14.5px;transition:border-color .18s,box-shadow .18s}
-.textarea{min-height:88px;resize:vertical;line-height:1.6}
-.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--mp-red);
-  box-shadow:0 0 0 3px rgba(235,41,51,.15)}
-.help{font-size:12px;line-height:1.55;color:#6E6E6E;margin-top:6px}
+  font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.count{font-weight:500;color:var(--ink3);font-size:12px;
+  font-variant-numeric:tabular-nums}
+.countOver{color:var(--redInk);font-weight:700}
+.input,.select,.textarea{width:100%;background:var(--paper);
+  border:1px solid var(--rule2);border-radius:8px;color:var(--ink);
+  padding:10px 12px;font-family:inherit;font-size:15px;
+  transition:border-color .16s,box-shadow .16s}
+.textarea{min-height:92px;resize:vertical;line-height:1.6}
+.input::placeholder,.textarea::placeholder{color:var(--ink3)}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(207,10,34,.14)}
+.help{font-size:13px;line-height:1.55;color:var(--ink2);margin-top:6px}
 
-.btn{display:inline-flex;align-items:center;gap:9px;border:1px solid transparent;
-  border-radius:8px;padding:11px 18px;font-family:inherit;font-size:13px;
-  font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
-  text-decoration:none;transition:.2s}
-.btnPrimary{background:var(--mp-red);color:#fff}
-.btnPrimary:hover{background:var(--mp-red-deep)}
-.btnPrimary:disabled{opacity:.5;cursor:not-allowed}
-.btnGhost{background:transparent;border-color:#2A2A2A;color:#9A9A9A}
-.btnGhost:hover{border-color:#3E3E3E;color:var(--mp-bone)}
-.btnDanger{background:transparent;border-color:#3A1E20;color:#C4585F}
-.btnDanger:hover{background:#1C1011;border-color:var(--mp-red);color:var(--mp-red)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;
+  border-radius:8px;padding:10px 17px;font-family:inherit;font-size:14px;
+  font-weight:600;cursor:pointer;text-decoration:none;transition:.16s}
+.btn:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.btnPrimary{background:var(--red);color:#fff}
+.btnPrimary:hover{background:#B00A1D}
+.btnPrimary:disabled{opacity:.45;cursor:not-allowed}
+.btnGhost{background:var(--paper);border-color:var(--rule2);color:var(--ink)}
+.btnGhost:hover{border-color:var(--ink);background:#F6F4F0}
+/* Destructive sits quiet until you reach for it. A permanently red delete
+   button on every row makes the whole page feel hazardous. */
+.btnDanger{background:var(--paper);border-color:var(--rule2);color:var(--redInk)}
+.btnDanger:hover{background:#FDF0F1;border-color:var(--red);color:var(--red)}
 .btnRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
 /* ---------- list rows ---------- */
 .row{display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:start;
-  background:rgba(16,16,16,.9);backdrop-filter:blur(3px);
-  border:1px solid #232323;border-radius:12px;
-  padding:14px;margin-bottom:12px;transition:border-color .2s}
-.row:hover{border-color:#333}
+  background:var(--paper);border:1px solid var(--rule);border-radius:12px;
+  padding:14px;margin-bottom:10px;transition:border-color .16s}
+.row:hover{border-color:var(--rule2)}
 @media(max-width:700px){.row{grid-template-columns:1fr}}
-.thumb{aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#191919;
-  border:1px solid #262626;display:flex;align-items:center;justify-content:center}
+.thumb{aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#F1EEE9;
+  border:1px solid var(--rule);display:flex;align-items:center;justify-content:center}
 .thumb img{width:100%;height:100%;object-fit:cover}
-.thumbEmpty{font-size:10px;font-weight:800;letter-spacing:.12em;
-  text-transform:uppercase;color:#4E4E4E;text-align:center;padding:6px}
+.thumbEmpty{font-size:11.5px;font-weight:600;color:var(--ink3);
+  text-align:center;padding:6px}
 .rowTitle{margin:0 0 5px;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:18px;line-height:1.14;text-transform:uppercase}
-.rowBlurb{margin:0;font-size:13px;line-height:1.55;color:#8E8E8E}
+  font-size:19px;line-height:1.14;color:var(--ink)}
+.rowBlurb{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink2)}
 .rowMeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
 .rowActions{display:flex;flex-direction:column;gap:7px;align-items:flex-end}
 @media(max-width:700px){.rowActions{flex-direction:row;align-items:center}}
 
-.pill{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
-  padding:4px 9px;border-radius:999px;border:1px solid #2A2A2A;color:#8E8E8E}
-.pillRed{background:var(--mp-red);border-color:var(--mp-red);color:#fff}
-.pillGreen{background:#12301F;border-color:#1E5133;color:#5FD497}
-.pillMuted{background:#191919;color:#6E6E6E}
+.pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;
+  border:1px solid var(--rule2);color:var(--ink2);background:var(--paper)}
+.pillRed{background:var(--red);border-color:var(--red);color:#fff}
+.pillGreen{background:#E8F5EC;border-color:#BBE0C7;color:#1B6E3C}
+.pillMuted{background:#F1EEE9;border-color:var(--rule);color:var(--ink3)}
 
 /* ---------- stats ---------- */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   gap:12px;margin-bottom:24px}
-.stat{background:rgba(16,16,16,.9);backdrop-filter:blur(3px);
-  border:1px solid #232323;border-radius:12px;padding:16px 18px}
+.stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;
+  padding:16px 18px}
 .statVal{display:block;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:32px;line-height:1;color:var(--mp-red)}
-.statLabel{display:block;margin-top:7px;font-size:11px;font-weight:800;
-  letter-spacing:.14em;text-transform:uppercase;color:#7A7A7A}
+  font-size:34px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.statLabel{display:block;margin-top:6px;font-size:13px;font-weight:500;
+  color:var(--ink2)}
 
-.empty{border:1px dashed #2A2A2A;border-radius:12px;padding:34px 20px;
-  text-align:center;color:#6E6E6E;font-size:14px;line-height:1.6}
+.empty{border:1px dashed var(--rule2);border-radius:12px;padding:34px 20px;
+  text-align:center;color:var(--ink2);font-size:14.5px;line-height:1.6;
+  background:rgba(255,255,255,.5)}
 
+/* Confirmation, so green rather than the action red. */
 .toast{position:fixed;right:20px;bottom:20px;z-index:60;
-  background:#12301F;border:1px solid #1E5133;color:#5FD497;
-  border-radius:10px;padding:13px 17px;font-size:13px;font-weight:700;
-  box-shadow:0 14px 34px rgba(0,0,0,.5)}
+  background:#E8F5EC;border:1px solid #BBE0C7;color:#156033;
+  border-radius:10px;padding:13px 17px;font-size:14px;font-weight:600;
+  box-shadow:0 12px 30px -12px rgba(23,17,14,.3)}
 
-/* ---------- login ---------- */
+/* ---------- login ----------
+   The one screen that stays dark, deliberately. It is the front door, seen
+   for three seconds, and it is where the brand should land — the argument
+   for light applies to the hours spent inside, not the moment at the step. */
 .login{position:relative;min-height:100svh;display:flex;align-items:center;
   justify-content:center;padding:24px;background:#0A0A0A;isolation:isolate}
 .login::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
@@ -190,17 +245,26 @@
   box-shadow:0 30px 70px -28px rgba(0,0,0,.9)}
 .loginLogo{height:46px;width:auto;display:block;margin-bottom:22px}
 .loginTitle{margin:0 0 6px;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:26px;text-transform:uppercase;letter-spacing:.01em}
-.loginSub{margin:0 0 22px;font-size:13.5px;line-height:1.6;color:#7A7A7A}
+  font-size:26px;text-transform:uppercase;letter-spacing:.01em;color:var(--mp-bone)}
+.loginSub{margin:0 0 22px;font-size:13.5px;line-height:1.6;color:#8E8E8E}
 .loginErr{background:#1C1011;border:1px solid #3A1E20;color:#E0757C;
   border-radius:8px;padding:11px 13px;font-size:13px;margin-bottom:14px}
+/* The login form's own fields have to stay dark with it, so they override the
+   light input above rather than inheriting it. */
+.login .input{background:#0A0A0A;border-color:#2A2A2A;color:var(--mp-bone)}
+.login .input::placeholder{color:#6E6E6E}
+.login .label{color:#A8A29C}
 
 /* ---------- hero copy preview ----------
+   ALSO DARK ON PURPOSE, and for a different reason than the login: this box
+   is a picture of the live homepage, which is dark. Lightening it would make
+   it a worse preview of the only thing it exists to preview.
+
    Chris and the concrete are omitted so the text stays readable. The type
    scaling here mirrors fit() in Hero.tsx exactly, so what shows in this box is
    the real result rather than an approximation. */
 .heroPrev{position:relative;background:linear-gradient(120deg,#1A1A1A 0%,#0C0C0C 100%);
-  border:1px solid #232323;border-radius:14px;overflow:hidden;
+  border:1px solid #2A2A2A;border-radius:14px;overflow:hidden;
   padding:26px 24px;min-height:300px;display:flex;flex-direction:column;
   justify-content:space-between}
 .heroPrevType{font-family:var(--font-display),sans-serif;color:var(--mp-bone);
@@ -219,60 +283,62 @@
 
 /* ---------- artwork uploader ---------- */
 .artDrop{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;
-  padding:32px 20px;border:2px dashed #2E2E2E;border-radius:12px;
-  background:#0C0C0C;cursor:pointer;transition:.2s;
+  padding:32px 20px;border:2px dashed var(--rule2);border-radius:12px;
+  background:#FAF8F5;cursor:pointer;transition:.16s;
   font-family:var(--font-body),sans-serif;text-align:center}
-.artDrop:hover{border-color:var(--mp-red);background:#111}
+.artDrop:hover{border-color:var(--red);background:#FDF5F6}
+.artDrop:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .artDrop:disabled{opacity:.5;cursor:not-allowed}
-.artDrop svg{width:28px;height:28px;stroke:var(--mp-red);fill:none;stroke-width:1.7}
-.artDrop strong{font-size:14px;font-weight:800;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--mp-bone)}
-.artDrop span{font-size:12px;line-height:1.5;color:#6E6E6E;max-width:44ch}
+.artDrop svg{width:28px;height:28px;stroke:var(--red);fill:none;stroke-width:1.7}
+.artDrop strong{font-size:15px;font-weight:700;color:var(--ink)}
+.artDrop span{font-size:13px;line-height:1.5;color:var(--ink2);max-width:44ch}
 
-.artPreview{border:1px solid #232323;border-radius:12px;overflow:hidden;
-  background:repeating-conic-gradient(#161616 0% 25%, #101010 0% 50%) 50%/18px 18px}
+/* The checkerboard reads as transparency only if it is light — a dark
+   checkerboard behind a cut-out looks like part of the artwork. */
+.artPreview{border:1px solid var(--rule);border-radius:12px;overflow:hidden;
+  background:repeating-conic-gradient(#EDEAE4 0% 25%, #FFFFFF 0% 50%) 50%/18px 18px}
 .artPreview img{display:block;width:100%;height:auto;max-height:230px;
   object-fit:contain}
 .artPreviewMeta{display:flex;align-items:center;justify-content:space-between;
-  gap:12px;flex-wrap:wrap;padding:12px 14px;background:#0E0E0E;
-  border-top:1px solid #232323}
-.artErr{margin:9px 0 0;font-size:12.5px;line-height:1.55;color:#E0757C}
+  gap:12px;flex-wrap:wrap;padding:12px 14px;background:var(--paper);
+  border-top:1px solid var(--rule);font-size:13.5px;color:var(--ink2)}
+.artErr{margin:9px 0 0;font-size:13px;line-height:1.55;color:var(--redInk)}
 
 /* ---------- design specs page ----------
    Written for a designer, not a developer: a picture of the occlusion rather
    than a description of it, and no CSS units they'd have to translate. */
 .specDiagram{display:block;width:100%;height:auto;max-width:620px;
-  border:1px solid #232323;border-radius:10px;background:#0C0C0C}
-.specLabel{font-family:var(--font-body),sans-serif;font-size:10px;font-weight:800;
-  letter-spacing:.16em}
-.specDim{font-family:var(--font-body),sans-serif;font-size:9.5px;font-weight:700;
-  letter-spacing:.08em}
+  border:1px solid var(--rule);border-radius:10px;background:#FAF8F5}
+.specLabel{font-family:var(--font-body),sans-serif;font-size:10.5px;font-weight:700;
+  letter-spacing:.1em}
+.specDim{font-family:var(--font-body),sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:.05em}
 
-.specTable{margin:0;display:grid;gap:1px;background:#232323;
-  border:1px solid #232323;border-radius:10px;overflow:hidden}
-.specTable > div{background:#0D0D0D;padding:13px 16px;display:flex;
+.specTable{margin:0;display:grid;gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.specTable > div{background:var(--paper);padding:13px 16px;display:flex;
   justify-content:space-between;gap:18px;align-items:baseline;flex-wrap:wrap}
-.specTable dt{margin:0;font-size:11px;font-weight:800;letter-spacing:.14em;
-  text-transform:uppercase;color:#7A7A7A}
-.specTable dd{margin:0;font-size:14.5px;font-weight:600;color:var(--mp-bone);
+.specTable dt{margin:0;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.specTable dd{margin:0;font-size:15px;font-weight:600;color:var(--ink);
   text-align:right}
-.specWhere{display:block;margin-top:3px;font-size:12px;font-weight:400;color:#6E6E6E}
+.specWhere{display:block;margin-top:3px;font-size:12.5px;font-weight:400;
+  color:var(--ink3)}
 
 .specNotes{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:9px}
-.specNotes li{position:relative;padding-left:20px;font-size:13.5px;line-height:1.6;
-  color:#9A9A9A}
-.specNotes li::before{content:'';position:absolute;left:0;top:.6em;width:10px;
-  height:2px;background:var(--mp-red)}
+.specNotes li{position:relative;padding-left:20px;font-size:14px;line-height:1.6;
+  color:var(--ink2)}
+.specNotes li::before{content:'';position:absolute;left:0;top:.62em;width:10px;
+  height:2px;background:var(--red)}
 
 .swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.swatch{display:flex;gap:12px;align-items:flex-start;background:#0D0D0D;
-  border:1px solid #232323;border-radius:10px;padding:12px}
+.swatch{display:flex;gap:12px;align-items:flex-start;background:var(--paper);
+  border:1px solid var(--rule);border-radius:10px;padding:12px}
 .swatchChip{flex:none;width:42px;height:42px;border-radius:8px;
-  border:1px solid rgba(255,255,255,.14)}
-.swatch strong{display:block;font-size:13.5px;color:var(--mp-bone)}
-.swatch code{display:block;margin:2px 0 4px;font-size:12px;color:var(--mp-red);
+  border:1px solid rgba(23,17,14,.14)}
+.swatch strong{display:block;font-size:14px;color:var(--ink)}
+.swatch code{display:block;margin:2px 0 4px;font-size:12.5px;color:var(--redInk);
   font-family:ui-monospace,monospace}
-.swatch span{display:block;font-size:11.5px;line-height:1.5;color:#6E6E6E}
+.swatch span{display:block;font-size:12.5px;line-height:1.5;color:var(--ink2)}
 
 /* ---------- the tile grid ----------
    The navigation, as the home screen. An eleven-item sidebar made every
@@ -283,45 +349,59 @@
    auto-fill with a 280px floor rather than a fixed column count: three across
    on a laptop, two on a tablet, one on a phone, with no breakpoints to keep
    in sync. */
-.tiles{display:grid;gap:clamp(10px,1.2vw,16px);
+.tiles{display:grid;gap:clamp(10px,1.2vw,14px);
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
   margin-bottom:clamp(18px,2.4vw,28px)}
 
 .tile{position:relative;display:flex;align-items:flex-start;gap:14px;
   padding:clamp(16px,1.6vw,22px);
-  background:rgba(20,20,20,.82);backdrop-filter:blur(3px);
-  border:1px solid #232323;border-radius:14px;
+  background:var(--paper);border:1px solid var(--rule);border-radius:14px;
   text-decoration:none;color:inherit;
-  transition:border-color .18s ease, transform .18s cubic-bezier(.16,1,.3,1),
-             background .18s ease}
-.tile:hover{border-color:var(--mp-red);transform:translateY(-2px);
-  background:rgba(28,22,22,.9)}
-.tile:focus-visible{outline:2px solid var(--mp-red);outline-offset:3px}
-@media(prefers-reduced-motion:reduce){.tile{transition:border-color .18s ease}
-  .tile:hover{transform:none}}
+  transition:border-color .16s ease, transform .16s cubic-bezier(.16,1,.3,1),
+             box-shadow .16s ease}
+.tile:hover{border-color:var(--rule2);transform:translateY(-2px);
+  box-shadow:0 10px 24px -14px rgba(23,17,14,.4)}
+.tile:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.tile{transition:border-color .16s ease}
+  .tile:hover{transform:none;box-shadow:none}}
 
-/* The one or two jobs worth doing first get a red edge rather than a louder
-   fill — a page of shouting tiles prioritises nothing. */
-.tileAccent{border-color:rgba(235,41,51,.45)}
+/* THE ACCENT MOVED FROM THE BORDER TO THE ICON. A red ring around a white
+   card on a light ground is loud and outlines the whole shape; filling the
+   icon chip instead puts the signal on one 42px square, so the eye lands on
+   the two jobs worth doing first without the page shouting. */
+.tileAccent{border-color:var(--rule2)}
+.tileAccent .tileIcon{background:var(--red);border-color:var(--red)}
+.tileAccent .tileIcon svg{stroke:#fff}
 
 .tileIcon{flex:none;display:grid;place-items:center;
   width:42px;height:42px;border-radius:10px;
-  background:rgba(235,41,51,.12);border:1px solid rgba(235,41,51,.3)}
-.tileIcon svg{width:21px;height:21px;stroke:var(--mp-red);fill:none;
-  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  background:#F1EEE9;border:1px solid var(--rule);transition:.16s}
+.tileIcon svg{width:21px;height:21px;stroke:var(--ink2);fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:.16s}
+.tile:hover .tileIcon svg{stroke:var(--ink)}
+.tileAccent:hover .tileIcon svg{stroke:#fff}
 
 .tileBody{display:flex;flex-direction:column;gap:5px;min-width:0}
 .tileTitle{font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:clamp(16px,1.3vw,20px);line-height:1.1;text-transform:uppercase;
-  letter-spacing:.01em;color:var(--mp-bone)}
-.tileBlurb{font-size:13px;line-height:1.5;color:#8E8E8E}
+  font-size:clamp(17px,1.3vw,21px);line-height:1.1;letter-spacing:.005em;
+  color:var(--ink)}
+.tileBlurb{font-size:13.5px;line-height:1.5;color:var(--ink2)}
 
 /* Top-right so it reads as a status on the tile rather than part of the
-   sentence. */
+   sentence. Padding-right on the title keeps a long name from running under
+   it — the dark version had them overlapping at narrow widths. */
+/* NEUTRAL BY DEFAULT, RED ONLY WHERE THERE IS SOMETHING TO DO. The first pass
+   made every badge red, so "None yet", "0 live" and "Off" — three statements
+   that nothing is happening — were styled as alerts. Red is reserved for
+   attention here, and an absence is the opposite of that. The accent flag
+   already marks the tiles with work waiting, so it drives the badge too. */
 .tileMeta{position:absolute;top:12px;right:12px;
-  font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--mp-red);background:rgba(235,41,51,.1);
-  border:1px solid rgba(235,41,51,.28);border-radius:999px;padding:3px 9px}
+  font-size:12px;font-weight:600;color:var(--ink2);
+  background:#F1EEE9;border:1px solid var(--rule);border-radius:999px;padding:3px 9px}
+.tileAccent .tileMeta{color:var(--redInk);background:#FDF0F1;border-color:#F3CDD2}
+/* :has(), not a sibling combinator — .tileMeta is rendered AFTER .tileBody,
+   so `~` from the badge can never reach the title it needs to indent. */
+.tile:has(.tileMeta) .tileTitle{padding-right:84px}
 
 /* ---------- the photo manager ----------
    One card per swappable picture. The preview is the point: somebody
@@ -331,22 +411,23 @@
   grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
 
 .photoCard{display:flex;flex-direction:column;
-  background:rgba(14,14,14,.7);border:1px solid #232323;border-radius:12px;
+  background:var(--paper);border:1px solid var(--rule);border-radius:12px;
   overflow:hidden}
 
 /* A checkerboard behind the preview, so a cut-out with a transparent
-   background is visibly a cut-out — on a flat dark panel a PNG with alpha and
-   a JPEG with a black box look identical, which is exactly the mistake this
+   background is visibly a cut-out — on a flat panel a PNG with alpha and a
+   JPEG with a white box look identical, which is exactly the mistake this
    screen exists to prevent. */
 /* flex:none is load-bearing. The cards sit in a grid row and stretch to the
    tallest one; without it the thumbnail stretches with the card and the
    declared 4/3 is ignored, so three photos in a row each end up a different
    height. */
-.photoThumb{flex:none;position:relative;aspect-ratio:4/3;background:#151515;
+.photoThumb{flex:none;position:relative;aspect-ratio:4/3;background:#F7F5F1;
   background-image:
-    linear-gradient(45deg,#1C1C1C 25%,transparent 25%,transparent 75%,#1C1C1C 75%),
-    linear-gradient(45deg,#1C1C1C 25%,transparent 25%,transparent 75%,#1C1C1C 75%);
-  background-size:18px 18px;background-position:0 0,9px 9px}
+    linear-gradient(45deg,#EDEAE4 25%,transparent 25%,transparent 75%,#EDEAE4 75%),
+    linear-gradient(45deg,#EDEAE4 25%,transparent 25%,transparent 75%,#EDEAE4 75%);
+  background-size:18px 18px;background-position:0 0,9px 9px;
+  border-bottom:1px solid var(--rule)}
 /* Absolutely positioned, not just height:100%. The thumb is a flex item, and
    a flex item will not shrink below its content's intrinsic size — so a tall
    portrait pushed the box past its own 4/3 and the three cards in a row each
@@ -359,12 +440,11 @@
 .photoBody{display:flex;flex-direction:column;gap:7px;
   padding:clamp(13px,1.3vw,18px)}
 .photoTitle{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:clamp(15px,1.2vw,19px);line-height:1.15;text-transform:uppercase;
-  color:var(--mp-bone)}
+  font-size:clamp(16px,1.2vw,20px);line-height:1.15;color:var(--ink)}
 /* Where it appears, in Chris's words. This is the line that makes a card
-   findable, so it is set brighter than the guidance under it. */
-.photoWhere{margin:0;font-size:12.5px;line-height:1.5;color:#A5A5A5}
+   findable, so it is set darker than the guidance under it. */
+.photoWhere{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink)}
 
 .photoBody .btnRow{margin-top:5px}
-.photoOk{margin:4px 0 0;font-size:12.5px;line-height:1.45;color:#5FD497}
-.photoErr{margin:4px 0 0;font-size:12.5px;line-height:1.45;color:#E0757C}
+.photoOk{margin:4px 0 0;font-size:13px;line-height:1.45;color:#1B6E3C}
+.photoErr{margin:4px 0 0;font-size:13px;line-height:1.45;color:var(--redInk)}

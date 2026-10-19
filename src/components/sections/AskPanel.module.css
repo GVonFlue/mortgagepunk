@@ -66,7 +66,14 @@
    little bleed, so nothing of either shows around the edge. z-index clears
    the two hotspot anchors, which are later siblings and would otherwise take
    the clicks through it. */
-.pop{position:absolute;left:46.9%;top:35.3%;width:49.8%;height:54.5%;z-index:3;
+/* HEIGHT GREW 50% (54.5% → 82%) AND THE EXTRA WENT UPWARD. The field and the
+   two cards are anchored at the foot, where the eye has already learned to
+   find them, so growing downward would have moved the controls and pushed the
+   popup past the bottom of the section. Growing up puts every new pixel into
+   the transcript — about 425px of reading space on a laptop, up from 220px —
+   at the cost of covering the boombox while a conversation is open, which is
+   decoration and comes straight back on close. */
+.pop{position:absolute;left:46.9%;top:12%;width:49.8%;height:82%;z-index:3;
   display:flex;flex-direction:column;
   background:#FBFBFB;background-clip:padding-box;
   border:clamp(13px,1.78vw,36px) solid transparent;
@@ -79,8 +86,9 @@
   border-image:url("/brand/paper-frame.png") 55 stretch;
   filter:drop-shadow(0 16px 28px rgba(0,0,0,.5));
   /* Grows out of roughly where the field was, so it reads as the field
-     opening rather than as a dialog arriving from nowhere. */
-  transform-origin:48% 38%;
+     opening rather than as a dialog arriving from nowhere. The painted field
+     sits at 51.6% of the stage, which is 48% down the taller popup. */
+  transform-origin:48% 48%;
   animation:popIn .26s cubic-bezier(.22,1.2,.4,1) both}
 @keyframes popIn{
   from{opacity:0;transform:scale(.9) rotate(-.7deg)}
@@ -218,8 +226,26 @@
    chat. Below this width it leaves the artwork and becomes a normal sheet
    over the page, with a scrim behind it. */
 .scrim{display:none}
+/* Desktop types in the real field; the tap target is phone-only. */
+.fieldTap{display:none}
 
 @media(max-width:760px){
+  /* The live field is replaced by a transparent tap target over the painted
+     one — see the note in AskPanel.tsx. The artwork's own placeholder and red
+     send square show through, so the section looks untouched. */
+  .fieldBox{display:none}
+  /* Taller than the paint it covers. The painted field is only about 20px
+     high once the artwork is scaled to a phone, so a target matching it
+     exactly would be half the 44px minimum. It grows upward over the painted
+     headline — nothing there is interactive, so an invisible target may sit
+     on it — and stops short of the cards at 73.9%. */
+  .fieldTap{display:block;position:absolute;
+    left:48.5%;top:46.5%;width:46%;height:20%;
+    background:none;border:0;padding:0;cursor:pointer;
+    -webkit-tap-highlight-color:transparent}
+  .fieldTap:focus-visible{outline:3px solid #CF0A22;outline-offset:2px;
+    border-radius:8px}
+
   /* Above the sticky nav (70) and the floating chat button (90/95), below
      the mobile nav sheet and the waitlist modal (120) — if someone opens the
      menu from here, the menu is the way out and has to win. */
@@ -229,7 +255,11 @@
   @keyframes fade{from{opacity:0}to{opacity:1}}
 
   .pop{position:fixed;z-index:111;
-    left:50%;top:50%;width:min(94vw,460px);height:min(80vh,640px);
+    /* svh, not vh: on iOS Safari vh is the height with the browser chrome
+       RETRACTED, so a 90vh sheet is taller than the window on arrival and the
+       field and cards sit under the address bar until you scroll. svh is the
+       smallest viewport, which is the one that is always actually there. */
+    left:50%;top:50%;width:min(94vw,470px);height:min(88svh,760px);
     border-width:clamp(16px,5.5vw,30px);
     transform-origin:50% 50%;
     animation:popInM .24s cubic-bezier(.22,1.2,.4,1) both}

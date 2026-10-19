@@ -144,7 +144,22 @@ export default function AskPanel() {
   /* ---------- resting: the field drawn over the painted one ---------- */
   if (!open) {
     return (
-      <div className={a.fieldBox}>
+      <>
+        {/* PHONES GET A TAP TARGET, NOT A TEXT FIELD. The artwork does not
+            reflow, so at 390px the live field below is about 155x20px — the
+            placeholder clips and the send button lands on top of the text.
+            Nobody types in that. Here the painted field is left showing and
+            this covers it, so a tap opens the sheet where there is a properly
+            sized input. Which one is live is decided in CSS rather than from
+            the `narrow` state, so there is no first-paint swap. */}
+        <button
+          type="button"
+          className={a.fieldTap}
+          onClick={() => setOpen(true)}
+          aria-label="Ask a question about mortgages"
+        />
+
+        <div className={a.fieldBox}>
         <input
           className={a.field}
           value={q}
@@ -161,7 +176,8 @@ export default function AskPanel() {
         >
           <Arrow />
         </button>
-      </div>
+        </div>
+      </>
     );
   }
 

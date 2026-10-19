@@ -12,9 +12,26 @@
   display:flex;flex-direction:column;align-items:center}
 
 /* full-bleed now, so more columns on a wide screen — four huge tiles across
-   a 2560px monitor would read as a slideshow, not a feed */
+   a 2560px monitor would read as a slideshow, not a feed.
+
+   THERE IS NO FIVE-COLUMN STEP, AND THAT IS NOT AN OVERSIGHT. With this set
+   of tiles, Chromium's column balancer fails at exactly five: it fills four
+   columns to equal height and drops the remainder into the fifth, leaving it
+   half empty. Measured at 1281, 1300, 1400, 1500 and 1600px — 50.3% ragged at
+   every one of them, so it is the count that breaks, not the width. Six, four,
+   three and two all balance within 9%.
+
+   The cause is `break-inside:avoid` on tiles that are tall relative to the
+   balancer's target height; it overshoots on each early column and starves
+   the last. If the tile list changes substantially, re-measure before adding
+   a column count back — the failure is specific to the content, not general.
+
+   SIX RUNS DOWN TO 1280 rather than stopping at 1600, which is what keeps the
+   wall a sensible length: at four columns a 1440px laptop gets a 5,100px
+   section — six screens of scrolling for one block. At six it is about
+   2,500px, and the denser tile reads more like a collage than a gallery,
+   which is the point of this section. */
 .grid{width:100%;column-count:6;column-gap:clamp(8px,.8vw,12px)}
-@media(max-width:1600px){.grid{column-count:5}}
 @media(max-width:1280px){.grid{column-count:4}}
 @media(max-width:980px){.grid{column-count:3}}
 @media(max-width:700px){.grid{column-count:2}}

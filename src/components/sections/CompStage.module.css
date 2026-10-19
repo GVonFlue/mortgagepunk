@@ -44,6 +44,43 @@
    The ratios come from the files; change the file, re-measure the ratio AND
    every hotspot below, because they are percentages of this box. */
 .hero{aspect-ratio:2600/1622;background-image:url("/brand/comp-hero-v2.jpg")}
+
+/* ---------- hero motion ----------
+   The plate lands with a push-out, drifts with the cursor and pushes in again
+   on scroll. CompHero.tsx writes --hx/--hy/--hz from one rAF loop; everything
+   here is the declarative half.
+
+   The frame exists only to crop. The plate is scaled past its own box, so
+   without this it would paint over the nav above and the Ask section below.
+   z-index moves here from .stage because the transform below makes the stage
+   its own stacking context anyway — see the note on PageGround above, which
+   is what that z-index is defending against. */
+.heroFrame{position:relative;z-index:1;overflow:hidden}
+
+/* THE ENTRANCE IS ITS OWN LAYER, and that is not tidiness. Put this keyframe
+   on the same element as the transform below and the two fight: the keyframe
+   would have to name --hx/--hy/--hz in its `to` state to avoid snapping the
+   plate back on the last frame, and a filled keyframe holding var() values
+   that a script is still rewriting is a race nobody wins. Nested transforms
+   multiply, so stacking them composes the entrance and the drift for free and
+   neither one has to know about the other. */
+.heroIntro{animation:heroIn 1.5s cubic-bezier(.16,.84,.32,1) both}
+@keyframes heroIn{from{opacity:0;transform:scale(1.09)}to{opacity:1;transform:none}}
+
+.heroMotion{
+  --hx:0px; --hy:0px; --hz:1.06;
+  transform:translate3d(var(--hx),var(--hy),0) scale(var(--hz));
+  /* The compositor needs to know this will move; without it the first cursor
+     movement repaints the whole plate and visibly stutters. */
+  will-change:transform}
+
+/* Reduced motion gets the plate at rest — no entrance, no drift, no zoom.
+   The resting scale stays, because it is the overscan the layout is built on,
+   not motion. The script returns before writing a property, so the defaults
+   above are what hold. */
+@media(prefers-reduced-motion:reduce){
+  .heroIntro{animation:none}
+  .heroMotion{will-change:auto}}
 .ask{aspect-ratio:2600/1477;background-image:url("/brand/comp-ask-v2.jpg")}
 
 /* ---------- hotspots ----------
@@ -115,6 +152,25 @@
 .heroAsk .lift{-webkit-backdrop-filter:brightness(1.5) saturate(1.1);
   backdrop-filter:brightness(1.5) saturate(1.1)}
 
+/* A second masked layer that breathes on its own, under the hover bloom.
+   The prompt is the only instruction in the hero and it is painted flat into
+   a busy collage — without this it reads as more wallpaper. Slow (3.6s) and
+   shallow on purpose: a pulse you notice is a pulse that nags.
+
+   It stops on hover, where .lift takes over; two glows on the same lettering
+   at once just muddies both. */
+.pulse{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask-image:var(--mask);mask-image:var(--mask);
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-backdrop-filter:brightness(1.3);backdrop-filter:brightness(1.3);
+  opacity:0;animation:promptPulse 3.6s ease-in-out 1.9s infinite}
+@keyframes promptPulse{0%,100%{opacity:0}50%{opacity:.75}}
+.hot:hover .pulse{animation:none;opacity:0}
+@media(prefers-reduced-motion:reduce){.pulse{animation:none;opacity:0}}
+/* Deliberately NOT disabled on touch. There is no hover there, so this is the
+   only thing marking the prompt as something to tap. */
+
 /* The two cards under the panel. Rects are the tight bounds of each card
    plus a little bleed for its brushed edge, measured off the v2 artwork. */
 .askApprove{left:48.5%;top:73.9%;width:19.3%;height:14.6%;
@@ -149,6 +205,22 @@
    these sections have while the copy lives inside a JPEG. */
 .srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
   overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+@media(max-width:760px){
+  /* THE PAINTED CARDS ARE ABOUT 33px TALL AT PHONE WIDTH, because the art is
+     scaled whole rather than reflowed — well under a usable tap target.
+
+     THE BOXES THEMSELVES MUST NOT GROW. Every mask is painted at 100% 100% of
+     its hotspot, so resizing one stretches its highlight out of register with
+     the artwork — and the hero's pulse is visible on touch, where there is no
+     hover to hide it. A pseudo-element extends the anchor's hit region
+     without changing the box the mask is measured against.
+
+     Horizontal growth is only 1px: the painted gap between the two cards is
+     about 2px at this width, and the targets must not meet. */
+  .hot::after{content:'';position:absolute;inset:-9px -1px}
+  .heroAsk::after{inset:-11px -6px}
+}
 
 @media(max-width:700px){
   /* The art cannot reflow, so on a phone it is scaled whole. Tap targets
