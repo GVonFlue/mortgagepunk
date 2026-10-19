@@ -53,9 +53,13 @@ import s from "./CompStage.module.css";
 const REST = 1.06;
 /** How much further the plate pushes in across one screen of scrolling. */
 const SCROLL_ZOOM = 0.07;
-/** Cursor drift ceiling, px. Kept under the overscan at every breakpoint. */
-const DRIFT_X = 11;
-const DRIFT_Y = 7;
+/* Cursor drift ceiling, as a FRACTION OF THE PLATE rather than a pixel count.
+   The overscan the drift moves into is 3% of the plate, which is about 43px
+   wide at 1440 but only 33px at 1100 — a fixed 21px drift is comfortable at
+   one and shows the edge at the other. At 1.4% it is always inside the
+   budget, and still lands at roughly 20px on a laptop. */
+const DRIFT_X = 0.014;
+const DRIFT_Y = 0.014;
 
 /* The headline's own travel as the hero scrolls away. Percentages are of the
    headline, not the stage — see .heroHeadline. 55% of its width puts its
@@ -69,6 +73,8 @@ const HEAD_ZOOM = 0.34;
 export default function CompHero() {
   const stage = useRef<HTMLElement>(null);
   const headline = useRef<HTMLSpanElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
+  const frameEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = stage.current;
@@ -95,17 +101,36 @@ export default function CompHero() {
       // -1..1 from the centre of the plate. Negative sign: the art leans away
       // from the cursor, which reads as looking around it rather than dragging
       // it about.
-      targetX = -((e.clientX - r.left) / r.width - 0.5) * 2 * DRIFT_X;
-      targetY = -((e.clientY - r.top) / r.height - 0.5) * 2 * DRIFT_Y;
+      targetX = -((e.clientX - r.left) / r.width - 0.5) * 2 * (r.width * DRIFT_X);
+      targetY = -((e.clientY - r.top) / r.height - 0.5) * 2 * (r.height * DRIFT_Y);
     }
 
     function readScroll() {
-      const r = el!.getBoundingClientRect();
-      // 0 while the top of the plate is still at the top of the window, 1 once
-      // a full window of scrolling has gone by. Clamped, so scrolling far past
-      // the hero does not keep winding the zoom up.
-      const p = Math.min(1, Math.max(0, -r.top / window.innerHeight));
+      /* PROGRESS COMES FROM THE RUNWAY, NOT THE PLATE. The plate is pinned —
+         its own rect stays at the top of the window for the whole hold, so
+         measuring it would read zero the entire time. The runway is the
+         container the hold is carved out of, and the distance it travels past
+         the top of the window is exactly how far through the hold we are. */
+      const pinEl = pin.current;
+      const runway = pinEl ? pinEl.offsetHeight - window.innerHeight : 0;
+      /* WHERE THERE IS NO HOLD, MEASURE THE PLATE. The pin only engages on
+         viewports at least 13:10 — see the media query — so on a phone, a
+         portrait tablet or with reduced motion there is no runway and this
+         falls back to how far the plate itself has travelled. Without the
+         fallback the headline would simply freeze on those screens. */
+      const p =
+        runway > 40 && pinEl
+          ? Math.min(1, Math.max(0, -pinEl.getBoundingClientRect().top / runway))
+          : Math.min(1, Math.max(0, -el!.getBoundingClientRect().top / window.innerHeight));
       zoom = REST + p * SCROLL_ZOOM;
+
+      // The hold dissolving at the end, so the hero is already going by the
+      // time it is let go rather than simply sliding off.
+      const f = frameEl.current;
+      if (f) {
+        const out = Math.min(1, Math.max(0, (p - 0.82) / 0.18));
+        f.style.setProperty("--hv", (1 - out * 0.45).toFixed(3));
+      }
 
       // The headline rides the same progress, but further and on its own.
       const h = headline.current;
@@ -168,7 +193,9 @@ export default function CompHero() {
     /* The frame clips. The plate inside is scaled past its own box, so without
        something to crop it the hero would paint over the nav above and the
        Ask section below. */
-    <div className={s.heroFrame}>
+    <div className={s.heroPin} ref={pin}>
+      <div className={s.heroSticky}>
+      <div className={s.heroFrame} ref={frameEl}>
       <div className={s.heroIntro}>
       <section
         ref={stage}
@@ -232,6 +259,8 @@ export default function CompHero() {
           <span className={s.pulse} aria-hidden="true" />
         </a>
       </section>
+      </div>
+      </div>
       </div>
     </div>
   );

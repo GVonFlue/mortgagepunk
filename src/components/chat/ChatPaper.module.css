@@ -291,7 +291,9 @@
 
    Width is capped rather than proportional: a conversation column wider than
    about 460px stops being comfortable to read regardless of screen size. */
-.dock{position:fixed;right:clamp(14px,2vw,28px);bottom:clamp(76px,7vw,104px);
+.dock{position:fixed;
+  right:calc(clamp(14px,2vw,28px) + env(safe-area-inset-right,0px));
+  bottom:calc(clamp(76px,7vw,104px) + env(safe-area-inset-bottom,0px));
   z-index:111;width:min(94vw,460px);height:min(74svh,640px);
   display:flex;flex-direction:column;
   background:#FBFBFB;background-clip:padding-box;
@@ -329,7 +331,14 @@
    A red square with a hand-placed tilt, not a perfect circle: every edge in
    this brand is cut or torn, and a centred circle is the one shape that reads
    as somebody else's widget. */
-.fab{position:fixed;right:clamp(14px,2vw,28px);bottom:clamp(14px,2vw,28px);
+/* SAFE-AREA INSETS, NOT A BARE OFFSET. On an iPhone the home indicator sits
+   in the bottom ~34px of the window, and a button 14px from the edge lands
+   underneath it — which is what cut the launcher off on the client's phone.
+   env() resolves to 0 where there is no inset, so this is the same button on
+   a laptop. */
+.fab{position:fixed;
+  right:calc(clamp(14px,2vw,28px) + env(safe-area-inset-right,0px));
+  bottom:calc(clamp(14px,2vw,28px) + env(safe-area-inset-bottom,0px));
   z-index:112;display:grid;place-items:center;
   width:clamp(52px,4.4vw,62px);height:clamp(52px,4.4vw,62px);
   background:#CF0A22;color:#fff;border:2px solid #17110E;border-radius:14px;
@@ -351,8 +360,9 @@
 /* The launcher is the only way to the assistant on most pages, so it says so
    once — on a wide screen, where there is room for it. */
 .fabLabel{position:fixed;z-index:112;pointer-events:none;
-  right:calc(clamp(14px,2vw,28px) + clamp(52px,4.4vw,62px) + 10px);
-  bottom:calc(clamp(14px,2vw,28px) + 14px);
+  right:calc(clamp(14px,2vw,28px) + clamp(52px,4.4vw,62px) + 10px
+             + env(safe-area-inset-right,0px));
+  bottom:calc(clamp(14px,2vw,28px) + 14px + env(safe-area-inset-bottom,0px));
   background:#17110E;color:#fff;border-radius:7px;padding:6px 10px;
   font-family:var(--font-body),sans-serif;font-size:13px;font-weight:600;
   white-space:nowrap;opacity:0;transform:translateX(6px);

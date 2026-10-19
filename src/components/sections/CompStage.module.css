@@ -135,7 +135,50 @@
    z-index moves here from .stage because the transform below makes the stage
    its own stacking context anyway — see the note on PageGround above, which
    is what that z-index is defending against. */
-.heroFrame{position:relative;z-index:1;overflow:hidden}
+/* ---------- the pin ----------
+   The hero holds its place while the headline comes at you, then releases and
+   scrolls away. Three nested boxes, and the order is not negotiable:
+
+     .heroPin     the runway. Everything above one screen of height is how far
+                  you scroll while the hero is held.
+     .heroSticky  what actually sticks. MUST NOT have a clipping ancestor —
+                  an `overflow:hidden` anywhere above makes that ancestor the
+                  sticky element's scroll container, and since it never
+                  scrolls, sticky silently does nothing. No error, no warning.
+                  This exact trap cost a day on another build in this repo.
+     .heroFrame   the clip. It is INSIDE the sticky element, which is fine:
+                  only ancestors break sticky, descendants do not.
+
+   The frame is width-capped so its derived height never exceeds the screen.
+   Without that, a 1920x1080 window renders a 1198px hero inside a 1080px
+   sticky and the bottom 118px — which is where the hand-drawn "Have
+   questions?" prompt lives, at 81–95% — is never visible while pinned. The
+   cap letterboxes the sides by about 95px at that size instead, which costs
+   nothing but concrete. 1.6029 is 2600/1622, the artwork's own ratio.
+
+   THE PIN IS OPT-IN, AND THE TEST IS THE VIEWPORT'S SHAPE, NOT ITS WIDTH.
+   The artwork is 1.6:1 and cannot reflow, so on anything portrait-ish the
+   hero is a band — 266px of an 844px phone. Held in the middle of an
+   otherwise empty screen that reads as a bug, not a hold; scrolling past it
+   normally is plainly better. At 13:10 or wider the hero covers at least
+   four fifths of the window and the hold lands. A phone-shaped crop of the
+   hero art is what would let this run everywhere. */
+.heroPin{position:relative;z-index:1}
+@media(min-aspect-ratio:13/10) and (prefers-reduced-motion:no-preference){
+  .heroPin{height:200svh}
+  .heroSticky{position:sticky;top:0;height:100svh;
+    display:flex;align-items:center;justify-content:center}
+}
+.heroFrame{position:relative;overflow:hidden;
+  width:min(100%, calc(100svh * 1.6029));
+  /* The hold fading off at the end of the pin, so the hero is already
+     dissolving by the time it is released rather than just sliding away. It
+     lives here rather than on .heroIntro because that element carries the
+     entrance keyframe, and a filled keyframe's opacity would override a
+     declared one. */
+  opacity:var(--hv,1)}
+
+
 
 /* THE ENTRANCE IS ITS OWN LAYER, and that is not tidiness. Put this keyframe
    on the same element as the transform below and the two fight: the keyframe

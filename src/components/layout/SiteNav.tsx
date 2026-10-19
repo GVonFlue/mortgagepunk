@@ -107,6 +107,12 @@ export default function SiteNav() {
     let last = window.scrollY;
     let frame = 0;
 
+    /* THE FLOOR IS LOWER ON A PHONE. 120px is a small fraction of a desktop
+       window and reads as "once you have started moving"; on a 844px phone it
+       is a seventh of the screen, so the bar hung around well past the point
+       it was in the way. 36px is about one flick. */
+    const floor = () => (window.innerWidth <= 760 ? 36 : 120);
+
     const onScroll = () => {
       if (frame) return;                 // one update per painted frame
       frame = requestAnimationFrame(() => {
@@ -116,7 +122,7 @@ export default function SiteNav() {
 
         setScrolled(y > 24);
         if (Math.abs(delta) > 6) {
-          setHidden(delta > 0 && y > 120);
+          setHidden(delta > 0 && y > floor());
           last = y;
         }
       });

@@ -10,7 +10,11 @@
 .sec{position:relative;--sec-x:clamp(20px,4vw,64px);
   /* Identical top and bottom on every section. Uneven padding is what makes a
      long page feel assembled from parts instead of designed as one thing. */
-  padding:clamp(64px,8vw,132px) clamp(20px,4vw,64px);
+  /* The floor matters more than the ceiling here. 8vw is only 31px on a
+     390px phone, so the clamp sits on its minimum exactly where the screen
+     is smallest — 64px top and bottom meant 128px of nothing between every
+     pair of sections, about a sixth of the viewport. */
+  padding:clamp(44px,8vw,132px) clamp(20px,4vw,64px);
   /* the hard line. Not a gradient, not an overlapping rounded panel. */
   border-top:1px solid var(--mp-line);
   /* an anchored section must never land under the sticky nav */

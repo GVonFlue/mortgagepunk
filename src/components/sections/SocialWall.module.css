@@ -34,7 +34,11 @@
 .grid{width:100%;column-count:6;column-gap:clamp(8px,.8vw,12px)}
 @media(max-width:1280px){.grid{column-count:4}}
 @media(max-width:980px){.grid{column-count:3}}
-@media(max-width:700px){.grid{column-count:2}}
+/* A gutter the same size as the gap between the columns. Full bleed is the
+   point of this wall on a wide screen, but on a phone it put 8px between the
+   tiles and 0px at the screen edges, which reads as the layout having been
+   cut off rather than run to the edge. */
+@media(max-width:700px){.grid{column-count:2;padding-inline:8px}}
 
 /* Each tile is an anchor now, so it needs the block behaviour a <figure>
    gave it for free, and a visible keyboard focus ring. */
