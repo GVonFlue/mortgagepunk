@@ -70,6 +70,15 @@ const HEAD_X = 55;
 const HEAD_Y = 14;
 const HEAD_ZOOM = 0.34;
 
+/* The phone composition is vertical, so the headline has nowhere to travel
+   sideways — 55% of its width would walk it off the screen instead of towards
+   the middle. It grows and lifts instead, which reads as the same move in a
+   column. See the phone hero block in CompStage.module.css. */
+const HEAD_X_SM = 6;
+const HEAD_Y_SM = -5;
+const HEAD_ZOOM_SM = 0.22;
+const SMALL = 760;
+
 export default function CompHero() {
   const stage = useRef<HTMLElement>(null);
   const headline = useRef<HTMLSpanElement>(null);
@@ -117,9 +126,13 @@ export default function CompHero() {
       // The headline rides the same progress, but further and on its own.
       const h = headline.current;
       if (h) {
-        h.style.setProperty("--dx", `${(p * HEAD_X).toFixed(2)}%`);
-        h.style.setProperty("--dy", `${(p * HEAD_Y).toFixed(2)}%`);
-        h.style.setProperty("--dz", (1 + p * HEAD_ZOOM).toFixed(4));
+        const sm = window.innerWidth <= SMALL;
+        const hx = sm ? HEAD_X_SM : HEAD_X;
+        const hy = sm ? HEAD_Y_SM : HEAD_Y;
+        const hz = sm ? HEAD_ZOOM_SM : HEAD_ZOOM;
+        h.style.setProperty("--dx", `${(p * hx).toFixed(2)}%`);
+        h.style.setProperty("--dy", `${(p * hy).toFixed(2)}%`);
+        h.style.setProperty("--dz", (1 + p * hz).toFixed(4));
         // Holds full strength through the first half, then dissolves as it
         // crosses Chris — without this it simply sits on top of him.
         const fade = Math.min(1, Math.max(0, (p - 0.5) / 0.42));
@@ -210,6 +223,18 @@ export default function CompHero() {
           />
         </span>
         <span className={s.splatFlash} aria-hidden="true" />
+
+        {/* Phone only — CSS hides it above 760px, where this lettering is
+            painted into the plate instead. */}
+        <span className={s.heroPromptM} aria-hidden="true">
+          <Image
+            src="/brand/hero-prompt.webp"
+            alt=""
+            width={416}
+            height={215}
+            sizes="46vw"
+          />
+        </span>
 
         {/* The headline is inside the image, so the page needs a real h1
             somewhere for screen readers and for search. */}

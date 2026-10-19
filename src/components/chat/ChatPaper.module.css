@@ -240,7 +240,7 @@
      headline — nothing there is interactive, so an invisible target may sit
      on it — and stops short of the cards at 73.9%. */
   .fieldTap{display:block;position:absolute;
-    left:48.5%;top:46.5%;width:46%;height:20%;
+    left:8.04%;top:46.5%;width:82.14%;height:20%;
     background:none;border:0;padding:0;cursor:pointer;
     -webkit-tap-highlight-color:transparent}
   .fieldTap:focus-visible{outline:3px solid #CF0A22;outline-offset:2px;

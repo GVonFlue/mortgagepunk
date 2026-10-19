@@ -28,6 +28,12 @@ import { APPLY_URL, EXTERNAL } from "@/lib/links";
 export default function CompAsk() {
   return (
     <>
+      {/* Phone only. The comp is a wide two-column collage; on a narrow screen
+          its left half stacks above the right instead of shrinking to a band.
+          Purely the artwork — every live control is in the half below. See the
+          phone Ask block in CompStage.module.css. */}
+      <div className={s.askPaneA} aria-hidden="true" />
+
       <section className={s.stage + " " + s.ask} aria-label="Ask Mortgage Punk">
         <h2 className={s.srOnly}>
           Ask Mortgage Punk. Chris trained this assistant to answer the
