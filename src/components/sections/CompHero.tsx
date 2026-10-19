@@ -73,8 +73,6 @@ const HEAD_ZOOM = 0.34;
 export default function CompHero() {
   const stage = useRef<HTMLElement>(null);
   const headline = useRef<HTMLSpanElement>(null);
-  const pin = useRef<HTMLDivElement>(null);
-  const frameEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = stage.current;
@@ -106,31 +104,15 @@ export default function CompHero() {
     }
 
     function readScroll() {
-      /* PROGRESS COMES FROM THE RUNWAY, NOT THE PLATE. The plate is pinned —
-         its own rect stays at the top of the window for the whole hold, so
-         measuring it would read zero the entire time. The runway is the
-         container the hold is carved out of, and the distance it travels past
-         the top of the window is exactly how far through the hold we are. */
-      const pinEl = pin.current;
-      const runway = pinEl ? pinEl.offsetHeight - window.innerHeight : 0;
-      /* WHERE THERE IS NO HOLD, MEASURE THE PLATE. The pin only engages on
-         viewports at least 13:10 — see the media query — so on a phone, a
-         portrait tablet or with reduced motion there is no runway and this
-         falls back to how far the plate itself has travelled. Without the
-         fallback the headline would simply freeze on those screens. */
-      const p =
-        runway > 40 && pinEl
-          ? Math.min(1, Math.max(0, -pinEl.getBoundingClientRect().top / runway))
-          : Math.min(1, Math.max(0, -el!.getBoundingClientRect().top / window.innerHeight));
+      /* How far the plate itself has travelled up the window, 0 to 1 over one
+         screen. The hero scrolls normally — see the note in CompStage.module
+         .css about why there is no sticky hold — so the plate's own rect is
+         the honest measure of progress. */
+      const p = Math.min(
+        1,
+        Math.max(0, -el!.getBoundingClientRect().top / window.innerHeight)
+      );
       zoom = REST + p * SCROLL_ZOOM;
-
-      // The hold dissolving at the end, so the hero is already going by the
-      // time it is let go rather than simply sliding off.
-      const f = frameEl.current;
-      if (f) {
-        const out = Math.min(1, Math.max(0, (p - 0.82) / 0.18));
-        f.style.setProperty("--hv", (1 - out * 0.45).toFixed(3));
-      }
 
       // The headline rides the same progress, but further and on its own.
       const h = headline.current;
@@ -193,9 +175,7 @@ export default function CompHero() {
     /* The frame clips. The plate inside is scaled past its own box, so without
        something to crop it the hero would paint over the nav above and the
        Ask section below. */
-    <div className={s.heroPin} ref={pin}>
-      <div className={s.heroSticky}>
-      <div className={s.heroFrame} ref={frameEl}>
+    <div className={s.heroFrame}>
       <div className={s.heroIntro}>
       <section
         ref={stage}
@@ -259,8 +239,6 @@ export default function CompHero() {
           <span className={s.pulse} aria-hidden="true" />
         </a>
       </section>
-      </div>
-      </div>
       </div>
     </div>
   );
