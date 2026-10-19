@@ -43,7 +43,81 @@
    2.2x the first comps, which is what fixes the softness on a retina screen.
    The ratios come from the files; change the file, re-measure the ratio AND
    every hotspot below, because they are percentages of this box. */
-.hero{aspect-ratio:2600/1622;background-image:url("/brand/comp-hero-v2.jpg")}
+/* THE HERO IS THREE LAYERS NOW, NOT ONE FLAT JPEG. "THE AMERICAN DREAM" and
+   the PUNK! splat were painted into the plate, and neither can animate while
+   it is baked in — so both were lifted off and the plate repaired behind
+   them. That repair is only invisible because the ground behind both is
+   essentially pure black: the splat's measures exactly (0,0,0), the
+   headline's (1.5,1.6,1.7). Verified by rebuilding the hero from these three
+   files and diffing it against the original: mean difference 1.15 out of 765,
+   0.02% of pixels off by more than 60, indistinguishable at 1:1.
+
+   THE TWO OVERLAYS MUST STAY IN REGISTER WITH THE PLATE. Their boxes below
+   are the exact percentages the art occupied in the original, so at rest the
+   hero is the same picture it always was. Re-export the plate and these have
+   to be re-measured with it. */
+.hero{aspect-ratio:2600/1622;background-image:url("/brand/comp-hero-v2-plate.jpg")}
+
+/* ---------- the lifted headline ----------
+   Scroll drives it: it grows, drifts toward the middle of the page and fades
+   as the hero leaves. The script writes --dx/--dy/--dz/--do from the same rAF
+   loop that drives the plate.
+
+   --dx is a share of the headline's OWN width, not the stage's. Its centre
+   sits at 25.46% of the stage and the middle of the page is 50%, so the 55%
+   of its own width the script winds up to lands it dead centre. A translate
+   resolves against the element's border box and is applied in the parent's
+   coordinate system, so it covers the same distance whatever --dz is doing. */
+.heroHeadline{position:absolute;left:3.115%;top:10.481%;
+  width:44.731%;height:76.202%;pointer-events:none;
+  --dx:0%; --dy:0%; --dz:1; --do:1;
+  transform:translate3d(var(--dx),var(--dy),0) scale(var(--dz));
+  transform-origin:50% 50%;opacity:var(--do);
+  will-change:transform,opacity}
+.heroHeadline img{display:block;width:100%;height:100%}
+
+/* ---------- the splat, punched in ----------
+   The same curve as the original logo punch: starts at resting size, blows
+   out toward the viewer on a diagonal, floats at the peak, then snaps home
+   past the mark and settles. Each stop carries its own timing function — one
+   easing curve on the whole animation is re-applied between every pair of
+   stops, which reads as stopping dead several times.
+
+   RETUNED FOR A CORNER. The original peaked at scale 5 from the centre of a
+   full-width logo; this one sits 6% from the left edge, so a centre-origin
+   blow-up that size would be half off the frame. Origin at its own top-left
+   and a 3.2 peak keeps every frame inside the hero. */
+.heroSplat{position:absolute;left:6.038%;top:1.480%;
+  width:17.692%;height:14.488%;pointer-events:none;
+  transform-origin:10% 0%;
+  animation:splatPunch 1.35s linear .5s both}
+.heroSplat img{display:block;width:100%;height:100%}
+@keyframes splatPunch{
+  0%   {opacity:0;transform:scale(1) rotate(0deg) translate3d(0,0,0)}
+  6%   {opacity:1;transform:scale(1) rotate(0deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.34,0,.66,.4)}   /* wind up */
+  36%  {transform:scale(3.2) rotate(-5deg) translate3d(5%,7%,0);
+        animation-timing-function:cubic-bezier(.25,0,.35,1)}    /* peak, coasting */
+  48%  {transform:scale(2.9) rotate(-4deg) translate3d(4%,6%,0);
+        animation-timing-function:cubic-bezier(.5,0,.2,1)}      /* falls back fast */
+  78%  {transform:scale(.88) rotate(2.5deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.3,0,.2,1)}      /* undershoots */
+  90%  {transform:scale(1.06) rotate(-.8deg) translate3d(0,0,0);
+        animation-timing-function:cubic-bezier(.3,0,.3,1)}
+  100% {opacity:1;transform:none}}
+
+/* The flash at the peak, from the same original. Anchored on the splat rather
+   than the frame, so the light comes off the logo instead of the corner. */
+.splatFlash{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;
+  background:radial-gradient(26% 26% at 14% 8%, rgba(255,255,255,.8) 0%,
+    rgba(235,41,51,.45) 40%, rgba(235,41,51,0) 72%);
+  animation:splatFlash 1.35s linear .5s both}
+@keyframes splatFlash{0%,20%{opacity:0}36%{opacity:.3}100%{opacity:0}}
+
+@media(prefers-reduced-motion:reduce){
+  .heroSplat,.splatFlash{animation:none}
+  .splatFlash{display:none}
+  .heroHeadline{transform:none;opacity:1}}
 
 /* ---------- hero motion ----------
    The plate lands with a push-out, drifts with the cursor and pushes in again

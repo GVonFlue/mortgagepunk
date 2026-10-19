@@ -172,9 +172,14 @@
    No margin-inline:auto here: a wordmark on a left-aligned section should
    stay left. .center supplies the centring, the same way it does for the
    typeset title, the kicker and the lede. */
-.titleArt{display:block;width:100%}
+.titleArt{display:block;width:100%;max-width:var(--cap)}
 .titleArt img{display:block;width:100%;height:auto}
 .center .titleArt{margin-left:auto;margin-right:auto}
+/* Phones get their own cap. See the note on titleArt in Section.tsx: the cap
+   is a width, the marks have very different proportions, and a wordmark left
+   to fill the column eats a third of the screen before the section has said
+   anything. */
+@media(max-width:760px){.titleArt{max-width:var(--capSm)}}
 
 /* Visually gone, still read aloud and still indexed. */
 .srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;

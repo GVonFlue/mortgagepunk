@@ -69,10 +69,13 @@ export default function Home() {
           // its width (1.35:1 against the old 2.67:1) — hence the smaller
           // cap. Keeping 660 here would have made it twice the height of
           // the section head it sits in.
-          src: "/brand/wordmark-game-of-money-v2.png",
-          width: 1437,
-          height: 1068,
+          src: "/brand/wordmark-game-of-money-v3.png",
+          width: 1799,
+          height: 1338,
           cap: 420,
+          // 1.35:1, so a width cap of 240 lands it near 178px tall — about
+          // the same visual weight on a phone as the single-line marks.
+          capSm: 240,
         }}
       >
         <MoneyWall />
@@ -85,12 +88,15 @@ export default function Home() {
         full
         title="The Movement"
         titleArt={{
-          // v2, same source. Close to the old proportion (2.25:1), so the
-          // cap barely moves.
-          src: "/brand/wordmark-the-movement-v2.png",
-          width: 1990,
-          height: 884,
+          // v3. Same proportion as v2 (2.25:1), so the cap does not move —
+          // what changed is that v2 was cropped INSIDE the artwork and sliced
+          // the exclamation mark flat down its right-hand side. Re-cut from
+          // the vector source with a margin on every edge.
+          src: "/brand/wordmark-the-movement-v3.png",
+          width: 2200,
+          height: 977,
           cap: 600,
+          capSm: 300,
         }}
       >
         <SocialWall />

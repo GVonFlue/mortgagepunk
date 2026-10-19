@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Anton, Archivo_Black, Inter } from "next/font/google";
 import "./globals.css";
-import ChatWidget from "@/components/chat/ChatWidget";
+import ChatLauncher from "@/components/chat/ChatLauncher";
 
 /* next/font/google is the only font source in this project. No CDN <link>
    tags, no self-hosted @font-face, no Adobe/Typekit. See ENGINEERING.md. */
@@ -59,7 +59,7 @@ export default function RootLayout({
         {children}
         {/* Fixed launcher, so it rides every page. The question someone has
             usually arrives while they're reading something else. */}
-        <ChatWidget />
+        <ChatLauncher />
       </body>
     </html>
   );

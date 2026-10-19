@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import s from "./CompStage.module.css";
 
 /**
@@ -56,8 +57,18 @@ const SCROLL_ZOOM = 0.07;
 const DRIFT_X = 11;
 const DRIFT_Y = 7;
 
+/* The headline's own travel as the hero scrolls away. Percentages are of the
+   headline, not the stage — see .heroHeadline. 55% of its width puts its
+   centre on the middle of the page; the downward drift makes it lag the
+   scroll so it stays on screen while it grows, which is what reads as coming
+   towards you rather than simply leaving. */
+const HEAD_X = 55;
+const HEAD_Y = 14;
+const HEAD_ZOOM = 0.34;
+
 export default function CompHero() {
   const stage = useRef<HTMLElement>(null);
+  const headline = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const el = stage.current;
@@ -95,6 +106,18 @@ export default function CompHero() {
       // the hero does not keep winding the zoom up.
       const p = Math.min(1, Math.max(0, -r.top / window.innerHeight));
       zoom = REST + p * SCROLL_ZOOM;
+
+      // The headline rides the same progress, but further and on its own.
+      const h = headline.current;
+      if (h) {
+        h.style.setProperty("--dx", `${(p * HEAD_X).toFixed(2)}%`);
+        h.style.setProperty("--dy", `${(p * HEAD_Y).toFixed(2)}%`);
+        h.style.setProperty("--dz", (1 + p * HEAD_ZOOM).toFixed(4));
+        // Holds full strength through the first half, then dissolves as it
+        // crosses Chris — without this it simply sits on top of him.
+        const fade = Math.min(1, Math.max(0, (p - 0.5) / 0.42));
+        h.style.setProperty("--do", (1 - fade).toFixed(3));
+      }
     }
 
     function tick() {
@@ -152,6 +175,35 @@ export default function CompHero() {
         className={`${s.stage} ${s.hero} ${s.heroMotion}`}
         aria-label="Reimagining the American Dream"
       >
+        {/* Lifted off the plate so they can move. Both are decoration as far
+            as assistive tech is concerned — the real h1 is below. */}
+        <span className={s.heroHeadline} ref={headline} aria-hidden="true">
+          {/* sizes is not optional here. Without it next/image assumes the
+              image fills the viewport and serves the 3840px variant — an
+              upscale of a 1163px source that took long enough to arrive that
+              the headline was still missing a second after load. 60vw covers
+              its 45vw resting width plus the 1.34x it reaches on scroll. */}
+          <Image
+            src="/brand/hero-headline.webp"
+            alt=""
+            width={1163}
+            height={1236}
+            sizes="60vw"
+            priority
+          />
+        </span>
+        <span className={s.heroSplat} aria-hidden="true">
+          <Image
+            src="/brand/hero-splat.webp"
+            alt=""
+            width={460}
+            height={235}
+            sizes="48vw"
+            priority
+          />
+        </span>
+        <span className={s.splatFlash} aria-hidden="true" />
+
         {/* The headline is inside the image, so the page needs a real h1
             somewhere for screen readers and for search. */}
         <h1 className={s.srOnly}>

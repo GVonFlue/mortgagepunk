@@ -87,8 +87,22 @@ export default function Section({
    * before it loads. `cap` is how wide it is allowed to get on a big screen —
    * set per mark so three wordmarks of different proportions land at roughly
    * the same visual height rather than the same width.
+   *
+   * `capSm` is the same thing for phones, and it is not optional thinking.
+   * Left to fill the column, a two-line mark like The Game of Money takes
+   * about a third of a 390px screen in height before the section has said
+   * anything. Because the cap is a WIDTH and the marks have very different
+   * proportions, one shared percentage would shrink them by different
+   * amounts — so each mark gets the width that lands it near the same height.
+   * Defaults to 62% of `cap` when not given.
    */
-  titleArt?: { src: string; width: number; height: number; cap: number };
+  titleArt?: {
+    src: string;
+    width: number;
+    height: number;
+    cap: number;
+    capSm?: number;
+  };
 }) {
   const hasHead = Boolean(kicker || title || lede);
 
@@ -121,7 +135,8 @@ export default function Section({
                     className={s.titleArt}
                     style={
                       {
-                        maxWidth: titleArt.cap,
+                        "--cap": `${titleArt.cap}px`,
+                        "--capSm": `${titleArt.capSm ?? Math.round(titleArt.cap * 0.62)}px`,
                         "--mark": `url(${titleArt.src})`,
                       } as React.CSSProperties
                     }
@@ -152,7 +167,7 @@ export default function Section({
                         alt=""
                         width={titleArt.width}
                         height={titleArt.height}
-                        sizes={`(max-width: 760px) 92vw, ${titleArt.cap}px`}
+                        sizes={`(max-width: 760px) ${titleArt.capSm ?? Math.round(titleArt.cap * 0.62)}px, ${titleArt.cap}px`}
                       />
                     )}
                   </span>
