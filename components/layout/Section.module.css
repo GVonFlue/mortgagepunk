@@ -1,0 +1,247 @@
+/*
+  Section.module.css — the rhythm the whole homepage runs on.
+
+  The thing that makes a long scroll feel effortless is not any individual
+  section looking good. It is every section behaving identically, so the eye
+  learns the pattern once and then stops working. Everything below serves that.
+*/
+
+/* ---------- the shell ---------- */
+.sec{position:relative;--sec-x:clamp(20px,4vw,64px);
+  /* Identical top and bottom on every section. Uneven padding is what makes a
+     long page feel assembled from parts instead of designed as one thing. */
+  /* The floor matters more than the ceiling here. 8vw is only 31px on a
+     390px phone, so the clamp sits on its minimum exactly where the screen
+     is smallest — 64px top and bottom meant 128px of nothing between every
+     pair of sections, about a sixth of the viewport. */
+  padding:clamp(44px,8vw,132px) clamp(20px,4vw,64px);
+  /* the hard line. Not a gradient, not an overlapping rounded panel. */
+  border-top:1px solid var(--mp-line);
+  /* an anchored section must never land under the sticky nav */
+  scroll-margin-top:72px}
+.sec:first-of-type{border-top:0}
+
+.dark{background:var(--mp-black);color:var(--mp-bone)}
+.ink{background:var(--mp-ink);color:var(--mp-bone)}
+.bone{background:var(--mp-bone);color:var(--mp-black);border-top-color:rgba(10,10,10,.14)}
+.red{background:var(--mp-red);color:var(--mp-black);border-top-color:rgba(10,10,10,.2)}
+
+.wrap{max-width:1400px;margin:0 auto}
+
+/* ---------- the head ----------
+   Kicker, headline, one line. Always in this order, always this spacing, so
+   the eye knows where the next section's headline will be before it arrives. */
+.head{max-width:60ch;margin-bottom:clamp(30px,4vw,56px)}
+
+.kicker{display:inline-flex;flex-direction:column;align-items:flex-start;
+  font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(12px,1.05vw,15px);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mp-red);margin-bottom:clamp(12px,1.4vw,18px)}
+.kicker::after{content:'';display:block;width:120px;height:5px;margin-top:8px;
+  background:var(--mp-red);
+  clip-path:polygon(0 38%,6% 8%,16% 44%,28% 10%,41% 42%,55% 8%,68% 40%,
+    80% 12%,92% 36%,100% 22%,100% 66%,93% 92%,82% 58%,69% 88%,
+    56% 56%,43% 90%,30% 58%,17% 86%,6% 60%,0 78%)}
+.red .kicker,.red .kicker::after{color:var(--mp-black);background-color:var(--mp-black)}
+.red .kicker::after{background:var(--mp-black)}
+
+/* The headline is the section's single loud moment: a quiet setup line and
+   one blown-up line in red. Scale carries the emphasis, not colour alone. */
+.title{margin:0;display:flex;flex-direction:column;
+  font-family:var(--font-display),sans-serif;font-weight:400;
+  font-size:clamp(24px,3.1vw,46px);line-height:.98;letter-spacing:-.015em;
+  text-transform:uppercase}
+/* printed, not set — matches the inked texture of the logo */
+.title,.title em{
+  -webkit-mask-image:url('/brand/grunge.png');mask-image:url('/brand/grunge.png');
+  -webkit-mask-size:560px 560px;mask-size:560px 560px;
+  -webkit-mask-repeat:repeat;mask-repeat:repeat}
+.bone .title,.bone .title em{-webkit-mask-image:none;mask-image:none}
+/* A HEADING THAT CARRIES ARTWORK MUST NOT BE MASKED, for two reasons. The
+   grunge is there to ink typeset type; a drawn wordmark is already printed,
+   so it only muddies it. More importantly a mask clips everything the
+   element paints, descendants included — so this was slicing the echo copies
+   flat where they travel past the heading box, which is the squared-off
+   right edge that kept showing on The Movement however the artwork was cut. */
+.title:has(.titleArt),.title:has(.titleArt) em{
+  -webkit-mask-image:none;mask-image:none}
+.title em{font-style:normal;color:var(--mp-red);
+  font-size:clamp(44px,6.6vw,104px);line-height:.86;letter-spacing:-.032em}
+.red .title em{color:#fff}
+.title br{display:none}
+
+.lede{margin:clamp(14px,1.7vw,22px) 0 0;max-width:52ch;
+  font-family:var(--font-body),sans-serif;
+  font-size:clamp(15px,1.15vw,18px);line-height:1.66;color:#9A9A9A}
+.bone .lede{color:#4A4A4A}
+.red .lede{color:rgba(10,10,10,.76)}
+
+/* ---------- content ---------- */
+.body{max-width:1400px}
+.bleed{margin-left:calc(-1 * clamp(20px,4vw,64px));
+  margin-right:calc(-1 * clamp(20px,4vw,64px))}
+
+/* ---------- the one call to action ----------
+   Deliberately a single style. Two buttons side by side split attention and
+   halve the chance either gets pressed. */
+.cta{display:inline-flex;align-items:center;gap:12px;
+  margin-top:clamp(28px,3.4vw,48px);padding:17px 30px;border-radius:9px;
+  background:var(--mp-red);color:#fff;text-decoration:none;
+  font-family:var(--font-body),sans-serif;font-size:clamp(12px,.95vw,14.5px);
+  font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  transition:transform .26s cubic-bezier(.16,1,.3,1),background .26s}
+.cta:hover{background:var(--mp-red-deep);transform:translateY(-2px)}
+.cta span{transition:transform .26s cubic-bezier(.16,1,.3,1)}
+.cta:hover span{transform:translateX(4px)}
+.red .cta{background:var(--mp-black);color:#fff}
+.red .cta:hover{background:#000}
+
+/* ============================================================
+   FLOATING PANELS
+   ============================================================
+   With a fixed ground behind the whole page, sections stop being full-bleed
+   colour blocks and become panels floating over it.
+
+   Three treatments rather than one. If every section were the same translucent
+   card the page would lose its rhythm in a different way to the alternating
+   black-and-white blocks it replaces — samey is its own failure. So:
+
+     float  glass. The ground reads through it. The default.
+     solid  near-opaque. For sections carrying dense copy or a form.
+     open   no panel at all. Content sits directly on the ground, which makes
+            the ground itself part of that section's design.
+   ============================================================ */
+.onGround{--sec-x:clamp(16px,4vw,48px);
+  background:transparent;border-top:0;position:relative;z-index:1;
+  padding:clamp(28px,4vw,64px) var(--sec-x)}
+.onGround .wrap{position:relative}
+
+.panel{position:relative;border-radius:clamp(18px,2vw,28px);
+  padding:clamp(30px,4.2vw,72px) clamp(22px,3.4vw,60px)}
+
+.float{background:rgba(14,14,14,.72);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.9)}
+.solid{background:rgba(10,10,10,.93);backdrop-filter:blur(6px);
+  border:1px solid var(--mp-line);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.9)}
+.open{background:transparent;border:0;box-shadow:none;
+  padding-left:0;padding-right:0}
+
+/* the red panel keeps its colour but now floats like the rest */
+.redPanel{background:linear-gradient(150deg,#FF4438 0%,#EB2933 46%,#A8141C 100%);
+  color:var(--mp-black);border:0;
+  box-shadow:0 30px 80px -36px rgba(235,41,51,.5)}
+.redPanel .kicker,.redPanel .kicker::after{color:var(--mp-black)}
+.redPanel .kicker::after{background:var(--mp-black)}
+.redPanel .title em{color:#fff}
+.redPanel .lede{color:rgba(10,10,10,.78)}
+.redPanel .cta{background:var(--mp-black);color:#fff}
+
+/* ---------- centred sections ----------
+   For a section that is a statement rather than information to be read. The
+   head's max-width has to go too, or a 60ch column centred in a 1400px wrap
+   reads as accidentally off to one side rather than deliberately centred. */
+.center{text-align:center}
+.center .head{max-width:none;margin-left:auto;margin-right:auto}
+.center .title{align-items:center}
+.center .kicker{align-items:center;margin-left:auto;margin-right:auto}
+.center .lede{margin-left:auto;margin-right:auto}
+.center .cta{margin-left:auto;margin-right:auto}
+/* Only the HEAD centres. Content inside — a chat, a form, calculators — still
+   reads left to right, so the body is centred as a block but its text is not.
+   Children take the full width: as flex items they would otherwise shrink to
+   their content, which collapses any grid inside to a single column. */
+.center .body{display:flex;justify-content:center;width:100%;text-align:left}
+.center .body > *{width:100%}
+
+/* ---------- full-bleed sections ----------
+   The modifier goes on the SECTION, not the inner wrap.
+
+   Three earlier attempts put it on the wrap — negative margins, then 100vw
+   with a transform — and each was overridden by something later in the
+   cascade, leaving the content inset by exactly the section's padding. Zeroing
+   that padding at its source cannot be fought by anything inside.
+
+   The HEAD keeps its own padding and column. A headline stretched edge to edge
+   on a wide monitor is unreadable; it is the media that wants the width. */
+.secFull{padding-left:0;padding-right:0}
+/* every wrapper inside, not just the direct one: the sections render their own
+   inner .wrap from a different CSS module, and its cap is what held the
+   content at 1400px once the viewport grew past it */
+.secFull .wrap,
+.secFull .body,
+.secFull .body > *{max-width:none;width:100%}
+.secFull .head{max-width:60ch;margin-left:auto;margin-right:auto;
+  padding-left:var(--sec-x);padding-right:var(--sec-x)}
+
+
+/* ---------- drawn wordmark in place of a typeset heading ----------
+   The artwork sits inside the h2 next to screen-reader-only text, so the
+   heading still has words in it. width:100% against a per-mark max-width
+   lets each one fill a phone and stop at its own size on a desktop.
+
+   No margin-inline:auto here: a wordmark on a left-aligned section should
+   stay left. .center supplies the centring, the same way it does for the
+   typeset title, the kicker and the lede. */
+.titleArt{display:block;width:100%;max-width:var(--cap)}
+.titleArt img{display:block;width:100%;height:auto}
+.center .titleArt{margin-left:auto;margin-right:auto}
+/* Phones get their own cap. See the note on titleArt in Section.tsx: the cap
+   is a width, the marks have very different proportions, and a wordmark left
+   to fill the column eats a third of the screen before the section has said
+   anything. */
+@media(max-width:760px){.titleArt{max-width:var(--capSm)}}
+
+/* Visually gone, still read aloud and still indexed. */
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+
+/* ---------- the echo ----------
+   Three copies of the same wordmark: the real one on top, and two faded
+   copies staggered out behind it to the right, each a beat behind the last.
+
+   COPIES OF THE ARTWORK, NOT SILHOUETTES. An earlier version masked the mark
+   and filled it with a flat colour. That reduces the artwork to one solid
+   shape, which is survivable on a simple wordmark and ruins a busy one — Ask
+   Mortgage Punk is white letters, red letters and spray texture interlocking,
+   and flattening it to a red blob threw away everything that makes it
+   readable. background-image keeps every colour in the file, so the echo is
+   recognisably the logo rather than its outline.
+
+   ONE AXIS, NO ROTATION. The trailing copies move right and only right. The
+   rotation and the two-direction scatter in the earlier attempt read as
+   damage rather than as depth.
+
+   THE STAGGER IS THE ANIMATION. Both copies run the same cycle; the far one
+   is half a second behind the near one, so the echo travels outward instead
+   of both copies pulsing together.
+
+   Percentages, never em — a transform percentage measures against the
+   element's own box, so it stays proportionate at any heading size. em
+   resolves against font-size, which here is about 44px against a 585px mark,
+   and produced movement too small to see. */
+.titleArt{position:relative}
+.titleArt img{position:relative;z-index:1}
+
+.ghost{position:absolute;inset:0;pointer-events:none;
+  background-image:var(--mark);background-size:100% 100%;
+  background-repeat:no-repeat;background-position:center}
+
+/* near copy: closer, stronger. far copy: further, fainter, half a beat late */
+.ghostA{z-index:0;opacity:.45;animation:echo 1.8s steps(1) infinite}
+.ghostB{z-index:0;opacity:.22;animation:echo 1.8s steps(1) -.5s infinite}
+
+@keyframes echo{
+  0%   {transform:translateX(3.5%)}
+  50%  {transform:translateX(6.5%)}
+}
+
+/* Held at rest for anyone who asked their system for less motion — the
+   staggered offset still reads, it just stops travelling. */
+@media(prefers-reduced-motion:reduce){
+  .ghostA,.ghostB{animation:none}
+  .ghostA{transform:translateX(3.5%)}
+  .ghostB{transform:translateX(6.5%)}
+}

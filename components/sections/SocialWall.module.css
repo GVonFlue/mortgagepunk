@@ -1,0 +1,80 @@
+/*
+  SocialWall.module.css — the movement, as a feed.
+
+  COLUMN MASONRY, NOT A ROW GRID. Instagram never posts landscape — everything
+  is square (1:1) or portrait (4:5). An earlier version had `wide` tiles
+  spanning two columns, which can't ever match a real feed. Columns let tiles
+  keep their true portrait shape and stack at natural heights, which is exactly
+  how a feed wall reads.
+*/
+
+.wrap{width:100%;
+  display:flex;flex-direction:column;align-items:center}
+
+/* full-bleed now, so more columns on a wide screen — four huge tiles across
+   a 2560px monitor would read as a slideshow, not a feed.
+
+   THERE IS NO FIVE-COLUMN STEP, AND THAT IS NOT AN OVERSIGHT. With this set
+   of tiles, Chromium's column balancer fails at exactly five: it fills four
+   columns to equal height and drops the remainder into the fifth, leaving it
+   half empty. Measured at 1281, 1300, 1400, 1500 and 1600px — 50.3% ragged at
+   every one of them, so it is the count that breaks, not the width. Six, four,
+   three and two all balance within 9%.
+
+   The cause is `break-inside:avoid` on tiles that are tall relative to the
+   balancer's target height; it overshoots on each early column and starves
+   the last. If the tile list changes substantially, re-measure before adding
+   a column count back — the failure is specific to the content, not general.
+
+   SIX RUNS DOWN TO 1280 rather than stopping at 1600, which is what keeps the
+   wall a sensible length: at four columns a 1440px laptop gets a 5,100px
+   section — six screens of scrolling for one block. At six it is about
+   2,500px, and the denser tile reads more like a collage than a gallery,
+   which is the point of this section. */
+.grid{width:100%;column-count:6;column-gap:clamp(8px,.8vw,12px)}
+@media(max-width:1280px){.grid{column-count:4}}
+@media(max-width:980px){.grid{column-count:3}}
+/* A gutter the same size as the gap between the columns. Full bleed is the
+   point of this wall on a wide screen, but on a phone it put 8px between the
+   tiles and 0px at the screen edges, which reads as the layout having been
+   cut off rather than run to the edge. */
+@media(max-width:700px){.grid{column-count:2;padding-inline:8px}}
+
+/* Each tile is an anchor now, so it needs the block behaviour a <figure>
+   gave it for free, and a visible keyboard focus ring. */
+.tile{display:block;position:relative;margin:0 0 clamp(8px,1vw,14px);
+  break-inside:avoid;                    /* no tile split across columns */
+  overflow:hidden;border-radius:clamp(8px,.9vw,12px);
+  background:#151515;border:1px solid rgba(255,255,255,.08)}
+.tile img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(1) contrast(1.04);
+  transition:filter .45s,transform .8s cubic-bezier(.16,1,.3,1)}
+.tile:hover img{filter:grayscale(0);transform:scale(1.05)}
+.tile::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(160deg,rgba(235,41,51,.22),rgba(235,41,51,0) 60%);
+  opacity:0;transition:opacity .4s}
+.tile:hover::after{opacity:1}
+
+/* Instagram shapes, and only these. Four rather than two: with a fixed column
+   width, each distinct ratio is a distinct tile HEIGHT, and it's the variety of
+   heights that makes a column wall read as a feed instead of a grid.
+     1:1    single square post
+     4:5    standard portrait
+     3:4    slightly taller crop
+     9:16   a Reel cover */
+.square{aspect-ratio:1/1}
+.portrait{aspect-ratio:4/5}
+.tallish{aspect-ratio:3/4}
+.reel{aspect-ratio:9/16}
+
+.cta{display:inline-flex;align-items:center;gap:12px;
+  margin-top:clamp(28px,3.4vw,48px);padding:17px 32px;border-radius:9px;
+  background:var(--mp-red);color:#fff;text-decoration:none;
+  font-family:var(--font-body),sans-serif;font-size:clamp(12px,.95vw,14.5px);
+  font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  transition:background .26s,transform .26s cubic-bezier(.16,1,.3,1)}
+.cta:hover{background:var(--mp-red-deep);transform:translateY(-2px)}
+.cta span{transition:transform .26s cubic-bezier(.16,1,.3,1)}
+.cta:hover span{transform:translateX(4px)}
+
+.tile:focus-visible{outline:3px solid var(--mp-red);outline-offset:3px}
