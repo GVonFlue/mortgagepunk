@@ -33,15 +33,6 @@ import a from "./AskPanel.module.css";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-/**
- * Shown when the panel is opened from the big red button rather than by
- * typing. Pressing a button labelled "Ask Mortgage Punk" and landing in an
- * empty box is a dead end; this gives the visitor something to answer.
- */
-const GREETING =
-  "What are you trying to do — buy, refinance, or pull equity out? " +
-  "Ask me anything and I'll give it to you straight.";
-
 export default function AskPanel() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -119,18 +110,6 @@ export default function AskPanel() {
         </button>
         </div>
 
-        {/* The big red button is painted into the artwork. This sits over it
-            and opens the panel, so the loudest element in the design is not
-            the one thing that does nothing. */}
-        <button
-          type="button"
-          className={a.bigBtn}
-          onClick={() => {
-            setMsgs([{ role: "assistant", content: GREETING }]);
-            setOpen(true);
-          }}
-          aria-label="Ask Mortgage Punk"
-        />
       </>
     );
   }

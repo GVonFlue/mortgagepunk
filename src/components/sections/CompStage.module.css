@@ -39,8 +39,12 @@
   min-width:340px}
 
 /* Both sections are one image each; the ratio comes from the file. */
-.hero{aspect-ratio:1206/906;background-image:url("/brand/comp-hero.jpg")}
-.ask{aspect-ratio:1206/767;background-image:url("/brand/comp-ask.jpg")}
+/* v2 artwork, rendered from the designer's vector source at 2600px — roughly
+   2.2x the first comps, which is what fixes the softness on a retina screen.
+   The ratios come from the files; change the file, re-measure the ratio AND
+   every hotspot below, because they are percentages of this box. */
+.hero{aspect-ratio:2600/1622;background-image:url("/brand/comp-hero-v2.jpg")}
+.ask{aspect-ratio:2600/1477;background-image:url("/brand/comp-ask-v2.jpg")}
 
 /* ---------- hotspots ----------
    Anchors sitting exactly over buttons that are painted into the image.
@@ -70,17 +74,21 @@
    broken, so the treatment is limited to devices with a real pointer. */
 @media(hover:none){.hot:hover{backdrop-filter:none;box-shadow:none}}
 
-/* hero: the two stacked calls to action, lower left.
-   Measured off the artwork with a red/dark mask rather than estimated — the
-   first pass was eyeballed and sat about 90px high, so the hover ring lit up
-   empty concrete above the button and clicks missed it entirely. If either
-   image is re-exported, re-measure; do not adjust these by eye. */
-.heroCta1{left:3.32%;top:83.00%;width:21.14%;height:9.60%}
-.heroCta2{left:2.49%;top:93.27%;width:23.96%;height:6.62%}
+/* THE HERO HAS NO BUTTONS ANY MORE. The v2 design moved Get Approved up into
+   the navigation and left the hero as one image with a single hand-drawn
+   "Have questions? Let's go!" and an arrow pointing down at the Ask section.
+   So there is one hotspot here, over that prompt.
+
+   Measured off the artwork with a grid overlay, not estimated — the first
+   version of these was eyeballed and sat about 90px above the real button, so
+   the hover lit up empty concrete and clicks missed entirely. If the image is
+   re-exported, re-measure; never nudge these by eye. */
+.heroAsk{left:42.8%;top:81.5%;width:15%;height:13.5%}
 
 /* ask: the two cards under the button */
-.askApprove{left:50.5%;top:62.84%;width:20.8%;height:27.25%}
-.askSchedule{left:74.5%;top:62.84%;width:23.5%;height:27.25%}
+/* the two cards under the panel, measured off the v2 artwork */
+.askApprove{left:48.9%;top:74.9%;width:18.6%;height:12.5%}
+.askSchedule{left:68.5%;top:74.9%;width:26.5%;height:12%}
 
 /* The field, the send button, the big red button and the conversation panel
    all live in AskPanel now — one component owning one set of coordinates.

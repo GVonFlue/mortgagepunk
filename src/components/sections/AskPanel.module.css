@@ -30,7 +30,7 @@
 /* ---------- resting: the field, drawn over the painted one ---------- */
 /* Slightly larger than the paint with a tighter radius, so the painted field
    underneath is covered completely and there is no seam. */
-.fieldBox{position:absolute;left:54.6%;top:36.7%;width:43.4%;height:10.0%;
+.fieldBox{position:absolute;left:50%;top:51.6%;width:42.7%;height:9.2%;
   display:flex;align-items:center;
   background:#FFF;border:1px solid #C6C2BA;border-radius:12px;
   box-shadow:inset 0 1px 2px rgba(0,0,0,.06);
@@ -45,7 +45,7 @@
    them and rebuilt them as small text links in its footer, which threw away
    two properly themed buttons and replaced them with the plainest thing on
    the page. Now they simply stay visible and keep their own hotspots. */
-.panel{position:absolute;left:51.4%;top:35.4%;width:46.8%;height:26.2%;
+.panel{position:absolute;left:47.9%;top:50%;width:48.1%;height:24.5%;
   background:#17110E;
   clip-path:polygon(
     0% 1.4%, 4% 0%, 11% 1.5%, 19% .2%, 27% 1.6%, 36% .3%, 45% 1.5%,
@@ -140,22 +140,3 @@
 .send svg{width:52%;height:52%;fill:currentColor}
 .send:focus-visible{outline:3px solid #17110E;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.send{transition:background .18s ease}}
-
-
-/* ---------- the painted red button ----------
-   Transparent, over "ASK MORTGAGE PUNK" in the artwork. It cannot lift on
-   hover without sliding off its painted twin and showing the old one
-   underneath, so it brightens the pixels already on screen instead. The touch
-   guard matters: a phone has no hover and a highlight that sticks after a tap
-   reads as broken. */
-.bigBtn{position:absolute;left:54.2%;top:49.15%;width:43.5%;height:9.65%;
-  background:none;border:0;cursor:pointer;border-radius:6%/24%;
-  -webkit-tap-highlight-color:transparent;
-  transition:backdrop-filter .22s ease, box-shadow .22s ease}
-.bigBtn:hover{backdrop-filter:brightness(1.16) saturate(1.1);
-  box-shadow:0 0 0 2px rgba(255,255,255,.5),
-             0 10px 30px -10px rgba(235,41,51,.8)}
-.bigBtn:active{backdrop-filter:brightness(1.05)}
-.bigBtn:focus-visible{outline:3px solid #fff;outline-offset:3px}
-@media(hover:none){.bigBtn:hover{backdrop-filter:none;box-shadow:none}}
-@media(prefers-reduced-motion:reduce){.bigBtn{transition:none}}

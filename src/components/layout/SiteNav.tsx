@@ -37,13 +37,31 @@ type NavItem = {
   id?: string;
   /** leaves for a real page instead */
   href?: string;
+  /** hand-lettered label from the brand artwork */
+  art: string;
+  artW: number;
+  artH: number;
 };
 
+/**
+ * THE LABELS ARE ARTWORK, NOT TYPE. Each one is hand-lettered with a red
+ * offset shadow, and no font reproduces that — it is the same lettering as
+ * the section headings, cut from the designer's file.
+ *
+ * `label` stays on every item and is rendered screen-reader-only, so the nav
+ * is still real text for assistive tech and for search. The image carries
+ * alt="" because the adjacent text already names the destination; captioning
+ * both would make a screen reader read every item twice.
+ */
 const NAV: NavItem[] = [
-  { label: "Ask Mortgage Punk", id: "ask" },
-  { label: "The Game of Money", id: "money" },
-  { label: "The Movement", id: "movement" },
-  { label: "Chris", href: "/about" },
+  { label: "Ask Mortgage Punk", id: "ask",
+    art: "/brand/nav-ask-mortgage-punk.png", artW: 908, artH: 220 },
+  { label: "The Game of Money", id: "money",
+    art: "/brand/nav-the-game-of-money.png", artW: 801, artH: 225 },
+  { label: "The Movement", id: "movement",
+    art: "/brand/nav-join-the-movement.png", artW: 833, artH: 204 },
+  { label: "Chris", href: "/about",
+    art: "/brand/nav-meet-chris.png", artW: 366, artH: 207 },
 ];
 
 export default function SiteNav() {
@@ -135,14 +153,30 @@ export default function SiteNav() {
               href={i.href ?? (onHome ? `#${i.id}` : `/#${i.id}`)}
               className={i.id && active === i.id ? n.on : undefined}
             >
-              {i.label}
+              <Image
+                src={i.art}
+                alt=""
+                width={i.artW}
+                height={i.artH}
+                className={n.navArt}
+                priority
+              />
+              <span className={n.srOnly}>{i.label}</span>
             </Link>
           </li>
         ))}
       </ul>
 
       <a href={APPLY_URL} {...EXTERNAL} className={n.cta}>
-        Get Approved <span aria-hidden="true">&rarr;</span>
+        <Image
+          src="/brand/nav-get-approved.png"
+          alt=""
+          width={528}
+          height={141}
+          className={n.ctaArt}
+          priority
+        />
+        <span className={n.srOnly}>Get Approved</span>
       </a>
 
       <MobileNav />

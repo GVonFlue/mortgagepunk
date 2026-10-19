@@ -1,5 +1,4 @@
 import s from "./CompStage.module.css";
-import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
 /**
  * The hero, as the approved mockup with working buttons on top.
@@ -28,17 +27,16 @@ export default function CompHero() {
         movement and building a world-class lending team.
       </h1>
 
+      {/* The v2 design has no buttons in the hero body — Get Approved moved
+          into the navigation. What is left is a hand-drawn "Have questions?
+          Let's go!" with an arrow pointing down at the Ask section, so that
+          prompt is the one thing here worth clicking. */}
       <a
-        href={APPLY_URL}
-        {...EXTERNAL}
-        className={`${s.hot} ${s.heroCta1}`}
-        aria-label="Get approved for a mortgage the right way"
+        href="#ask"
+        className={`${s.hot} ${s.heroAsk}`}
+        aria-label="Have questions? Jump to Ask Mortgage Punk"
       />
-      <a
-        href="#movement"
-        className={`${s.hot} ${s.heroCta2}`}
-        aria-label="Follow the movement"
-      />
+
     </section>
   );
 }

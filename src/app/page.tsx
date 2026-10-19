@@ -64,10 +64,15 @@ export default function Home() {
         full
         title="The Game of Money"
         titleArt={{
-          src: "/brand/wordmark-game-of-money.png",
-          width: 743,
-          height: 278,
-          cap: 660,
+          // v2, cut from the designer's vector file. The mark is now two
+          // stacked lines rather than one, so it is far taller relative to
+          // its width (1.35:1 against the old 2.67:1) — hence the smaller
+          // cap. Keeping 660 here would have made it twice the height of
+          // the section head it sits in.
+          src: "/brand/wordmark-game-of-money-v2.png",
+          width: 1437,
+          height: 1068,
+          cap: 420,
         }}
       >
         <MoneyWall />
@@ -80,10 +85,12 @@ export default function Home() {
         full
         title="The Movement"
         titleArt={{
-          src: "/brand/wordmark-movement.png",
-          width: 724,
-          height: 303,
-          cap: 620,
+          // v2, same source. Close to the old proportion (2.25:1), so the
+          // cap barely moves.
+          src: "/brand/wordmark-the-movement-v2.png",
+          width: 1990,
+          height: 884,
+          cap: 600,
         }}
       >
         <SocialWall />
