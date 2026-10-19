@@ -68,8 +68,14 @@
    of its own width the script winds up to lands it dead centre. A translate
    resolves against the element's border box and is applied in the parent's
    coordinate system, so it covers the same distance whatever --dz is doing. */
-.heroHeadline{position:absolute;left:3.115%;top:10.481%;
-  width:44.731%;height:76.202%;pointer-events:none;
+/* THE SPLIT BETWEEN THESE TWO IS AT 21.4% AND IT MATTERS. The splat runs
+   down to 20.9% and "REIMAGINING THE" starts at 22.56%, with one empty band
+   between them. The first cut put the headline's window at 11.5%, which took
+   the bottom half of the splat with it — so the logo was two pieces, and
+   scrolling flew half of it away with the headline. If either box is
+   re-measured, check they still do not overlap. */
+.heroHeadline{position:absolute;left:3.115%;top:21.578%;
+  width:44.731%;height:65.105%;pointer-events:none;
   --dx:0%; --dy:0%; --dz:1; --do:1;
   transform:translate3d(var(--dx),var(--dy),0) scale(var(--dz));
   transform-origin:50% 50%;opacity:var(--do);
@@ -88,7 +94,7 @@
    blow-up that size would be half off the frame. Origin at its own top-left
    and a 3.2 peak keeps every frame inside the hero. */
 .heroSplat{position:absolute;left:6.038%;top:1.480%;
-  width:17.692%;height:14.488%;pointer-events:none;
+  width:17.692%;height:20.469%;pointer-events:none;
   transform-origin:10% 0%;
   animation:splatPunch 1.35s linear .5s both}
 .heroSplat img{display:block;width:100%;height:100%}

@@ -187,7 +187,7 @@ export default function CompHero() {
             src="/brand/hero-headline.webp"
             alt=""
             width={1163}
-            height={1236}
+            height={1056}
             sizes="60vw"
             priority
           />
@@ -197,7 +197,7 @@ export default function CompHero() {
             src="/brand/hero-splat.webp"
             alt=""
             width={460}
-            height={235}
+            height={332}
             sizes="48vw"
             priority
           />

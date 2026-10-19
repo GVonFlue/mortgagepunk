@@ -53,6 +53,14 @@
   -webkit-mask-size:560px 560px;mask-size:560px 560px;
   -webkit-mask-repeat:repeat;mask-repeat:repeat}
 .bone .title,.bone .title em{-webkit-mask-image:none;mask-image:none}
+/* A HEADING THAT CARRIES ARTWORK MUST NOT BE MASKED, for two reasons. The
+   grunge is there to ink typeset type; a drawn wordmark is already printed,
+   so it only muddies it. More importantly a mask clips everything the
+   element paints, descendants included — so this was slicing the echo copies
+   flat where they travel past the heading box, which is the squared-off
+   right edge that kept showing on The Movement however the artwork was cut. */
+.title:has(.titleArt),.title:has(.titleArt) em{
+  -webkit-mask-image:none;mask-image:none}
 .title em{font-style:normal;color:var(--mp-red);
   font-size:clamp(44px,6.6vw,104px);line-height:.86;letter-spacing:-.032em}
 .red .title em{color:#fff}
