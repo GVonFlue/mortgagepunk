@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createLead } from "@/lib/db";
+import { deliverLead } from "@/lib/leads";
 
 /**
  * Lead intake.
@@ -14,7 +15,7 @@ import { createLead } from "@/lib/db";
  *
  * Env (server-side only, never NEXT_PUBLIC_):
  *   LEAD_ENDPOINT   Apps Script /exec URL -> Sheet + email
- *   JUNGO_API_KEY   not yet issued
+ *   LEAD_WEBHOOK    optional second destination -> the CRM. See lib/leads.
  */
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
     first,
     email,
     phone,
+    source: String(body.source ?? "site"),
     receivedAt: new Date().toISOString(),
     userAgent: req.headers.get("user-agent") ?? "",
   };
@@ -56,23 +58,13 @@ export async function POST(req: Request) {
     source: String(body.source ?? "site"),
   });
 
-  const endpoint = process.env.LEAD_ENDPOINT;
-  if (!endpoint) {
+  /* Fans out to the sheet and, when it is configured, the CRM. See lib/leads:
+     the legs settle independently, so a CRM outage cannot cost the sheet copy.
+     ok is true if any leg landed. */
+  const delivery = await deliverLead(payload);
+  if (!delivery.ok) {
     // Fail loudly in logs, quietly to the visitor — never lose a lead silently.
-    console.error("LEAD_ENDPOINT is not set. Lead not delivered:", payload);
-    return NextResponse.json({ ok: false, error: "not configured" }, { status: 500 });
-  }
-
-  try {
-    const r = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-    });
-    if (!r.ok) throw new Error(`endpoint ${r.status}`);
-    return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error("Lead delivery failed:", err, payload);
     return NextResponse.json({ ok: false, error: "delivery failed" }, { status: 502 });
   }
+  return NextResponse.json({ ok: true });
 }
