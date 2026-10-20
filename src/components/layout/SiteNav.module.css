@@ -24,6 +24,22 @@
 .logo{flex:none;line-height:0}
 .logo img{height:clamp(34px,3vw,42px);width:auto;display:block}
 
+/* ONE MARK AT THE TOP OF THE HOME PAGE, NOT TWO.
+   The hero's splat sits directly under this bar on a phone, so the small
+   wordmark here and the big painted one below it read as the same logo
+   printed twice. The splat is the one people react to, so the bar gives way
+   to it — but only on the home page, which is the only page the splat exists
+   on, and only at phone width, where they stack. Everywhere else this is the
+   way back home and it stays.
+
+   The CTA takes the left edge in its place rather than leaving a gap: it has
+   margin-left:auto below 900px, so without this it would slide across and sit
+   against the burger. */
+@media(max-width:760px){
+  .logoHome{display:none}
+  .logoHome ~ .cta{margin-left:0;margin-right:auto}
+}
+
 /* ---------- links ---------- */
 /* Absolutely centred, so the row sits on the true midpoint of the viewport
    regardless of how wide the logo or the CTA become. Balancing flex boxes

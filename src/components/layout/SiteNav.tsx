@@ -142,7 +142,13 @@ export default function SiteNav() {
         hidden ? n.navHidden : ""
       }`}
     >
-      <Link href="/" className={n.logo} aria-label="Mortgage Punk, home">
+      {/* logoHome hides this on the home page at phone width, where the hero's
+          splat is the mark instead — see SiteNav.module.css. */}
+      <Link
+        href="/"
+        className={`${n.logo} ${onHome ? n.logoHome : ""}`}
+        aria-label="Mortgage Punk, home"
+      >
         <Image
           src="/brand/mortgagepunk-logo@3x.png"
           alt="Mortgage Punk"

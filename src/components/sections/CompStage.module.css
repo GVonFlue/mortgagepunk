@@ -391,10 +391,20 @@
    rebuilt, nothing is cropped away, and the composition reads in the same
    order it does on a laptop — who is talking, then what you can do.
 
+   WHERE THE CUT GOES IS MEASURED, NOT CHOSEN. The first version split at 44%
+   and shaved the last few letters off every line of Chris's notebook note,
+   because the note actually runs to 44.3% — the cut was half a percent inside
+   it. Measured off the artwork: the note occupies 27.5%-44.3% and the paper
+   panel starts at 48.1%, so the only safe cut is in the 3.8% of background
+   between them. 46.2% is its midpoint, which leaves about 2% of clearance on
+   each side — enough that a rounding difference in another browser's engine
+   cannot clip either one.
+
    THE SLICES MUST PARTITION THE IMAGE EXACTLY, which is why the positions are
    a clean 0% and 100%: for a slice starting at x0 of width w, the background
-   position is x0/(1-w), and 0/(1-.44) and .44/(1-.56) land on 0 and 1. Change
-   one number and the other has to move with it or a strip is shown twice.
+   position is x0/(1-w), and 0/(1-.462) and .462/(1-.538) land on 0 and 1.
+   Change one number and every other number here has to move with it, or a
+   strip of the artwork is shown twice or not at all.
 
    Children are measured in percentages of their PANE, not of the comp, so
    each one is (comp% - 44) / 56. The masks on the two cards resolve to the
@@ -402,16 +412,17 @@
    with the paint. */
 @media(max-width:760px){
   .askPaneA{display:block;position:relative;width:100%;
-    aspect-ratio:1144/1477;
+    aspect-ratio:1201/1477;
     background-image:url("/brand/comp-ask-v2.jpg");
-    background-size:227.273% auto;background-position:0% 0%;
+    background-size:216.450% auto;background-position:0% 0%;
     background-repeat:no-repeat}
 
-  .ask{aspect-ratio:1456/1477;
-    background-size:178.571% auto;background-position:100% 0%}
+  .ask{aspect-ratio:1399/1477;
+    background-size:185.874% auto;background-position:100% 0%}
 
-  .askApprove{left:8.04%;top:73.9%;width:34.46%;height:14.6%}
-  .askSchedule{left:43.39%;top:73.3%;width:48.57%;height:15.7%}
+  /* (comp% - 46.2) / 53.8 — see the note above. */
+  .askApprove{left:4.28%;top:73.9%;width:35.87%;height:14.6%}
+  .askSchedule{left:41.08%;top:73.3%;width:50.56%;height:15.7%}
 }
 
 @media(max-width:700px){

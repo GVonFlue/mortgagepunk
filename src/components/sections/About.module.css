@@ -237,8 +237,21 @@
   gap:clamp(30px,4vw,72px);align-items:center}
 .bookSlot{aspect-ratio:4/3;min-height:280px;
   box-shadow:0 30px 60px -28px rgba(0,0,0,.55)}
+/* A grid item's min-width is auto, which means it refuses to shrink below the
+   intrinsic width of what is inside it — and this one holds a photograph. At
+   360px that pushed the slot 32px past the column and the section's
+   overflow:hidden quietly shaved the right edge off the picture. Explicit zero
+   lets the column do its job. */
+.bookGrid > *{min-width:0}
 @media(max-width:900px){.bookGrid{grid-template-columns:1fr}
   .bookSlot{aspect-ratio:16/10;min-height:220px}}
+/* min-height and aspect-ratio together set a MINIMUM WIDTH: 220px tall at
+   16/10 cannot be narrower than 352px, which is wider than the 320px a 360px
+   phone leaves after the section's padding, so the photograph had its right
+   edge shaved off by the section's overflow:hidden. The floor existed for when
+   this was an empty placeholder box; it holds a real photograph now, and the
+   ratio alone gives it a sensible height. */
+@media(max-width:480px){.bookSlot{min-height:0}}
 
 /* ---------- press, rebuilt as cards with cover slots ---------- */
 .pressLead{display:flex;align-items:flex-end;justify-content:space-between;
