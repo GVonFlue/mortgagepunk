@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import AskPanel from "./AskPanel";
+import CallBooking from "@/components/ui/CallBooking";
 import s from "./CompStage.module.css";
 import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
@@ -53,13 +53,14 @@ export default function CompAsk() {
         >
           <span className={s.lift} aria-hidden="true" />
         </a>
-        <Link
-          href="/book"
-          className={`${s.hot} ${s.askSchedule}`}
-          aria-label="Schedule a call with Chris"
-        >
+        {/* NOT /book. That is the speaking desk — keynotes, podcasts, press —
+            and this card says "Real conversation. Real answers." to somebody
+            thinking about their mortgage. It opens the call request instead.
+            The hotspot renders no text of its own, so the trigger's contents
+            are passed as children; see CallBooking. */}
+        <CallBooking className={`${s.hot} ${s.askSchedule}`}>
           <span className={s.lift} aria-hidden="true" />
-        </Link>
+        </CallBooking>
       </section>
 
       <p className={s.disclosure}>

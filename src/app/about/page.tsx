@@ -4,6 +4,7 @@ import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PhotoSlot from "@/components/ui/PhotoSlot";
+import CallBooking from "@/components/ui/CallBooking";
 import a from "@/components/sections/About.module.css";
 import { getPress, getTalks, getImages } from "@/lib/db";
 import { pickImage } from "@/lib/images";
@@ -168,6 +169,32 @@ export default async function About() {
             />
             <span className={a.portraitTag}>Wichita, Kansas</span>
           </div>
+        </div>
+      </section>
+
+      {/* 3b — the lending ask.
+          Everything below this point books Chris as a speaker, which is the
+          right destination for the room that wants him on a stage. It is the
+          wrong one for the larger group who read the story above and now want
+          him on their mortgage, and who until now had nothing to click on this
+          page at all. This band is theirs, and it is deliberately between the
+          story and the stage so neither audience has to scroll past the
+          other's call to action. */}
+      <section className={a.talk}>
+        <div className={a.talkInner}>
+          <div className={a.kick}>Lending</div>
+          <h2 className={a.h2}>
+            He does this
+            <br />
+            <em>for a living.</em>
+          </h2>
+          <p className={a.lede}>
+            Before the stage and the conference, Chris is a loan officer with
+            twenty years of files behind him. If you&rsquo;re buying,
+            refinancing or just working out whether the numbers move, that
+            conversation is free and he takes it himself.
+          </p>
+          <CallBooking className={`${a.btn} ${a.btnRed}`} label="Schedule a call with Chris" />
         </div>
       </section>
 

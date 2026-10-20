@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import w from "./Waitlist.module.css";
+import w from "@/components/ui/Modal.module.css";
 import { TICKET_PRICE } from "@/lib/event";
 
 /**

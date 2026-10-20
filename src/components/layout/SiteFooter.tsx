@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import s from "../Site.module.css";
+import { EXTERNAL } from "@/lib/links";
 
 /**
  * Compliance note: NMLS 339232 is confirmed. The exact legal entity wording,
@@ -55,7 +56,10 @@ const COLS = [
       ["About Chris", HOME], // /about
       ["Speaking", HOME], // /about#speaking
       ["Press", HOME], // /about#press
-      ["Client stories", HOME], // /testimonials
+      /* Not parked and not /testimonials. Client stories live on Chris's
+         national site for now, so this is the one footer link that leaves —
+         see the external handling in the markup below. */
+      ["Client stories", "https://chriswaipanational.com"],
       ["Book Chris", HOME], // /book
     ],
   },
@@ -86,8 +90,18 @@ export default function SiteFooter() {
                 /* Keyed on the label, not the href. Every href is "/" while
                    the links are parked, and duplicate keys make React drop all
                    but one item from each column. */
+                /* An off-site destination gets a real anchor with the external
+                   props. next/link would render it, but without target and
+                   rel it takes the visitor off Mortgage Punk in the same tab
+                   and hands the destination a handle on this window. */
                 <li key={label}>
-                  <Link href={href}>{label}</Link>
+                  {href.startsWith("http") ? (
+                    <a href={href} {...EXTERNAL}>
+                      {label}
+                    </a>
+                  ) : (
+                    <Link href={href}>{label}</Link>
+                  )}
                 </li>
               ))}
             </ul>

@@ -102,6 +102,31 @@
 @media(max-width:900px){.storyGrid{grid-template-columns:1fr}
   .portrait{max-width:420px;margin:0 auto}}
 
+/* ---------- 3b. the lending ask ----------
+   A red band, and the colour is doing a job rather than decorating. This sits
+   between the black story above and the bone speaking section below, and its
+   whole purpose is to stop the two audiences running into each other: someone
+   who wants a mortgage should not have to scroll through five keynote topics
+   to find a way to reach Chris. Black or bone here would merge into whichever
+   neighbour it touched; red is the one value in the palette that reads as a
+   deliberate break in both directions.
+
+   The scoped overrides below are not optional. .kick is red on red and .lede
+   is a mid grey chosen for the light section — both are unreadable on this
+   background, so each is restated for the band it is actually in. */
+.talk{background:var(--mp-red);color:#fff;
+  padding:clamp(56px,6.4vw,104px) clamp(20px,4vw,64px)}
+.talkInner{max-width:1400px;margin:0 auto}
+.talk .kick{color:#0A0A0A}
+.talk .kick::before{background:#0A0A0A}
+.talk .h2 em{color:#0A0A0A}
+.talk .lede{color:rgba(255,255,255,.9)}
+/* Black on red, so the button is the darkest thing in the band and reads as
+   the one place to press. */
+.btnRed{background:#0A0A0A;color:#fff;border-color:#0A0A0A;
+  margin-top:clamp(22px,2.4vw,34px);cursor:pointer}
+.btnRed:hover{transform:translateY(-2px);background:#000}
+
 /* ---------- 4. speaking, as a tour-date list ---------- */
 .dates{position:relative;background:var(--mp-bone);color:var(--mp-black);
   padding:clamp(72px,8vw,140px) clamp(20px,4vw,64px)}
