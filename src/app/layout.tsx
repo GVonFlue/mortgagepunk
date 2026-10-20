@@ -26,10 +26,69 @@ const inter = Inter({
   display: "swap",
 });
 
+/**
+ * The public origin, used to turn every relative image path below into the
+ * absolute URL that link previews require.
+ *
+ * Settable per environment so a preview deployment advertises itself rather
+ * than production. Falls back to Vercel's own URL for the deployment, then to
+ * the live domain, so a share card is never broken by a missing variable.
+ */
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ??
+  "https://mortgagepunk.vercel.app";
+
+const TITLE = "Mortgage Punk — Reimagining the American Dream";
+const DESCRIPTION =
+  "A world-class lending team and a movement to change the Game of Money. Get approved the right way, run your own numbers, or follow the movement.";
+
+/**
+ * SHARE CARDS ARE NOT A NICETY ON THIS SITE. Chris's whole model is posting
+ * and being shared — Instagram, LinkedIn, a text to a client. Without the tags
+ * below, every one of those links renders as a bare grey URL with no image and
+ * no description, which is the worst possible first impression for a brand
+ * built on looking like nothing else in the industry.
+ *
+ * og-default.jpg is the approved hero comp cropped to 1200x630: logo,
+ * headline, Chris. One image rather than a generated-per-page one, because the
+ * brand is the thing being recognised in a feed, not the page title.
+ */
 export const metadata: Metadata = {
-  title: "Mortgage Punk — Reimagining the American Dream",
-  description:
-    "A world-class lending team and a movement to change the Game of Money. Get approved the right way, run your own numbers, or follow the movement.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: TITLE,
+    /* A page that sets its own title gets "<page> — Mortgage Punk" rather
+       than repeating the full tagline on every tab and every share. */
+    template: "%s — Mortgage Punk",
+  },
+  description: DESCRIPTION,
+  applicationName: "Mortgage Punk",
+  openGraph: {
+    type: "website",
+    siteName: "Mortgage Punk",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    images: [
+      {
+        url: "/brand/og-default.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Mortgage Punk — Reimagining the American Dream. Chris Waipa.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/brand/og-default.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 /**

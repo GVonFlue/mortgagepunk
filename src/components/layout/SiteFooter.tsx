@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import s from "../Site.module.css";
-import { EXTERNAL } from "@/lib/links";
+import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
 /**
  * Compliance note: NMLS 339232 is confirmed. The exact legal entity wording,
@@ -9,58 +9,55 @@ import { EXTERNAL } from "@/lib/links";
  * Neighborhood Loans. The TODO block below is deliberately visible so this
  * cannot be forgotten before go-live.
  *
- * EVERY LINK HERE POINTS AT THE HOME PAGE FOR NOW.
+ * THE LINKS WERE PARKED AT THE HOME PAGE AND ARE NOW RESTORED.
  *
- * The labels stay, so the footer still reads as a real site map and still
- * tells a visitor what the site covers. Only the destinations are parked,
- * because the pages behind them are in varying states of finish and the
- * footer is where people click when they are already unsure.
+ * They were pointed at "/" while the pages behind them were in varying states
+ * of finish, on the reasoning that the footer is where people click when they
+ * are already unsure. Every one of those pages now returns real content and
+ * handles its own empty state in its own words — /merch says the store is
+ * being built, /testimonials says stories are being collected — so a visitor
+ * who clicks gets an answer rather than a bounce back to where they started.
  *
- * Restoring one is editing its line in this list and nothing else — the
- * markup below takes whatever href it is given. The real paths are kept in
- * the trailing comment on each line so nobody has to go and find them again.
+ * "Get approved" carries APPLY_URL, which has Chris's referrer ID on it and is
+ * how a loan gets attributed to him. It is the one link here that must never
+ * be changed casually.
  *
- * ONE THING TO KNOW BEFORE RESTORING: "Get approved" normally carries
- * APPLY_URL, which has Chris's referrer ID on it and is how a loan gets
- * attributed to him. That link still exists in the top nav, in the hero, and
- * on the Ask section card, so parking the footer copy costs nothing today. If
- * any of those three ever move, put this one back first.
+ * "Client stories" is deliberately off-site while the testimonials page has
+ * nothing in it.
  */
-const HOME = "/";
-
 const COLS = [
   {
     head: "Lending",
     links: [
-      ["Buy a home", HOME], // /lending/buy
-      ["Refinance", HOME], // /lending/refinance
-      ["Investors", HOME], // /lending/investors
-      ["Get approved", HOME], // APPLY_URL from @/lib/links
-      ["The team", HOME], // /team
-      ["Tools & calculators", HOME], // /tools
+      ["Buy a home", "/lending/buy"],
+      ["Refinance", "/lending/refinance"],
+      ["Investors", "/lending/investors"],
+      ["Get approved", APPLY_URL],
+      ["The team", "/team"],
+      ["Tools & calculators", "/tools"],
     ],
   },
   {
     head: "The Movement",
     links: [
-      ["The Game of Money", HOME], // /library
-      ["The mission", HOME], // /movement
-      ["American Dream Conference", HOME], // https://mortgagepunklive.com
-      ["Merch", HOME], // /merch
-      ["Free guides", HOME], // /freebies
+      ["The Game of Money", "/library"],
+      ["The mission", "/movement"],
+      ["American Dream Conference", "/movement"],
+      ["Merch", "/merch"],
+      ["Free guides", "/freebies"],
     ],
   },
   {
     head: "Chris",
     links: [
-      ["About Chris", HOME], // /about
-      ["Speaking", HOME], // /about#speaking
-      ["Press", HOME], // /about#press
+      ["About Chris", "/about"],
+      ["Speaking", "/about#speaking"],
+      ["Press", "/about#press"],
       /* Not parked and not /testimonials. Client stories live on Chris's
          national site for now, so this is the one footer link that leaves —
          see the external handling in the markup below. */
       ["Client stories", "https://chriswaipanational.com"],
-      ["Book Chris", HOME], // /book
+      ["Book Chris", "/book"],
     ],
   },
 ];
