@@ -32,13 +32,29 @@ export default function CompAsk() {
           its left half stacks above the right instead of shrinking to a band.
           Purely the artwork — every live control is in the half below. See the
           phone Ask block in CompStage.module.css. */}
-      <div className={s.askPaneA} aria-hidden="true" />
+      <div className={s.askPaneA} aria-hidden="true">
+        {/* The phone copy of the animated Chris. Its desktop twin is inside
+            the stage below; each is hidden at the other's breakpoint and both
+            are lazy, so only the one actually on screen is ever fetched. */}
+        <span className={s.askChrisM}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/chris-ask.webp" alt="" loading="lazy" decoding="async" />
+        </span>
+      </div>
 
       <section className={s.stage + " " + s.ask} aria-label="Ask Mortgage Punk">
         <h2 className={s.srOnly}>
           Ask Mortgage Punk. Chris trained this assistant to answer the
           mortgage questions you would normally ask him.
         </h2>
+
+        {/* Chris, over the painted still of himself. next/image is not used
+            here on purpose: it would re-encode this to a single static frame
+            and the animation would be silently lost. */}
+        <span className={s.askChris} aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/chris-ask.webp" alt="" loading="lazy" decoding="async" />
+        </span>
 
         <AskPanel />
 

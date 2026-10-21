@@ -187,6 +187,36 @@
   .heroMotion{will-change:auto}}
 .ask{aspect-ratio:2600/1477;background-image:url("/brand/comp-ask-v2.jpg")}
 
+/* ---------- Chris, alive ----------
+   The comp has him painted in as a still. This is the same photograph as a
+   14-frame loop, laid exactly over the top of the painted one.
+
+   THE ARTWORK'S OWN BACKGROUND IS BAKED INTO EVERY FRAME, and that is not
+   laziness — it is the fix for two separate problems. A transparent animated
+   WebP leaves a trail: frames are stored as deltas, so wherever the subject
+   moves away the previous frame's pixels stay behind, and he ended up with a
+   ghost of his own head beside him. Baking the background in makes every
+   frame opaque, which kills the trail, halves the file, and makes the edges
+   blend perfectly because they ARE the surrounding artwork rather than a key
+   against it.
+
+   THE PLACEMENT IS MEASURED, NOT EYEBALLED. The overlay was correlated
+   against the comp across a range of scales and offsets; the peak is 0.95 at
+   scale 1.00, which says the painted version was composed from this same
+   source at full size. So the patch is simply the rectangle he occupies —
+   comp x 0-957, y 672-1477 — and it covers the painted one exactly, with no
+   doubled ear or shoulder showing at any frame.
+
+   loading="lazy" matters on both copies: whichever one its breakpoint has
+   hidden is never scrolled into view, so it is never fetched, and the phone
+   does not pay for the desktop copy or the other way round. */
+.askChris{position:absolute;left:0;top:45.497%;width:36.808%;height:54.503%;
+  pointer-events:none;z-index:0}
+.askChris img{display:block;width:100%;height:100%}
+/* Phone-only twin, measured against pane A's narrower slice — see the phone
+   Ask block at the foot of this file. 36.808/46.2 = 79.67. */
+.askChrisM{display:none}
+
 /* ---------- hotspots ----------
    Anchors sitting exactly over controls that are painted into the image.
 
@@ -411,6 +441,11 @@
    same pixel box they would on a laptop, so the highlights stay in register
    with the paint. */
 @media(max-width:760px){
+  .askChris{display:none}
+  .askChrisM{display:block;position:absolute;left:0;top:45.497%;
+    width:79.67%;height:54.503%;pointer-events:none;z-index:0}
+  .askChrisM img{display:block;width:100%;height:100%}
+
   .askPaneA{display:block;position:relative;width:100%;
     aspect-ratio:1201/1477;
     background-image:url("/brand/comp-ask-v2.jpg");

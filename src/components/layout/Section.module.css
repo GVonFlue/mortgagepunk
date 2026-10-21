@@ -229,19 +229,15 @@
   background-image:var(--mark);background-size:100% 100%;
   background-repeat:no-repeat;background-position:center}
 
-/* near copy: closer, stronger. far copy: further, fainter, half a beat late */
-.ghostA{z-index:0;opacity:.45;animation:echo 1.8s steps(1) infinite}
-.ghostB{z-index:0;opacity:.22;animation:echo 1.8s steps(1) -.5s infinite}
+/* near copy: closer, stronger. far copy: further, fainter.
 
-@keyframes echo{
-  0%   {transform:translateX(3.5%)}
-  50%  {transform:translateX(6.5%)}
-}
+   THESE NO LONGER MOVE. They used to flicker between two offsets on a 1.8s
+   loop, which put a permanent twitch under every section heading on the page —
+   The Game of Money, The Movement, all of them — competing with whatever the
+   visitor was actually reading. The staggered offset is the thing that makes
+   the wordmark read as printed twice and slightly out of register, and it does
+   that just as well standing still.
 
-/* Held at rest for anyone who asked their system for less motion — the
-   staggered offset still reads, it just stops travelling. */
-@media(prefers-reduced-motion:reduce){
-  .ghostA,.ghostB{animation:none}
-  .ghostA{transform:translateX(3.5%)}
-  .ghostB{transform:translateX(6.5%)}
-}
+   This is now what the reduced-motion state always was, applied to everyone. */
+.ghostA{z-index:0;opacity:.45;transform:translateX(3.5%)}
+.ghostB{z-index:0;opacity:.22;transform:translateX(6.5%)}
