@@ -39,12 +39,6 @@
   --play:clamp(44px,4vw,72px)}
 
 .artFeature{aspect-ratio:16/9;border-radius:0;border:0;--play:clamp(56px,5.4vw,96px)}
-/* 16:9, NOT SQUARE, UNTIL THE TV FRAME EXISTS. A square tile has to crop a
-   16:9 thumbnail somewhere, and cropping the sides cut the end off every
-   title Chris had set into his artwork. Matching the thumbnail's own shape
-   shows all of it and cuts nothing. The squarer tile comes back with the
-   frame, which fills the space above and below the picture instead of
-   throwing picture away. */
 .artCard{aspect-ratio:16/9;border-radius:clamp(4px,.4vw,7px);
   border:1px solid rgba(255,255,255,.12);--play:clamp(34px,3vw,52px)}
 
@@ -111,3 +105,38 @@
 .cta:hover{background:var(--mp-red-deep);transform:translateY(-2px)}
 .cta span{transition:transform .26s cubic-bezier(.16,1,.3,1)}
 .cta:hover span{transform:translateX(4px)}
+
+
+/* ---------- the television ----------
+   Each cover sits in the screen of a hand-cut 80s portable TV, so the row
+   reads as three sets playing Chris's videos rather than three cropped
+   rectangles.
+
+   THIS IS WHAT SOLVED THE BLACK BARS. A square tile has to crop a 16:9
+   thumbnail somewhere, and cropping the sides took the end off every title
+   Chris had set into his artwork. The bezel does the job the crop was doing:
+   it fills the space above and below the picture, so the tile reads as
+   roughly square while the thumbnail inside it stays whole and uncut.
+
+   THE NUMBERS ARE MEASURED FROM THE ASSET, NOT CHOSEN. tv-frame.webp is
+   1223x1087 and its screen hole is the 1048x590 rectangle at (99, 205).
+   Those four percentages are that rectangle, and they are the only thing
+   holding the video inside the glass — change the artwork and every one of
+   them has to be measured again.
+
+   The screen hole was resampled to a true 16:9 before keying. As drawn it
+   was 1.553, so a 16:9 video inside it would have been letterboxed or
+   cropped all over again; only the screen band was squeezed, which left the
+   dials circular and the tape and bezels untouched. */
+.tv{position:relative;display:block;width:100%;aspect-ratio:1223/1087}
+.tvScreen{position:absolute;left:8.095%;top:18.859%;
+  width:85.691%;height:54.278%}
+/* The frame paints OVER the video: its rounded screen corners are part of
+   the artwork's alpha, so the picture is clipped by the bezel itself and
+   needs no border-radius of its own. pointer-events:none so the play button
+   underneath still takes the click. */
+.tvFrame{position:absolute;inset:0;width:100%;height:100%;
+  z-index:2;pointer-events:none;display:block}
+/* Inside the screen the art fills the hole exactly; the tile's own rounding
+   and border belong to the bezel now, not to this. */
+.tvScreen .art{height:100%;aspect-ratio:auto;border:0;border-radius:0}

@@ -96,13 +96,21 @@ function Feature({ v }: { v: Tile }) {
 function Cover({ v }: { v: Tile }) {
   return (
     <div className={s.card}>
-      <VideoPlay
-        youtubeId={v.youtube_id}
-        title={v.title}
-        playlistId={v.playlist}
-        frameClassName={`${s.art} ${s.artCard}`}
-        playClassName={s.play}
-      />
+      <span className={s.tv}>
+        <span className={s.tvScreen}>
+          <VideoPlay
+            youtubeId={v.youtube_id}
+            title={v.title}
+            playlistId={v.playlist}
+            frameClassName={`${s.art} ${s.artCard}`}
+            playClassName={s.play}
+          />
+        </span>
+        {/* Over the video, not behind it — the rounded screen corners are
+            part of this file's alpha, so the bezel does the clipping. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className={s.tvFrame} src="/brand/tv-frame.webp" alt="" aria-hidden="true" loading="lazy" />
+      </span>
       <span className={s.info}>
         <h3>{v.title}</h3>
       </span>
