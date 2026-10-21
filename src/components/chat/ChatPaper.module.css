@@ -196,7 +196,14 @@
 .cardRed{flex:0 0 39.5%;background:#CF0A22;color:#FFF;
   box-shadow:3px 3px 0 rgba(23,17,14,.3)}
 .cardWhite{flex:1;background:#FFF;color:#17110E;
-  border:2px solid #17110E;box-shadow:3px 3px 0 rgba(23,17,14,.2)}
+  border:2px solid #17110E;box-shadow:3px 3px 0 rgba(23,17,14,.2);
+  /* THIS ONE IS A <button> AND ITS TWIN IS AN <a>. It opens Chris's calendar
+     in place rather than navigating anywhere, which is the whole point — but
+     a UA stylesheet gives a button its own font and centres its text, and
+     does neither to an anchor. Without these three the two cards sitting
+     side by side stop matching. */
+  font:inherit;text-align:left;cursor:pointer;
+  -webkit-appearance:none;appearance:none}
 .cardRed:hover,.cardWhite:hover{transform:translate(-1px,-2px)}
 .cardRed:active,.cardWhite:active{transform:translate(1px,1px);
   box-shadow:1px 1px 0 rgba(23,17,14,.3)}

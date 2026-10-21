@@ -75,3 +75,94 @@
 
 /* the confirmation state, which replaces the whole body of the panel */
 .done{padding:clamp(10px,2vw,26px) 0}
+
+
+/* ============================================================
+   THE BOOKING PANEL — our frame around Chris's live calendar
+   ============================================================
+   A scheduler is not a form. The form variant above is a column of fields
+   that grows as long as it needs to and lets the PANEL scroll; an embedded
+   calendar is a fixed-size application that does its own scrolling inside
+   itself. Letting the panel scroll as well puts two scrollbars in the same
+   box, and a phone ends up scrolling the wrong one — so this variant pins
+   its own height, keeps the head still, and gives the frame everything left
+   over.
+
+   WIDER THAN THE FORM, AND THAT IS NOT DECORATION. Calendly drops from a
+   month grid to a single-column list below about 680px of frame. At the
+   form's 680px panel, minus its padding, the embed would be about 590px and
+   every visitor on a laptop would get the phone layout — a long scroll of
+   dates instead of a month they can read at a glance. 980px clears it. */
+.bookPanel{width:min(980px,100%);
+  /* Fixed, not max: the embed below flexes into what is left, and `max-`
+     would let the panel shrink to its content and collapse the frame. */
+  height:min(92dvh,860px);
+  display:flex;flex-direction:column;
+  /* The panel itself must not scroll. The iframe does. */
+  overflow:hidden;
+  padding:clamp(20px,2.6vw,34px)}
+
+/* Head and foot hold their size; only the embed flexes.
+
+   THE HEAD IS DELIBERATELY SMALLER THAN THE FORM VARIANT'S, and it is the
+   embed that buys the difference. Calendly switches from a month grid to a
+   single-column list of dates when its frame is short, and at the form's
+   heading sizes the head and the disclosure took about 240px of an 828px
+   panel — leaving 560px of frame, which is under the threshold. Every pixel
+   taken off the heading goes straight into the calendar. */
+.bookHead{flex:none;padding-right:34px}
+.bookPanel .title{font-size:clamp(24px,2.5vw,34px)}
+.bookPanel .lede{margin-top:8px;font-size:14px}
+.bookPanel .disc{flex:none;margin-top:10px;text-align:center}
+
+/* THE PAPER THE CALENDAR SITS ON. Calendly renders on white whatever we ask
+   for — the colour parameters are a paid feature and are ignored on a free
+   plan — so rather than fight it, the white is made deliberate: a bone card
+   with a red rule across the top, sitting on the black panel like a sheet
+   pinned to the wall. On a paid plan the parameters land and the grid picks
+   up the red, which only makes this read better.
+
+   min-height:0 IS LOAD-BEARING. A flex item defaults to min-height:auto, so
+   without this the iframe's own intrinsic height wins and pushes the
+   disclosure out of the bottom of the panel instead of the frame shrinking. */
+.embedWrap{position:relative;flex:1;min-height:0;margin-top:clamp(14px,1.8vw,22px);
+  border-radius:12px;overflow:hidden;background:#FBFBFB;
+  border-top:3px solid var(--mp-red);
+  box-shadow:0 20px 50px -24px rgba(0,0,0,.9)}
+
+.embed{display:block;width:100%;height:100%;border:0}
+
+/* Sits over the frame until it has something to show. Calendly takes a beat
+   on a cold connection and an unannounced white rectangle reads as broken. */
+.embedLoad{position:absolute;inset:0;z-index:1;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:24px;text-align:center;background:#FBFBFB;
+  font-family:var(--font-body),sans-serif;font-size:14px;color:#6A6A6A}
+.embedLoad p{margin:0}
+
+.spinner{width:26px;height:26px;border-radius:50%;
+  border:3px solid rgba(23,17,14,.14);border-top-color:var(--mp-red);
+  animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Only ever seen if the frame stayed empty — a privacy extension, a locked
+   down corporate browser. One sentence and a way out, rather than a visitor
+   staring at a white box deciding the site is broken. */
+.fallback{max-width:34ch;font-size:13px;line-height:1.6;color:#8A8A8A}
+.fallback a{color:var(--mp-red);font-weight:700}
+
+@media(prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}}
+
+/* A phone has no room for a head, a month grid and a disclosure at once, and
+   the grid is the only one of the three that anybody came for. The head
+   keeps the title and loses the supporting line; the disclosure goes with
+   it — the same wording is in the footer and it is not a disclosure anybody
+   reads in a modal. dvh rather than vh so the browser chrome collapsing
+   mid-scroll does not resize the panel under a half-finished booking. */
+@media(max-width:620px){
+  .bookPanel{height:min(94dvh,100%);padding:clamp(16px,4vw,22px);
+    border-radius:14px}
+  .bookPanel .lede,.bookPanel .disc{display:none}
+  .bookPanel .title{font-size:clamp(23px,7vw,30px)}
+  .embedWrap{margin-top:12px}
+}
