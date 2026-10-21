@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { thumbnail, thumbnailSd, thumbnailLarge } from "@/lib/library";
 
 /**
@@ -48,6 +48,7 @@ export default function VideoArt({
 
   const [src, setSrc] = useState(initial);
   const [variant, setVariant] = useState<Variant>(youtubeId ? "maxres" : "none");
+  const el = useRef<HTMLImageElement>(null);
 
   function stepDown() {
     if (!youtubeId) return;
@@ -60,6 +61,21 @@ export default function VideoArt({
     }
   }
 
+  /* onLoad IS NOT ENOUGH ON ITS OWN, and this is the bug that made the fix
+     look like it worked for one person and not another. The <img> is server
+     rendered with its src already set, so on a repeat visit the browser has
+     the file in cache and finishes loading it BEFORE React hydrates and
+     attaches the handler. onLoad then never fires, the 120x90 placeholder is
+     never detected, and it stays stretched across the feature — on a cold
+     cache the same code works perfectly. Checking `complete` once on mount
+     covers the already-loaded case; onLoad covers the rest. */
+  useEffect(() => {
+    const img = el.current;
+    if (!img || !img.complete) return;
+    if (img.naturalWidth > 0 && img.naturalWidth <= 121) stepDown();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src]);
+
   /* Only a 4:3 source in a square box needs the padding cropped out.
      133.333% of the box height, pulled up by half the overflow: the picture
      is 75% of the file, and 0.75 x 1.3333 = 1, so it fills the box exactly
@@ -69,6 +85,7 @@ export default function VideoArt({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      ref={el}
       /* INLINE, AND THAT IS DELIBERATE. The callers style this element
          directly — MoneyWall has `.art img{width:100%;height:100%;object-fit:
          cover}` — and a class on the <img> loses to that on specificity, so

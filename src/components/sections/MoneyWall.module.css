@@ -39,7 +39,13 @@
   --play:clamp(44px,4vw,72px)}
 
 .artFeature{aspect-ratio:16/9;border-radius:0;border:0;--play:clamp(56px,5.4vw,96px)}
-.artCard{aspect-ratio:1/1;border-radius:clamp(4px,.4vw,7px);
+/* 16:9, NOT SQUARE, UNTIL THE TV FRAME EXISTS. A square tile has to crop a
+   16:9 thumbnail somewhere, and cropping the sides cut the end off every
+   title Chris had set into his artwork. Matching the thumbnail's own shape
+   shows all of it and cuts nothing. The squarer tile comes back with the
+   frame, which fills the space above and below the picture instead of
+   throwing picture away. */
+.artCard{aspect-ratio:16/9;border-radius:clamp(4px,.4vw,7px);
   border:1px solid rgba(255,255,255,.12);--play:clamp(34px,3vw,52px)}
 
 .art img{display:block;width:100%;height:100%;object-fit:cover}
