@@ -185,7 +185,90 @@
 @media(prefers-reduced-motion:reduce){
   .heroIntro{animation:none}
   .heroMotion{will-change:auto}}
-.ask{aspect-ratio:2600/1477;background-image:url("/brand/comp-ask-v2.jpg")}
+/* The plate itself is on .ask::before rather than here, so it can be
+   dissolved at the bottom edge without taking the panel and the hotspots
+   with it. See THE SEAMS below. */
+.ask{aspect-ratio:2600/1477}
+
+/* ============================================================
+   THE SEAMS
+   ============================================================
+   Everything on this page below the hero is transparent and floats over one
+   fixed ground, so section-to-section joins have nothing to show. The hard
+   cuts are the two JPEGs' own rectangular edges, and they are two different
+   problems with two different fixes.
+
+   MEASURED, NOT EYEBALLED. Mean luminance either side of each join:
+
+     hero bottom -> Ask top     89.4 vs 85.7   step  3.7
+     Ask bottom  -> the ground  71.9 vs 28.7   step 43.2
+
+   So the Ask's bottom edge is the bad one by an order of magnitude, and it
+   is where Chris, the checkerboard and the paper panel are all guillotined
+   flat. The hero join is nearly tone-matched because the artwork was drawn
+   to tear into the section below it — the torn paper edge runs from 87.98%
+   to 99.75% of the plate and is meant to BE the transition. What ruins it is
+   the overscan: at the resting 1.06 the frame crops the plate at 97.17%, and
+   by the time the join is on screen the scroll zoom has reached about 1.10
+   and is cutting at 95.7%. The tear is sliced through its middle, so what
+   you see is a ragged white edge ending on a razor-straight line.
+
+   WHY NOT JUST STOP CROPPING THE TEAR. The crop is centred, so biasing the
+   transform origin downward to protect the bottom takes the same amount off
+   the top — where the splat sits at 1.48%. Lose the overscan instead and the
+   cursor drift has nowhere to move. The tear gets feathered rather than
+   rescued. */
+
+/* ---------- the Ask's bottom, into the ground ----------
+   THE ARTWORK IS DISSOLVED, NOT PAINTED OVER. The first attempt at this was
+   a gradient overlay fading to a flat dark sampled off PageGround, and it
+   does not work: the ground is position:FIXED, so the colour sitting under
+   this edge is a different colour at every scroll position. Measured on the
+   rendered page, the overlay bottomed out at luminance 19 while the ground
+   immediately below it was 51 — a 32-level step, which is most of the 43
+   this was meant to remove, just moved down a few pixels. No single colour
+   can be right, because there is no single colour to be right about.
+
+   A mask has no such problem: it removes the artwork and whatever the ground
+   happens to be at that moment shows through, exactly matched by definition.
+
+   SO WHY IS IT ON A PSEUDO-ELEMENT. A mask clips everything an element
+   paints, descendants included — and the conversation panel runs to 94% of
+   this stage with the two painted cards at 89%, so masking the section
+   itself would fade the bottom of the open chat. Moving the background onto
+   ::before leaves the real elements untouched: the plate dissolves, the
+   panel and the hotspots above it do not.
+
+   88px IS THE CEILING AND IT IS MEASURED. The painted Get Approved and
+   Schedule a Call cards end at 89% of this stage — 728 of 818px on a laptop
+   — so a fade taller than the 90px below them starts dissolving the cards
+   themselves. */
+.ask{--fade:88px}
+.ask::before{content:'';position:absolute;inset:0;z-index:-1;
+  background-image:url("/brand/comp-ask-v2.jpg");
+  background-size:100% 100%;background-position:center;background-repeat:no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - var(--fade)),transparent 100%);
+          mask-image:linear-gradient(to bottom,#000 calc(100% - var(--fade)),transparent 100%)}
+
+/* ---------- the hero's bottom, into the Ask ----------
+   A CROSS-FADE, NOT A FADE TO BLACK. The two edges are within four levels of
+   each other, so fading either one to the ground colour would INSERT a dark
+   band where there is currently a nearly tone-matched join — worse than the
+   cut. Instead the Ask is pulled up over the hero and its own top few pixels
+   are masked to transparent, so the hero's sliced tear shows through and the
+   two dissolve into each other.
+
+   THE SECTION IS MASKED, NOT THE HERO. Masking the hero would clip the
+   prompt and the splat inside it. Masking the Ask's top is safe: the first
+   thing inside it is the conversation panel at 12%, far below.
+
+   20px, AND THAT CEILING IS MEASURED. "Have questions? Let's go!" and its
+   arrow end 22px above this join on a laptop. Anything deeper starts
+   dissolving the hero's only instruction into the section below it. */
+.ask{--seam:20px;
+  margin-top:calc(-1 * var(--seam));
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--seam));
+          mask-image:linear-gradient(to bottom,transparent 0,#000 var(--seam))}
 
 /* ---------- Chris, alive ----------
    The comp has him painted in as a still. This is the same photograph as a
@@ -211,7 +294,16 @@
    hidden is never scrolled into view, so it is never fetched, and the phone
    does not pay for the desktop copy or the other way round. */
 .askChris{position:absolute;left:0;top:45.497%;width:36.808%;height:54.503%;
-  pointer-events:none;z-index:0}
+  pointer-events:none;z-index:0;
+  /* HE HAS TO DISSOLVE WITH THE PLATE HE IS STANDING IN. The animated Chris
+     is a separate element laid over the painted one, and his box ends on the
+     same pixel row as the artwork's — so once the plate below him fades into
+     the ground, leaving him at full strength would cut him off flat against
+     a dissolving background, which is worse than the hard edge this started
+     as. The same pixel amount works for both without conversion precisely
+     because the two share a bottom edge. */
+  -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - var(--fade)),transparent 100%);
+          mask-image:linear-gradient(to bottom,#000 calc(100% - var(--fade)),transparent 100%)}
 .askChris img{display:block;width:100%;height:100%}
 /* Phone-only twin, measured against pane A's narrower slice — see the phone
    Ask block at the foot of this file. 36.808/46.2 = 79.67. */
@@ -452,8 +544,38 @@
     background-size:216.450% auto;background-position:0% 0%;
     background-repeat:no-repeat}
 
+  /* The slice moves with the plate, onto the pseudo-element. The numbers are
+     unchanged — see the partition note above; they still have to land on a
+     clean 100%. */
   .ask{aspect-ratio:1399/1477;
-    background-size:185.874% auto;background-position:100% 0%}
+    /* This section is 412px tall on a phone against 818 on a laptop, so the
+       same 88px fade would be a fifth of it and would reach the painted
+       cards at 89%. 56px keeps the same proportion of clearance. */
+    --fade:56px}
+  .ask::before{background-size:185.874% auto;background-position:100% 0%}
+
+  /* ---------- the seams, on a phone ----------
+     THERE ARE THREE HERE RATHER THAN TWO, because the Ask comp is split into
+     two stacked panes. The extra one is the join between them, and it is the
+     ugliest of the three: pane A ends partway down Chris's torso and pane B
+     begins on concrete from a completely different part of the artwork, so
+     it reads as a photograph sliced in half.
+
+     56px RATHER THAN THE LAPTOP'S 20. That ceiling existed because the
+     hero's hand-drawn prompt ends 22px above the join on a laptop. The phone
+     composition is vertical and the prompt sits at 42% of the plate — 442px
+     clear of it — so the cross-fade can be as deep as it deserves. */
+  .ask{--seam:56px}
+  .askPaneA{--seam:56px;
+    margin-top:calc(-1 * var(--seam));
+    /* z-index:1 IS LOAD-BEARING AND IS NOT TIDINESS. The hero frame is
+       z-index:1, so at the default `auto` this pane loses to it and the hero
+       paints OVER the overlap — the fade would run the wrong way and the
+       join would survive untouched. At an equal z-index document order wins,
+       and this comes after the hero. */
+    z-index:1;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--seam));
+            mask-image:linear-gradient(to bottom,transparent 0,#000 var(--seam))}
 
   /* (comp% - 46.2) / 53.8 — see the note above. */
   .askApprove{left:4.28%;top:73.9%;width:35.87%;height:14.6%}
