@@ -37,21 +37,42 @@ type Variant = "maxres" | "sd" | "hq" | "none";
 export default function VideoArt({
   youtubeId,
   feature = false,
+  poster,
 }: {
   youtubeId?: string | null;
   feature?: boolean;
+  /**
+   * Our own artwork, used instead of YouTube's.
+   *
+   * YouTube only generates maxresdefault for uploads that had a
+   * high-resolution source, and "Mortgage Punk in 2 Minutes" does not have
+   * one — its maxresdefault is a 120x90 grey placeholder, so the best
+   * YouTube can offer is a 640x480 file stretched across a 1520px feature.
+   * A poster here is served from our own public/ and is sharp, on brand, and
+   * does not wait on anyone editing YouTube. It also makes this the one
+   * video whose thumbnail we control, which is the right place for the one
+   * that opens the page.
+   */
+  poster?: string;
 }) {
   /* Cards ask for maxres too, not hq. A square crop of hq uses only 270 of
      its 480 pixels once the padding is gone, which is softer than the tile it
      has to fill; maxres gives 720 and falls back when it does not exist. */
-  const initial = youtubeId ? thumbnailLarge(youtubeId) : "/brand/hero-plate.jpg";
+  const initial = poster
+    ? poster
+    : youtubeId
+      ? thumbnailLarge(youtubeId)
+      : "/brand/hero-plate.jpg";
 
   const [src, setSrc] = useState(initial);
-  const [variant, setVariant] = useState<Variant>(youtubeId ? "maxres" : "none");
+  const [variant, setVariant] = useState<Variant>(
+    poster ? "none" : youtubeId ? "maxres" : "none"
+  );
   const el = useRef<HTMLImageElement>(null);
 
   function stepDown() {
-    if (!youtubeId) return;
+    // A poster is ours and final — there is nothing to step down to.
+    if (!youtubeId || poster) return;
     if (variant === "maxres") {
       setVariant("sd");
       setSrc(thumbnailSd(youtubeId));

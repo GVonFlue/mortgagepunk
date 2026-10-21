@@ -37,6 +37,7 @@ export default function VideoPlay({
   frameClassName = "",
   playClassName = "",
   playlistId,
+  poster,
 }: {
   youtubeId?: string | null;
   title: string;
@@ -51,6 +52,8 @@ export default function VideoPlay({
    * than nine, and the visitor still never leaves the page for youtube.com.
    */
   playlistId?: string;
+  /** Our own still, used instead of YouTube's. See VideoArt. */
+  poster?: string;
 }) {
   const [playing, setPlaying] = useState(false);
 
@@ -58,7 +61,7 @@ export default function VideoPlay({
   if (!youtubeId) {
     return (
       <span className={`${v.box} ${frameClassName}`}>
-        <VideoArt youtubeId={null} feature={feature} />
+        <VideoArt youtubeId={null} feature={feature} poster={poster} />
       </span>
     );
   }
@@ -89,7 +92,7 @@ export default function VideoPlay({
       aria-label={`Play: ${title}`}
     >
       <span className={`${v.box} ${frameClassName}`}>
-        <VideoArt youtubeId={youtubeId} feature={feature} />
+        <VideoArt youtubeId={youtubeId} feature={feature} poster={poster} />
         <span className={playClassName} aria-hidden="true" />
       </span>
     </button>

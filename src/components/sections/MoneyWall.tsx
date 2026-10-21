@@ -47,12 +47,19 @@ import VideoPlay from "./VideoPlay";
  * Loan Process Updates in order, inside the page, with YouTube's own next and
  * previous controls — see playlistId in VideoPlay.
  */
-type Tile = { id: string; youtube_id: string; title: string; playlist?: string };
+type Tile = { id: string; youtube_id: string; title: string; playlist?: string; poster?: string };
 
 const FEATURE: Tile = {
   id: "mp-2min",
   youtube_id: "tUNYWih9C-8",
   title: "Mortgage Punk in 2 Minutes",
+  /* OURS, NOT YOUTUBE'S. This upload has no maxresdefault — YouTube answers
+     with a 120x90 placeholder — so the best it can give the widest image on
+     the page is a 640x480 file stretched across 1520px. This is sharp, on
+     brand, and does not wait on anyone editing YouTube. If a custom
+     thumbnail is ever uploaded there, delete this line and the wall goes
+     back to following YouTube. */
+  poster: "/brand/thumb-mp-2min.jpg",
 };
 
 const COVERS: Tile[] = [
@@ -86,6 +93,7 @@ function Feature({ v }: { v: Tile }) {
         title={v.title}
         feature
         playlistId={v.playlist}
+        poster={v.poster}
         frameClassName={`${s.art} ${s.artFeature}`}
         playClassName={s.play}
       />
@@ -102,6 +110,7 @@ function Cover({ v }: { v: Tile }) {
             youtubeId={v.youtube_id}
             title={v.title}
             playlistId={v.playlist}
+            poster={v.poster}
             frameClassName={`${s.art} ${s.artCard}`}
             playClassName={s.play}
           />
