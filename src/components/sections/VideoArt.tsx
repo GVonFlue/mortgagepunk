@@ -6,25 +6,34 @@ import { thumbnail, thumbnailSd, thumbnailLarge } from "@/lib/library";
 /**
  * The artwork inside a video card.
  *
- * WHY THIS IS A CLIENT COMPONENT for what is otherwise a plain <img>.
- * The feature slot runs the full width of the screen, and hqdefault.jpg is
- * 480x360 — soft past about 900px and carrying letterbox bars baked into the
- * pixels. maxresdefault.jpg is 1280x720 and true 16:9, but YouTube only
- * generates it for uploads that had a high-resolution source.
+ * WHY THIS IS A CLIENT COMPONENT for what is otherwise a plain <img>: two
+ * things about YouTube's thumbnails can only be discovered after one loads.
  *
- * A MISSING maxresdefault DOES NOT 404. YouTube answers 200 with a 120x90
- * grey placeholder — the one with the little play glyph on it — so onError
- * never fires and the browser happily stretches 120 pixels across the entire
- * feature. That is what put a blurred grey box at the top of the Game of
- * Money wall. The only honest test is the decoded width after it loads, which
- * is why this needs a client boundary and an onLoad rather than an onError.
+ * 1. A MISSING maxresdefault DOES NOT 404. YouTube answers 200 with a 120x90
+ *    grey placeholder — the one with the little play glyph — so onError never
+ *    fires and the browser stretches 120 pixels across the whole feature. The
+ *    only honest test is the decoded width, which needs onLoad. The step-down
+ *    is maxres -> sd -> hq.
  *
- * The step-down is maxres -> sd -> hq. sddefault is 640x480 and always
- * generated; it carries the same baked-in letterbox bars as hqdefault, but
- * the feature frame is 16:9 with object-fit:cover, which crops exactly those
- * bars off. The cards below stay on hqdefault, where at roughly 400px square
- * anything larger buys nothing and costs load time.
+ * 2. THE BLACK BARS ARE IN THE FILE, NOT IN OUR LAYOUT. hqdefault is always
+ *    480x360 and sddefault always 640x480 — both 4:3 — while the videos are
+ *    16:9, so YouTube pads them with real black pixels above and below the
+ *    picture. In the 16:9 feature that is harmless: object-fit:cover crops
+ *    exactly the padding away. In the SQUARE cards it is not, because cover
+ *    crops the sides and keeps the full height, bars and all. That is the
+ *    black band at the top and bottom of every card.
+ *
+ *    So a 4:3 source in a square card is scaled to 133.333% height and
+ *    centred: the picture is 75% of the file's height, 0.75 x 1.3333 = 1, so
+ *    the padding lands exactly outside the box and the picture exactly fills
+ *    it. maxresdefault is true 16:9 with no padding and must NOT be treated
+ *    this way, which is why the class is decided by which variant actually
+ *    loaded rather than set once.
  */
+
+/** Which variants carry baked-in letterbox padding. */
+type Variant = "maxres" | "sd" | "hq" | "none";
+
 export default function VideoArt({
   youtubeId,
   feature = false,
@@ -32,32 +41,61 @@ export default function VideoArt({
   youtubeId?: string | null;
   feature?: boolean;
 }) {
-  const initial = youtubeId
-    ? feature
-      ? thumbnailLarge(youtubeId)
-      : thumbnail(youtubeId)
-    : "/brand/hero-plate.jpg";
+  /* Cards ask for maxres too, not hq. A square crop of hq uses only 270 of
+     its 480 pixels once the padding is gone, which is softer than the tile it
+     has to fill; maxres gives 720 and falls back when it does not exist. */
+  const initial = youtubeId ? thumbnailLarge(youtubeId) : "/brand/hero-plate.jpg";
 
   const [src, setSrc] = useState(initial);
-  /** How far down the maxres -> sd -> hq chain we have stepped. */
-  const [step, setStep] = useState(0);
+  const [variant, setVariant] = useState<Variant>(youtubeId ? "maxres" : "none");
 
   function stepDown() {
-    if (!youtubeId || !feature) return;
-    if (step === 0) { setStep(1); setSrc(thumbnailSd(youtubeId)); }
-    else if (step === 1) { setStep(2); setSrc(thumbnail(youtubeId)); }
+    if (!youtubeId) return;
+    if (variant === "maxres") {
+      setVariant("sd");
+      setSrc(thumbnailSd(youtubeId));
+    } else if (variant === "sd") {
+      setVariant("hq");
+      setSrc(thumbnail(youtubeId));
+    }
   }
+
+  /* Only a 4:3 source in a square box needs the padding cropped out.
+     133.333% of the box height, pulled up by half the overflow: the picture
+     is 75% of the file, and 0.75 x 1.3333 = 1, so it fills the box exactly
+     and the padding falls outside both edges. */
+  const padded = !feature && (variant === "sd" || variant === "hq");
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      /* INLINE, AND THAT IS DELIBERATE. The callers style this element
+         directly — MoneyWall has `.art img{width:100%;height:100%;object-fit:
+         cover}` — and a class on the <img> loses to that on specificity, so
+         the crop would silently do nothing depending on bundle order. An
+         inline style beats any stylesheet rule without needing !important.
+         transform is left out on purpose so the cards' hover zoom still
+         composes on top of this. */
+      style={
+        padded
+          ? {
+              position: "absolute",
+              left: 0,
+              top: "-16.6665%",
+              width: "100%",
+              height: "133.333%",
+              maxWidth: "none",
+              objectFit: "cover",
+            }
+          : undefined
+      }
       src={src}
       alt=""
       loading={feature ? "eager" : "lazy"}
       onLoad={(e) => {
         // YouTube's "no such size" placeholder is 120x90 and arrives with a
-        // 200, so size is the only thing that distinguishes it from a real
-        // thumbnail. Anything this small is never a genuine one.
+        // 200, so size is the only thing that separates it from a real
+        // thumbnail. Nothing this small is ever a genuine one.
         if (e.currentTarget.naturalWidth > 0 && e.currentTarget.naturalWidth <= 121) {
           stepDown();
         }
