@@ -34,14 +34,25 @@ export function thumbnail(youtubeId: string): string {
   return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
 }
 
+/** 640x480. Like hqdefault it has letterbox bars baked in, but at a size
+ *  that holds up across a full-width feature. Always generated. */
+export function thumbnailSd(youtubeId: string): string {
+  return `https://i.ytimg.com/vi/${youtubeId}/sddefault.jpg`;
+}
+
 /**
  * The same thumbnail at 1280x720, for anywhere it runs wider than a card.
  *
  * hqdefault is 480x360 — a 4:3 frame with letterbox bars baked into the
  * pixels, which is invisible at card size and obvious across a full-width
  * feature. maxresdefault is true 16:9 with no bars, but YouTube only makes it
- * for uploads with a high-resolution source, so callers must be ready for a
- * 404. See VideoArt.tsx, which falls back on error.
+ * for uploads with a high-resolution source.
+ *
+ * IT DOES NOT 404 WHEN IT IS MISSING. YouTube answers 200 with a 120x90 grey
+ * placeholder, so an onError handler never fires and that 120px image gets
+ * stretched across the whole feature — which is exactly what happened to
+ * "Mortgage Punk in 2 Minutes". The only reliable test is the decoded width.
+ * See VideoArt.tsx.
  */
 export function thumbnailLarge(youtubeId: string): string {
   return `https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`;
