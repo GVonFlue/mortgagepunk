@@ -36,6 +36,7 @@ export default function VideoPlay({
   feature = false,
   frameClassName = "",
   playClassName = "",
+  playlistId,
 }: {
   youtubeId?: string | null;
   title: string;
@@ -43,6 +44,13 @@ export default function VideoPlay({
   feature?: boolean;
   frameClassName?: string;
   playClassName?: string;
+  /**
+   * Turns one tile into a whole series. The thumbnail stays the named video's,
+   * but playing it runs the playlist from that video on, with YouTube's own
+   * next/previous controls — so a nine-part walkthrough is one tile rather
+   * than nine, and the visitor still never leaves the page for youtube.com.
+   */
+  playlistId?: string;
 }) {
   const [playing, setPlaying] = useState(false);
 
@@ -60,7 +68,11 @@ export default function VideoPlay({
       <div className={`${v.box} ${frameClassName}`}>
         <iframe
           className={v.frame}
-          src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+          src={
+            `https://www.youtube-nocookie.com/embed/${youtubeId}` +
+            `?autoplay=1&rel=0&modestbranding=1&playsinline=1` +
+            (playlistId ? `&list=${playlistId}` : "")
+          }
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen

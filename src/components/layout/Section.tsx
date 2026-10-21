@@ -141,14 +141,12 @@ export default function Section({
                       } as React.CSSProperties
                     }
                   >
-                    {/* Two offset copies of the same artwork sitting behind
-                        it, recoloured and jumping between fixed positions —
-                        the misregistered screen-print look. They are the SAME
-                        file as the wordmark, tinted through a mask, so there
-                        is nothing extra to load and nothing to keep in sync
-                        when the artwork is replaced. */}
-                    <span className={`${s.ghost} ${s.ghostA}`} aria-hidden="true" />
-                    <span className={`${s.ghost} ${s.ghostB}`} aria-hidden="true" />
+                    {/* There were two offset copies of the artwork behind this
+                        one, for a misregistered screen-print look. They are
+                        gone. The wordmarks are already dense, high-contrast
+                        collages carrying their own drop shadows, and two faded
+                        duplicates behind one only softened its edges and made
+                        the lettering harder to read. One mark, clean. */}
                     {titleArt.src.endsWith(".svg") ? (
                       // An SVG gains nothing from the image optimiser and
                       // serving one through it needs SVG explicitly allowed in

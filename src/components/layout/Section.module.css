@@ -225,19 +225,16 @@
 .titleArt{position:relative}
 .titleArt img{position:relative;z-index:1}
 
-.ghost{position:absolute;inset:0;pointer-events:none;
-  background-image:var(--mark);background-size:100% 100%;
-  background-repeat:no-repeat;background-position:center}
+/* THE ECHO COPIES ARE GONE.
 
-/* near copy: closer, stronger. far copy: further, fainter.
+   Every artwork heading used to be printed three times: the wordmark itself
+   plus two offset copies behind it, originally flickering between positions
+   on a loop and then held still. Both are removed now. The wordmarks are
+   dense, high-contrast ransom-note collages with their own drop shadows —
+   stacking two faded duplicates behind one only muddied the edges and made
+   the lettering harder to read, which is the opposite of what a section
+   heading is for.
 
-   THESE NO LONGER MOVE. They used to flicker between two offsets on a 1.8s
-   loop, which put a permanent twitch under every section heading on the page —
-   The Game of Money, The Movement, all of them — competing with whatever the
-   visitor was actually reading. The staggered offset is the thing that makes
-   the wordmark read as printed twice and slightly out of register, and it does
-   that just as well standing still.
-
-   This is now what the reduced-motion state always was, applied to everyone. */
-.ghostA{z-index:0;opacity:.45;transform:translateX(3.5%)}
-.ghostB{z-index:0;opacity:.22;transform:translateX(6.5%)}
+   .ghost is kept as an empty rule rather than deleted because Section.tsx no
+   longer renders the spans at all; if the echo is ever wanted back, it is the
+   markup that has to return, not just this. */
