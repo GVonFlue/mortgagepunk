@@ -111,8 +111,12 @@ function Feature({ v }: { v: Tile }) {
         </span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className={s.tvFrame} src="/brand/tv-frame.webp" alt="" aria-hidden="true" />
+        {/* Drawn, not typeset. The first version set this in Anton and it
+            read as generic broadcast — the brand's character is in the
+            hand-cut ransom lettering, not in its supporting typeface. */}
         <span className={`${s.tvBadge} ${s.tvBadgeAct}`} aria-hidden="true">
-          Opening Act
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/wordmark-opening-act.webp" alt="" />
         </span>
       </span>
     </div>
@@ -141,10 +145,13 @@ function Cover({ v }: { v: Tile }) {
             reads as Mortgage Punk TV. aria-hidden because it is branding on
             a picture of a television, not information — the video's real
             title is the h3 below. */}
+        {/* One drawn lockup rather than the logo with a typeset TV beside it,
+            for the same reason as Opening Act above: the TV has to be brush
+            lettered in the logo's own hand or it reads as a font parked next
+            to a drawing. */}
         <span className={s.tvBadge} aria-hidden="true">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/mortgagepunk-logo@3x.png" alt="" loading="lazy" />
-          <b>TV</b>
+          <img src="/brand/logo-mp-tv.webp" alt="" loading="lazy" />
         </span>
       </span>
       <span className={s.info}>

@@ -160,25 +160,66 @@
    deviation near 90, while x 46-80% averages 24 with a deviation of 35.
    That right-hand band is the only part flat enough and dark enough to sit
    white type on, so that is where this goes. */
-.tvBadge{position:absolute;left:46%;top:4.4%;width:34%;height:12%;z-index:3;
-  display:flex;align-items:center;justify-content:center;gap:7%;
+.tvBadge{position:absolute;left:45%;top:3.4%;width:36%;height:13.6%;z-index:3;
+  display:flex;align-items:center;justify-content:center;
   pointer-events:none}
-/* The mark stays its own red. It is the brand's colour and it holds up
-   against this near-black bezel the same way it does in the footer. */
-.tvBadge img{height:72%;width:auto;display:block}
-.tvBadge b{font-family:var(--font-display),sans-serif;font-weight:400;
-  color:#fff;letter-spacing:.06em;line-height:1;font-size:8.5cqh}
+/* contain, so a mark wider than the band shrinks to fit rather than
+   spilling onto the torn tape at the left of the bezel. */
+.tvBadge img{max-width:100%;max-height:100%;width:auto;height:auto;
+  object-fit:contain;display:block}
 
-/* The feature set says what it is instead of carrying the mark — it is the
-   one at the top of the wall, so it gets billing rather than a logo. */
-.tvBadgeAct{left:44%;width:40%;
-  font-family:var(--font-display),sans-serif;color:#fff;
-  letter-spacing:.11em;text-transform:uppercase;line-height:1;
-  font-size:6.4cqh;white-space:nowrap}
-/* A red rule under it, like a lower third. Sized in cqh so it keeps its
-   weight relative to the set rather than thinning out as the card grows. */
-.tvBadgeAct::after{content:'';position:absolute;left:0;right:0;bottom:-18%;
-  height:1.1cqh;background:var(--mp-red)}
+/* The feature set gets billing rather than the mark, and the artwork is
+   wider, so it takes a little more of the bezel. */
+.tvBadgeAct{left:42%;width:44%}
+
+/* ---------- the opening act is lit ----------
+   A red bloom behind the first set, so the top of the wall reads as the one
+   that is on air rather than as the biggest of four identical tiles.
+
+   A PSEUDO-ELEMENT, NOT ANOTHER drop-shadow. .tv already carries two, and
+   animating a multi-shadow filter repaints the whole television every
+   frame. A blurred gradient behind it animates opacity only, which the
+   compositor handles on its own.
+
+   z-index:-1 works because .tv's filter makes it a stacking context, so
+   this sits behind the set's artwork while staying inside it. And
+   container-type gives size containment, not paint containment, so the
+   bloom is free to spill past the edges — which is the whole point. */
+@media(max-width:760px){
+  /* TWO LAYERS, BECAUSE A CENTRED GLOW BEHIND AN OPAQUE OBJECT IS INVISIBLE.
+     The first attempt put a radial gradient behind the set with its peak at
+     50% 50% — directly behind the television, which covers it. All that
+     escaped was the faded tail of the gradient, and it read as a smudge.
+
+     So the bloom is pushed outward: the gradient's energy now sits in a ring
+     from 40% to 85%, which is the band that actually clears the set's
+     silhouette. */
+  .tvFeature::before{content:'';position:absolute;inset:-22% -16%;z-index:-1;
+    pointer-events:none;
+    background:radial-gradient(52% 50% at 50% 52%,
+      rgba(235,41,51,0) 0%, rgba(235,41,51,.30) 40%,
+      rgba(235,41,51,.78) 62%, rgba(235,41,51,.34) 78%,
+      rgba(235,41,51,0) 92%);
+    filter:blur(26px);
+    animation:onAir 4.6s ease-in-out infinite}
+  /* Shallow and slow on purpose. A glow you catch yourself watching is a
+     glow competing with the video inside it. */
+  @keyframes onAir{0%,100%{opacity:.72}50%{opacity:1}}
+
+  /* And a hard red rim on the set's own alpha. drop-shadow follows the torn
+     silhouette rather than a rectangle, so the light hugs every ragged edge
+     of the cabinet instead of boxing it. Left out of the animation above on
+     purpose: animating a multi-shadow filter repaints the whole television
+     every frame, while the pseudo-element only moves opacity. */
+  .tvFeature{filter:
+    drop-shadow(0 0 7px rgba(235,41,51,.85))
+    drop-shadow(0 0 22px rgba(235,41,51,.55))
+    drop-shadow(0 18px 26px rgba(0,0,0,.6))
+    drop-shadow(0 2px 0 rgba(237,235,232,.09))}
+}
+@media(prefers-reduced-motion:reduce){
+  .tvFeature::before{animation:none;opacity:.88}
+}
 
 /* ---------- the big one is only a television on a phone ----------
    On a laptop the feature runs the full width of the column, and a set
@@ -190,6 +231,6 @@
 @media(min-width:761px){
   .tvFeature{container-type:normal;aspect-ratio:auto;filter:none}
   .tvFeature .tvScreen{position:static;width:100%;height:auto}
-  .tvFeature .tvFrame,.tvFeature .tvBadge{display:none}
+  .tvFeature .tvFrame,.tvFeature .tvBadge,.tvFeature::before{display:none}
   .tvFeature .art{height:auto;aspect-ratio:16/9}
 }
