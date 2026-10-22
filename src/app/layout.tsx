@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Anton, Archivo_Black, Inter } from "next/font/google";
 import "./globals.css";
 import ChatLauncher from "@/components/chat/ChatLauncher";
+import { SITE_URL as SITE_ORIGIN } from "@/lib/siteUrl";
 
 /* next/font/google is the only font source in this project. No CDN <link>
    tags, no self-hosted @font-face, no Adobe/Typekit. See ENGINEERING.md. */
@@ -30,14 +31,11 @@ const inter = Inter({
  * The public origin, used to turn every relative image path below into the
  * absolute URL that link previews require.
  *
- * Settable per environment so a preview deployment advertises itself rather
- * than production. Falls back to Vercel's own URL for the deployment, then to
- * the live domain, so a share card is never broken by a missing variable.
+ * Production always advertises https://mortgagepunk.com; see src/lib/siteUrl.ts
+ * for why it must never fall back to the deployment's own vercel.app address
+ * (that address is behind Vercel's login, so every share image broke).
  */
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ??
-  "https://mortgagepunk.vercel.app";
+const SITE_URL = SITE_ORIGIN;
 
 const TITLE = "Mortgage Punk — Reimagining the American Dream";
 const DESCRIPTION =

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getTopics } from "@/lib/db";
 import { topicSlug } from "@/lib/library";
+import { SITE_URL } from "@/lib/siteUrl";
 
 /**
  * sitemap.xml.
@@ -18,9 +19,7 @@ import { topicSlug } from "@/lib/library";
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ??
-    "https://mortgagepunk.vercel.app";
+    SITE_URL;
 
   const now = new Date();
 
