@@ -26,39 +26,63 @@ import { APPLY_URL, CALENDLY_PREAPPROVAL_URL, EXTERNAL } from "@/lib/links";
  * "Client stories" is deliberately off-site while the testimonials page has
  * nothing in it.
  */
-const COLS = [
+/** Chris's own national site, standing in for pages not built out yet. */
+const NATIONAL = "https://chriswaipanational.com";
+
+/**
+ * A footer entry is a page link, an off-site link, or the booking modal.
+ *
+ * WHY THE THREE LENDING LINKS OPEN THE CALENDAR RATHER THAN A PAGE. The brief
+ * was that Buy a home, Refinance and Investors should "lead to the contact
+ * page for Chris". The literal reading is /contact — but /contact was retired
+ * and 308s to /book, and /book is the speaking desk: keynotes, podcasts,
+ * press, sponsorship. That page carries its own "Looking for a mortgage
+ * instead?" escape link, which is the page telling you it is the wrong place
+ * for these three.
+ *
+ * Sending somebody who clicked "Refinance" to a form asking which event they
+ * are hosting is the exact bug already fixed on the Ask artwork's card. So
+ * these three open the same call booking as the rest of the site, which IS
+ * contacting Chris — about a mortgage, which is what they asked about.
+ *
+ * Speaking, Press and Book Chris do go to /book, because for those three it
+ * is the right desk.
+ */
+type Entry = { label: string; href?: string; call?: boolean };
+
+const COLS: { head: string; links: Entry[] }[] = [
   {
     head: "Lending",
     links: [
-      ["Buy a home", "/lending/buy"],
-      ["Refinance", "/lending/refinance"],
-      ["Investors", "/lending/investors"],
-      ["Get approved", APPLY_URL],
-      ["The team", "/team"],
-      ["Tools & calculators", "/tools"],
+      { label: "Buy a home", call: true },
+      { label: "Refinance", call: true },
+      { label: "Investors", call: true },
+      { label: "Get approved", href: APPLY_URL },
+      /* Until the real team page has real people on it. The two placeholder
+         "Team member" entries are why this points off-site for now. */
+      { label: "The team", href: NATIONAL },
+      /* Tools & calculators and Free guides are hidden for now, not deleted —
+         /tools and /freebies still exist and stay indexed. */
     ],
   },
   {
     head: "The Movement",
     links: [
-      ["The Game of Money", "/library"],
-      ["The mission", "/movement"],
-      ["American Dream Conference", "/movement"],
-      ["Merch", "/merch"],
-      ["Free guides", "/freebies"],
+      { label: "The Game of Money", href: "/movement" },
+      { label: "The mission", href: "/movement" },
+      { label: "American Dream Conference", href: "/movement" },
+      /* Merch keeps its own page — the only one in this column that does. */
+      { label: "Merch", href: "/merch" },
     ],
   },
   {
     head: "Chris",
     links: [
-      ["About Chris", "/about"],
-      ["Speaking", "/about#speaking"],
-      ["Press", "/about#press"],
-      /* Not parked and not /testimonials. Client stories live on Chris's
-         national site for now, so this is the one footer link that leaves —
-         see the external handling in the markup below. */
-      ["Client stories", "https://chriswaipanational.com"],
-      ["Book Chris", "/book"],
+      { label: "About Chris", href: NATIONAL },
+      { label: "Speaking", href: "/book" },
+      { label: "Press", href: "/book?type=press" },
+      { label: "Client stories", href: NATIONAL },
+      { label: "Book Chris", href: "/book" },
     ],
   },
 ];
@@ -101,21 +125,35 @@ export default function SiteFooter() {
           <div key={c.head}>
             <h5>{c.head}</h5>
             <ul>
-              {c.links.map(([label, href]) => (
-                /* Keyed on the label, not the href. Every href is "/" while
-                   the links are parked, and duplicate keys make React drop all
-                   but one item from each column. */
-                /* An off-site destination gets a real anchor with the external
-                   props. next/link would render it, but without target and
-                   rel it takes the visitor off Mortgage Punk in the same tab
-                   and hands the destination a handle on this window. */
-                <li key={label}>
-                  {href.startsWith("http") ? (
-                    <a href={href} {...EXTERNAL}>
-                      {label}
+              {c.links.map((l) => (
+                /* Keyed on the label, not the href. Three entries in The
+                   Movement share /movement, and duplicate keys make React
+                   drop all but one item from the column. */
+                <li key={l.label}>
+                  {l.call ? (
+                    /* Styled as a link, behaves as the booking modal.
+
+                       BOTH children AND label, deliberately. Children render
+                       the bare word — `label` alone appends an arrow, which
+                       is right for a button and wrong in a list of links.
+                       Passing label as well is what suppresses CallBooking's
+                       "Schedule a call with Chris" aria-label, which would
+                       otherwise announce something different from the visible
+                       word and break label-in-name. */
+                    <CallBooking className={s.ftLink} label={l.label}>
+                      {l.label}
+                    </CallBooking>
+                  ) : l.href!.startsWith("http") ? (
+                    /* An off-site destination gets a real anchor with the
+                       external props. next/link would render it, but without
+                       target and rel it takes the visitor off Mortgage Punk in
+                       the same tab and hands the destination a handle on this
+                       window. */
+                    <a href={l.href} {...EXTERNAL}>
+                      {l.label}
                     </a>
                   ) : (
-                    <Link href={href}>{label}</Link>
+                    <Link href={l.href!}>{l.label}</Link>
                   )}
                 </li>
               ))}

@@ -315,6 +315,17 @@
 .ft ul{list-style:none;display:grid;gap:10px;margin:0;padding:0}
 .ft ul a{font-size:14px;color:#A8A8A8;text-decoration:none;transition:color .2s}
 .ft ul a:hover{color:var(--mp-bone)}
+
+/* Three entries in this list open the booking modal instead of navigating,
+   so they are buttons. Everything here exists to make a button indis-
+   tinguishable from the anchors beside it: a UA stylesheet gives a button its
+   own font, centres its text, and draws a border and a background. */
+.ftLink{display:inline;padding:0;border:0;background:none;cursor:pointer;
+  text-align:left;font-family:var(--font-body),sans-serif;
+  font-size:14px;line-height:inherit;color:#A8A8A8;transition:color .2s;
+  -webkit-appearance:none;appearance:none}
+.ftLink:hover{color:var(--mp-bone)}
+.ftLink:focus-visible{outline:2px solid var(--mp-red);outline-offset:3px}
 .legal{max-width:1400px;margin:44px auto 0;padding-top:26px;
   border-top:1px solid var(--mp-line);font-size:12px;line-height:1.7;color:#6E6E6E}
 .marks{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-weight:800;

@@ -42,17 +42,17 @@
 .name{margin:0;display:block}
 
 /* WIDTH, NOT FONT-SIZE. The mark is an image, so what used to be a clamp on
-   type is a clamp on how wide the picture is allowed to get. 46vw lands it
-   at roughly the weight the typeset name had, and the 760px ceiling stops it
-   growing past its own 2107px on an ultrawide, where upscaling would soften
-   the cut edges that are the whole point of it.
+   type is a clamp on how wide the picture is allowed to get. Every value here
+   is 80% of what it was — the mark was competing with the photograph rather
+   than sitting on it.
 
-   The shadow follows the alpha rather than the box, so it falls off the torn
-   tiles and the mark reads as paper lying ON the photograph — a box-shadow
-   would draw a rectangle around the whole thing. */
-.nameArt{display:block;width:clamp(260px,46vw,760px);height:auto;
-  filter:drop-shadow(0 clamp(8px,1vw,18px) clamp(22px,2.6vw,46px) rgba(0,0,0,.62))}
-@media(max-width:900px){.nameArt{width:min(86vw,520px)}}
+   NO DROP SHADOW. There was one, and it had to go: a soft dark halo around a
+   rectangular arrangement of rectangular paper tiles reads as a panel behind
+   the lettering rather than as depth, so the name looked boxed in. The tiles
+   are opaque white, red and black and carry their own contrast against the
+   photograph; they do not need help separating from it. */
+.nameArt{display:block;width:clamp(208px,36.8vw,608px);height:auto}
+@media(max-width:900px){.nameArt{width:min(69vw,416px)}}
 
 /* Visually gone, still read aloud and still indexed — the heading's real
    words, beside the artwork that replaced them. */
