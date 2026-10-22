@@ -532,6 +532,15 @@
    the duration, then the resting rule takes over again at the end. */
 .feature[data-entrance="fly"] .tvGlow{animation:mwLightUp .95s both}
 .wrap:has(> .feature[data-entrance="fly"]){animation:mwShudder .95s both}
+/* THE SHUDDER NEEDS A CLIP ONE LEVEL OUT. .wrap clips sideways spill from
+   everything inside it, but the shudder moves .wrap itself, and nothing
+   clips its own movement — it slid up to 7px past the edge of a 375px
+   screen. Chrome on a laptop hides that with the root's overflow; an iPhone
+   does not reliably, and the whole page became draggable sideways while it
+   played. The section is full width and does not move, so it holds the
+   line. clip, not hidden: no scroll container, and the glow still bleeds up
+   and down. */
+:global(#money){overflow-x:clip}
 
 @keyframes mwSlam{
   0%  {opacity:0;transform:translateY(var(--fromY,0px)) scale(2.8);

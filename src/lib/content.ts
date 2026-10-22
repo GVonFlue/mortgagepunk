@@ -221,8 +221,8 @@ export const SEED_CONFERENCE: Conference = {
   blurb: "Real education, real connections, and the volume all the way up.",
   stats: [
     { value: "3", label: "Keynotes" },
-    { value: "15", label: "Breakouts" },
-    { value: "1", label: "Live concert" },
+    { value: "10", label: "Breakouts" },
+    { value: "3", label: "Artists" },
   ],
   prizes: [
     "Full kitchen remodel, given away live",

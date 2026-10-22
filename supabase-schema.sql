@@ -91,7 +91,7 @@ insert into site_conference (id, headline, date_label, venue, keynote, blurb, st
 values (1, 'The American Dream Conference', 'October 16, 2027',
         'Hyatt Regency · Wichita, Kansas', 'Hannah Hammond',
         'Not a sit-in-a-chair seminar. Real education, real connections, and the volume all the way up.',
-        '[{"value":"3","label":"Keynotes"},{"value":"15","label":"Breakouts"},{"value":"1","label":"Live concert"}]'::jsonb,
+        '[{"value":"3","label":"Keynotes"},{"value":"10","label":"Breakouts"},{"value":"3","label":"Artists"}]'::jsonb,
         '["Full kitchen remodel, given away live","A brand new roof","New HVAC system","Interior and exterior paint job","One month of mortgage payments"]'::jsonb,
         'https://mortgagepunklive.com')
 on conflict (id) do nothing;

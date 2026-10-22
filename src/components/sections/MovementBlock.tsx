@@ -7,7 +7,7 @@ import { getConference } from "@/lib/db";
  * Mission + the American Dream Conference.
  *
  * Conference details are taken from mortgagepunklive.com and Chris's
- * onboarding: 3 keynotes, 15 breakouts, a live concert, and the home-upgrade
+ * onboarding: 3 keynotes, 10 breakouts, 3 artists, and the home-upgrade
  * giveaways. The next event is Oct 16 2027 per onboarding — the live site is
  * still showing the April 2026 event, which has already happened.
  */
