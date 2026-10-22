@@ -141,6 +141,28 @@
    one continuous surface, which is the point of the fixed ground. */
 .onGround:has(> .open){padding-block:clamp(16px,1.8vw,28px)}
 
+/* THE FOOTER CLIMBS INTO WHATEVER IS ABOVE IT. It carries a negative
+   margin-top of up to 48px and a z-index, so it rises into the last section
+   and paints over it — that overlap is what makes its rounded top read as a
+   panel sliding up the page rather than a box sitting below one.
+
+   That only works while the section above has slack to give. Tightening the
+   section padding above took the slack away and the footer started covering
+   the Join the Movement button on phones. The last section gets back exactly
+   what the footer takes, plus air: 64px against a 28px climb on a phone,
+   ~100px against 48px on a laptop.
+
+   Scoped with `:has(+ footer)` so it only applies where a footer actually
+   follows, rather than padding the foot of every section on the site.
+
+   THE CLASS IS REPEATED ON PURPOSE. `.onGround:has(> .open)` above sets
+   `padding-block`, which writes both edges, and scores (0,2,0): one class
+   plus the class inside :has(). A plain `.sec:has(+ footer)` is (0,1,1) —
+   a class plus a type selector — so it loses, and the padding below silently
+   did nothing. Naming the class twice takes this to (0,2,1), which wins on
+   specificity rather than on !important. */
+.sec.sec:has(+ footer){padding-bottom:clamp(64px,7vw,110px)}
+
 /* the red panel keeps its colour but now floats like the rest */
 .redPanel{background:linear-gradient(150deg,#FF4438 0%,#EB2933 46%,#A8141C 100%);
   color:var(--mp-black);border:0;
