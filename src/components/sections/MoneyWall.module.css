@@ -34,7 +34,12 @@
   padding-inline:24px}
 
 /* ---------- the two shapes ---------- */
-.feature,.card{display:block;width:100%;text-align:left;color:inherit}
+/* --rest is the opacity each tile settles at. It is a property rather than a
+   literal because two separate things need to agree on it: the dimming of
+   the shelf on a phone, and the end frame of the scroll animation at the
+   bottom of this file. Writing .74 in both places would mean a tile that
+   animates in to full brightness and then snaps down to dim. */
+.feature,.card{--rest:1;display:block;width:100%;text-align:left;color:inherit}
 
 /* ---------- artwork ---------- */
 /* The box is sized by aspect-ratio and the image fills it. Setting the ratio
@@ -262,12 +267,16 @@
 
      opacity rather than a brightness filter, because .tv already carries a
      filter for its drop-shadows and setting another would replace them. */
-  .row .card{opacity:.74;transition:opacity .35s ease}
+  .row .card{--rest:.74;opacity:var(--rest);transition:opacity .35s ease}
 
   /* Never dim a video somebody is actually watching. VideoPlay swaps the
      still for an iframe on play and marks nothing an ancestor can see, so
-     :has is doing the asking — no prop, no state, no extra render. */
-  .row .card:has(iframe){opacity:1}
+     :has is doing the asking — no prop, no state, no extra render.
+     Moving --rest rather than opacity matters: a scroll animation on this
+     element would out-rank a plain opacity rule and the tile would stay dim
+     with a video playing in it. The animation reads --rest, so changing the
+     property moves the animation's own end frame. */
+  .row .card:has(iframe){--rest:1}
 
   /* And a hard red rim on the set's own alpha. drop-shadow follows the torn
      silhouette rather than a rectangle, so the light hugs every ragged edge
@@ -298,4 +307,102 @@
   .tvFeature .tvFrame,.tvFeature .tvBadge,
   .tvFeature::before,.tvFeature::after{display:none}
   .tvFeature .art{height:auto;aspect-ratio:16/9}
+}
+
+/* ---------- the wall assembles as you scroll ----------
+   The feature rises into place and the three covers grow in from the back of
+   the page behind it, each one starting a little after the last.
+
+   BUILT SO THAT NOTHING CAN BREAK IF IT IS NOT SUPPORTED. The whole block is
+   inside @supports, and the un-animated state of every tile is its finished
+   state — full size, full opacity, in position. A browser without
+   scroll-driven animations is not shown a degraded version of this; it is
+   shown the page exactly as it was before this was written. That is the only
+   reason it is safe to put a brand new CSS feature on a site being unveiled
+   tomorrow.
+
+   The @supports guard is load-bearing in a second way. Without it, a browser
+   that understands @keyframes but not animation-timeline would run these on
+   the ordinary document clock — every tile would play its entrance once, on
+   load, whether or not it was anywhere near the screen, and the covers would
+   have finished growing before you scrolled to them.
+
+   LONGHAND, NOT THE `animation` SHORTHAND. The shorthand resets
+   animation-timeline to auto, so writing `animation: mwRise linear both`
+   above `animation-timeline: view()` silently un-does the timeline on every
+   browser and hands back exactly the on-load bug described above. */
+@supports (animation-timeline: view()){
+  @media(prefers-reduced-motion:no-preference){
+
+    .feature,.row .card,.cta{
+      animation-timing-function:linear;
+      animation-fill-mode:both;
+      animation-duration:auto;
+      animation-timeline:view()}
+
+    .feature{animation-name:mwArrive;animation-range:entry 0% entry 80%}
+
+    /* Each cover finishes further into its own entry than the one before, so
+       they cascade rather than landing together. On a phone the column puts
+       real scroll distance between them and they arrive one at a time; in the
+       three-up row they enter at the same moment and this offset is the only
+       thing making it a sequence. */
+    .row .card{animation-name:mwRise;animation-range:entry 0% entry 78%}
+    .row .card:nth-child(2){animation-range:entry 10% entry 88%}
+    .row .card:nth-child(3){animation-range:entry 20% entry 98%}
+
+    .cta{animation-name:mwArrive;animation-range:entry 0% entry 70%}
+
+    /* EVERY RANGE ENDS AT OR BEFORE `entry 100%`, AND THAT IS THE WHOLE
+       SAFETY ARGUMENT. entry 100% is the moment the tile is completely
+       inside the viewport, so the animation is always finished before you
+       are properly looking at the thing. Run the range past that — into
+       `cover`, which is the obvious way to make the effect longer and more
+       dramatic — and stopping mid-scroll strands a tile at 70% size in the
+       middle of the screen, where it reads as a bug rather than as an
+       effect. Somebody presenting this will stop scrolling to talk about a
+       video, and it has to be full size when they do.
+
+       These were originally about a third shorter, which was safe but over
+       so fast it was barely perceptible. This is the slowest they can be
+       while keeping that guarantee. */
+
+    /* THE FEATURE DOES NOT SCALE ON A PHONE, AND THAT IS DELIBERATE.
+       It is the one tile carrying the glow — four drop-shadows plus two
+       blurred layers — and scaling a filtered element means re-rasterizing
+       all of that on every frame of the scroll. Translate and opacity are
+       work the compositor can do on an already-drawn layer; scale on top of
+       a stack of blurs is not. Above 760px the glow is switched off and the
+       filter is `none`, so the scale costs nothing and comes back.
+
+       I could not measure this honestly — a headless browser with no GPU in
+       a container is not a phone, and the numbers it gave contradicted
+       themselves. So rather than ship on a measurement I did not trust, the
+       expensive case is simply not built. The entrance still reads: the set
+       rises and fades up, which is what it did anyway, because at that size
+       a 10% scale was the least visible part of the move. */
+    @keyframes mwArrive{
+      from{opacity:0;transform:translateY(30px) scale(.9)}
+      to{opacity:var(--rest,1);transform:none}
+    }
+    @keyframes mwArriveFlat{
+      from{opacity:0;transform:translateY(30px)}
+      to{opacity:var(--rest,1);transform:none}
+    }
+    @media(max-width:760px){
+      .feature{animation-name:mwArriveFlat}
+    }
+
+    /* Opacity is full by 26% while the scale is still only about half, so the
+       growth is the part you watch. Starting the scale at a literal 0 was the
+       brief and looks worse than it sounds: the tile spends its first frames
+       as a speck that reads as a rendering fault, and nothing below about .3
+       is distinguishable from nothing at all. This starts where the eye can
+       actually pick it up and grows from there. */
+    @keyframes mwRise{
+      from{opacity:0;transform:translateY(36px) scale(.3)}
+      26%{opacity:var(--rest,1)}
+      to{opacity:var(--rest,1);transform:none}
+    }
+  }
 }
