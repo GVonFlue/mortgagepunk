@@ -2,21 +2,24 @@ import Link from "next/link";
 import Image from "next/image";
 import s from "./SocialWall.module.css";
 import SnakeGrid from "./SnakeGrid";
+import { getSocialTiles } from "@/lib/db";
+import { INSTAGRAM_PROFILE, type WallShape } from "@/lib/socialTiles";
 
 /**
  * The Movement — a wall of Instagram posts at mixed sizes.
  *
- * WHY THESE ARE STATIC RIGHT NOW: pulling a live Instagram feed needs a Meta
- * app, a long-lived access token and a refresh job, because the tokens expire
- * every 60 days. That is its own piece of work and it would block this layout
- * from being seen at all. So the grid is real and the tiles are real posts —
- * swapping the source for a live feed later touches this one component and
- * nothing else.
+ * CHRIS PICKS THESE IN BACKSTAGE → Movement wall: upload a picture, paste
+ * the post's link, choose its shape, drag it into place, hide or show it. The
+ * tiles come from the social_tiles table, and until that exists the wall is
+ * the seed set in lib/socialTiles.ts — the wall exactly as it first shipped.
+ * Why hand-picked rather than a live Instagram feed is explained there.
  *
- * EVERY TILE LINKS TO THE PROFILE, not to an individual post. The artwork was
- * delivered as a folder of exports with no permalinks attached, so the profile
- * is the only honest destination. When the live feed lands, each tile gets its
- * own post URL and this constant becomes the fallback.
+ * EACH TILE OPENS ITS OWN POST when it has a link, and the profile when it
+ * doesn't. The first delivery was a folder of exports with no permalinks, so
+ * every tile opened the profile; links are filled in as they are found.
+ *
+ * WHAT FOLLOWS IS HOW THE SEED SET WAS CHOSEN, and the same rules are worth
+ * keeping when the wall is edited.
  *
  * ---------------------------------------------------------------------------
  * THE DUPLICATES ARE GONE. The first version of this wall ran twelve tiles off
@@ -33,7 +36,7 @@ import SnakeGrid from "./SnakeGrid";
  * SHAPE IS CHOSEN TO MATCH THE SOURCE, NOT TO FILL A SLOT. These are mostly
  * lettered graphics rather than photographs, and the lettering IS the content,
  * so a tile whose declared ratio disagrees with its file gets its headline
- * cropped off by object-fit. Each entry below takes the ratio nearest its own
+ * cropped off by object-fit. Each seed entry takes the ratio nearest its own
  * file. The event photographs are the exception: they are real photography and
  * crop happily, so they take whatever shape the rhythm needs.
  *
@@ -44,61 +47,15 @@ import SnakeGrid from "./SnakeGrid";
  * non-reel. Reordering is free; clustering the shapes is not.
  */
 
-const INSTAGRAM = "https://www.instagram.com/mortgagepunk";
-
-type Shape = "square" | "portrait" | "tallish" | "reel";
-type Tile = { src: string; alt: string; shape: Shape };
-
 /* The box enforces the ratio, so these are the rendered shape rather than the
    file's own pixels — they exist to give next/image an aspect hint and to stop
    it guessing. `sizes` is what actually drives the srcset. */
-const DIMS: Record<Shape, [number, number]> = {
+const DIMS: Record<WallShape, [number, number]> = {
   reel: [720, 1280],
   tallish: [900, 1200],
   portrait: [1000, 1250],
   square: [1000, 1000],
 };
-
-const S = "/brand/social/";
-
-const TILES: Tile[] = [
-  { src: S + "adc-movement-poster.jpg", alt: "American Dream Conference poster: the American Dream isn't a memory, it's a movement", shape: "reel" },
-  { src: "/brand/adc-concert.jpg", alt: "Live music closing the conference", shape: "square" },
-  { src: S + "portrait-red.jpg", alt: "Chris in red light, straightening his collar", shape: "reel" },
-  { src: S + "whats-your-next-move.jpg", alt: "What's your next move? The Game of Money", shape: "reel" },
-  { src: S + "lender-lies-01.jpg", alt: "Lender Lies number one: the $12,000 free refinance", shape: "tallish" },
-  { src: S + "so-it-sucked-less.jpg", alt: "So it sucked less? Chris and a guest mid-conversation", shape: "reel" },
-  { src: S + "review-five-star.jpg", alt: "A client review of working with Chris and the Mortgage Punk team", shape: "portrait" },
-  { src: S + "lender-lies-02.jpg", alt: "Lender Lies number two: why is my lender ghosting me?", shape: "reel" },
-  { src: S + "nobody-came-for-a-mortgage.jpg", alt: "Nobody came here for a mortgage — Chris on the mic", shape: "reel" },
-  { src: "/brand/adc-panel.jpg", alt: "Panel session on stage", shape: "tallish" },
-  { src: S + "thank-you-wichita.jpg", alt: "Thank you, Wichita — same energy in 2027?", shape: "reel" },
-  { src: S + "seventy-k-first-home.jpg", alt: "How they got $70,000 to buy their first home", shape: "reel" },
-  { src: S + "own-it.jpg", alt: "Own it: you don't have to inherit someone else's definition of the American Dream", shape: "square" },
-  { src: S + "podcast-kash-nancy-shih.jpg", alt: "The Mortgage Punk Show: Achieve K.A.S.H. to make more cash, with Nancy Shih", shape: "reel" },
-  { src: "/brand/adc-phone.jpg", alt: "An attendee filming the keynote", shape: "portrait" },
-  { src: S + "american-dream-tee.jpg", alt: "American Dream tee: own it, beyond a paycheck", shape: "reel" },
-  { src: S + "client-story-nothing-to-lose.jpg", alt: "Client story: five years ago he had nothing to lose", shape: "reel" },
-  { src: S + "not-everything-needs-a-strategy.jpg", alt: "Not everything needs a strategy", shape: "tallish" },
-  { src: "/brand/adc-stage-crowd.jpg", alt: "Chris on stage at the conference, room full", shape: "reel" },
-  { src: S + "paycheck-isnt-the-playbook.jpg", alt: "Your paycheck isn't the playbook", shape: "square" },
-  { src: S + "problems-start-at-preapproval.jpg", alt: "Most mortgage problems start at pre-approval", shape: "reel" },
-  { src: S + "what-does-freedom-mean.jpg", alt: "What does freedom actually mean? Live at Backstage Pass", shape: "reel" },
-  { src: S + "vote-punk-best-of-wichita.jpg", alt: "Vote Punk — Best of Wichita 2026, home mortgage and financial education", shape: "portrait" },
-  { src: S + "one-closing-three-wins.jpg", alt: "One closing, three wins: home equity, debt paid off, startup capital", shape: "reel" },
-  { src: S + "game-of-money-chapter-02.jpg", alt: "The Game of Money, chapter two: I've failed, I'm still learning", shape: "tallish" },
-  { src: S + "never-too-late-to-learn.jpg", alt: "Real people, real conversations — it's never too late to learn the game", shape: "reel" },
-  { src: S + "american-dream-rewrite.jpg", alt: "The American Dream: the freedom and opportunity to rewrite your story", shape: "reel" },
-  { src: "/brand/adc-education.jpg", alt: "Breakout session at the conference", shape: "square" },
-  { src: S + "ninety-to-a-million.jpg", alt: "$90 to $1,000,000? The Suck Less Mortgage Process", shape: "reel" },
-  { src: "/brand/chris-stage.jpg", alt: "Chris mid-keynote", shape: "portrait" },
-  { src: S + "recruit-at-restaurants.jpg", alt: "I recruit at restaurants — podcast interview", shape: "reel" },
-  { src: S + "show-sponsor-kihle.jpg", alt: "The Mortgage Punk Show, sponsored by Kihle Roofing and Construction", shape: "reel" },
-  { src: S + "freedom-on-your-own-terms.jpg", alt: "The American Dream was never about having it all — it was about the freedom to build a life on your own terms", shape: "tallish" },
-  { src: S + "explanation-didnt-fail.jpg", alt: "The American Dream didn't fail. The explanation did.", shape: "reel" },
-  { src: "/brand/adc-stageset.jpg", alt: "The stage before doors", shape: "tallish" },
-  { src: "/brand/adc-interview.jpg", alt: "Chris interviewing on stage", shape: "reel" },
-];
 
 /* Six columns on a wide monitor down to two on a phone — so the tile is never
    wider than about a fifth of the viewport except on a phone. Without this the
@@ -107,22 +64,27 @@ const TILES: Tile[] = [
 const SIZES =
   "(max-width:700px) 50vw, (max-width:980px) 34vw, (max-width:1280px) 25vw, (max-width:1600px) 20vw, 17vw";
 
-export default function SocialWall() {
+export default async function SocialWall() {
+  const tiles = await getSocialTiles({ visibleOnly: true });
   return (
     <div className={s.wrap}>
       {/* SnakeGrid works out where each tile landed so the scroll animation
           can sweep each row — see SnakeGrid.tsx. */}
       <SnakeGrid className={s.grid}>
-        {TILES.map((t, i) => {
-          const [w, h] = DIMS[t.shape];
+        {tiles.map((t, i) => {
+          const [w, h] = DIMS[t.shape] ?? DIMS.reel;
           return (
             <a
-              key={t.src}
-              href={INSTAGRAM}
+              key={t.id}
+              href={t.href || INSTAGRAM_PROFILE}
               target="_blank"
               rel="noopener noreferrer"
               className={`${s.tile} ${s[t.shape]}`}
-              aria-label={`${t.alt} — open Mortgage Punk on Instagram`}
+              aria-label={
+                t.href
+                  ? `${t.alt} — open this post on Instagram`
+                  : `${t.alt} — open Mortgage Punk on Instagram`
+              }
             >
               <Image
                 src={t.src}

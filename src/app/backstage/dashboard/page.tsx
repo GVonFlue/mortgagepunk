@@ -2,7 +2,7 @@ import Link from "next/link";
 import Shell from "@/components/backstage/Shell";
 import Notice from "@/components/backstage/Notice";
 import s from "@/components/backstage/Backstage.module.css";
-import { dbProbe, getVideos, getLeads, getPress, getAnnouncement } from "@/lib/db";
+import { dbProbe, getVideos, getLeads, getPress, getAnnouncement, getSocialTiles } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +48,14 @@ function Icon({ name }: { name: string }) {
         <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
         <circle cx="8.5" cy="10" r="1.6" />
         <path d="m3.5 17 5-4.5 4 3.5 3-2.5 5 4" />
+      </>
+    ),
+    grid: (
+      <>
+        <rect x="3" y="3" width="7.5" height="11" rx="1.5" />
+        <rect x="13.5" y="3" width="7.5" height="7" rx="1.5" />
+        <rect x="3" y="17" width="7.5" height="4" rx="1.5" />
+        <rect x="13.5" y="13" width="7.5" height="8" rx="1.5" />
       </>
     ),
     inbox: (
@@ -115,11 +123,12 @@ function Icon({ name }: { name: string }) {
 
 export default async function Overview() {
   const probe = await dbProbe();
-  const [videos, leads, press, announcement] = await Promise.all([
+  const [videos, leads, press, announcement, wall] = await Promise.all([
     getVideos(),
     getLeads(50),
     getPress(),
     getAnnouncement(),
+    getSocialTiles({ visibleOnly: true }),
   ]);
 
   const liveVideos = videos.filter((v) => v.published).length;
@@ -138,6 +147,14 @@ export default async function Overview() {
       title: "Photos",
       blurb: "Swap the pictures on the About and Movement pages.",
       icon: "image",
+      accent: true,
+    },
+    {
+      href: "/backstage/wall",
+      title: "Movement wall",
+      blurb: "The Instagram posts under The Movement on the home page, and where each one opens.",
+      icon: "grid",
+      meta: `${wall.length} showing`,
       accent: true,
     },
     {

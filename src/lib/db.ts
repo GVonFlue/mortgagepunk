@@ -6,6 +6,7 @@ import {
   type Announcement, type Lead, type Testimonial, type Hero,
 } from "./content";
 import { type SiteImage } from "./images";
+import { SEED_SOCIAL_TILES, type SocialTile } from "./socialTiles";
 
 /**
  * Supabase access via PostgREST over plain fetch.
@@ -312,6 +313,58 @@ export async function saveImage(img: SiteImage): Promise<void> {
 /** Drop an override and fall back to the file that shipped with the build. */
 export async function clearImage(slot: string): Promise<void> {
   await rest(`site_images?slot=eq.${encodeURIComponent(slot)}`, "DELETE");
+}
+
+// ---------------------------------------------------------------------------
+// THE MOVEMENT WALL
+// ---------------------------------------------------------------------------
+// The tiles under The Movement on the home page. See lib/socialTiles.ts.
+
+/**
+ * An empty table reads as "not set up yet" and gets the shipped wall, the
+ * same as a missing or unreachable one. Nobody wants a home page with a blank
+ * where the wall was, and the API refuses to save an empty wall, so an empty
+ * table only ever means the migration has not seeded it.
+ */
+export async function getSocialTiles(opts?: { visibleOnly?: boolean }): Promise<SocialTile[]> {
+  const all = await safeRead(
+    async () => {
+      const rows = await rest<SocialTile[]>("social_tiles?select=*&order=sort.asc");
+      return rows.length ? rows : SEED_SOCIAL_TILES;
+    },
+    SEED_SOCIAL_TILES,
+    "social_tiles"
+  );
+  return opts?.visibleOnly ? all.filter((t) => !t.hidden) : all;
+}
+
+/** Whether the table exists yet, so Backstage can say "run the setup step"
+ *  instead of letting someone edit a wall that cannot be saved. */
+export async function wallTableReady(): Promise<{ ok: boolean; error?: string }> {
+  if (!dbReady()) return { ok: false, error: "The database isn't connected." };
+  try {
+    await rest("social_tiles?select=id&limit=1");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+/**
+ * Save the whole wall: upsert every tile, then delete whatever is no longer
+ * in the list.
+ *
+ * In that order on purpose. Every other list here deletes everything and
+ * re-inserts, which leaves a moment with nothing in the table — harmless for
+ * a press page, but this is the home page, and a visitor landing in that
+ * moment would get the fallback wall instead of Chris's. Upserting first
+ * means the table is never emptier than the wall being saved.
+ */
+export async function saveSocialTiles(items: SocialTile[]): Promise<void> {
+  if (!items.length) throw new Error("The wall needs at least one picture.");
+  await rest("social_tiles", "POST", items, "resolution=merge-duplicates");
+  const keep = items.map((t) => `"${t.id.replace(/"/g, "")}"`).join(",");
+  await rest(`social_tiles?id=not.in.(${encodeURIComponent(keep)})`, "DELETE");
 }
 
 // ---------------------------------------------------------------------------

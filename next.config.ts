@@ -27,7 +27,34 @@ const CONFERENCE_DOMAINS = [
   "(www\\.)?mortgagepunklive\\.com",
 ];
 
+function supabaseHost() {
+  try {
+    const u = new URL(process.env.SUPABASE_URL ?? "");
+    if (u.protocol !== "https:" || u.hostname.endsWith(".supabase.co")) return [];
+    return [{ protocol: "https" as const, hostname: u.hostname, pathname: "/storage/v1/object/public/**" }];
+  } catch {
+    return [];
+  }
+}
+
 const nextConfig: NextConfig = {
+  /* Pictures uploaded through Backstage live in Supabase storage, not in
+     /public, and next/image refuses any outside address that isn't listed
+     here. Without this, a photo swapped in Backstage → Photos or a new tile
+     on the Movement wall would save fine and then fail to show. Public
+     storage objects only, nothing else on the host. */
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+      // And whatever host SUPABASE_URL actually names, in case the project
+      // is ever moved onto a custom domain.
+      ...supabaseHost(),
+    ],
+  },
   async redirects() {
     return CONFERENCE_DOMAINS.map((host) => ({
       /* Every path, not just the root. A QR code printed with a deep link

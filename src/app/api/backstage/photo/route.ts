@@ -33,7 +33,12 @@ export async function POST(req: Request) {
     const file = form.get("file");
     const slotKey = String(form.get("slot") ?? "");
 
-    const slot = ALL_SLOTS.find((s) => s.key === slotKey);
+    // "wall" is the Movement wall: not a fixed spot on a page but a new tile,
+    // so it has no entry in the slot registry. Same checks otherwise.
+    const slot =
+      slotKey === "wall"
+        ? { key: "wall", needsTransparency: false }
+        : ALL_SLOTS.find((s) => s.key === slotKey);
     if (!slot) {
       return NextResponse.json(
         { ok: false, error: `Unknown photo slot "${slotKey}".` },
@@ -70,7 +75,10 @@ export async function POST(req: Request) {
     }
 
     const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
-    const path = `sections/${slot.key}-${Date.now()}.${ext}`;
+    const path =
+      slot.key === "wall"
+        ? `wall/${Date.now()}.${ext}`
+        : `sections/${slot.key}-${Date.now()}.${ext}`;
     const base = process.env.SUPABASE_URL?.replace(/\/$/, "");
     const key = process.env.SUPABASE_SERVICE_KEY ?? "";
 
