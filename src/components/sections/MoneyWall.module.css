@@ -41,6 +41,13 @@
    animates in to full brightness and then snaps down to dim. */
 .feature,.card{--rest:1;display:block;width:100%;text-align:left;color:inherit}
 
+/* The scroll hold's two wrappers (see Feature in MoneyWall.tsx). Full width
+   always, because .wrap is a centred flex column: a child with no width of
+   its own shrinks to its content there, and .feature's width:100% would then
+   resolve against a box sized by .feature — the set collapses. Everything
+   else about them is switched on only in the @supports block at the end. */
+.featureHold,.featureStick{display:block;width:100%}
+
 /* ---------- artwork ---------- */
 /* The box is sized by aspect-ratio and the image fills it. Setting the ratio
    here rather than letting the file decide means the space is reserved before
@@ -340,7 +347,69 @@
       animation-duration:auto;
       animation-timeline:view()}
 
-    .feature{animation-name:mwArrive;animation-range:entry 0% entry 80%}
+    /* ---------- the scroll hold ----------
+       featureStick is exactly one viewport tall and sticks to the top of a
+       hold 60svh taller than that, so the set locks in the middle of the
+       screen for 60svh of scrolling and then lets go.
+
+       ONE VIEWPORT TALL IS THE WHOLE TRICK. The obvious build is to stick
+       the feature itself, but then when it pins — and so every number below
+       — depends on how tall the feature happens to be, which changes with
+       the column width, and the timings drift from screen to screen. With a
+       viewport-tall container the hold is 100svh + 60svh however big the set
+       inside it is, so the fractions underneath hold everywhere.
+
+       Totals: the hold crosses the viewport over 100svh + 160svh = 260svh.
+       The pin starts at 100/260 = 38.5% and ends at 160/260 = 61.5%, and the
+       set first appears at the top of the screen at about 19%. Those three
+       numbers are what the range below is built from. */
+    .featureHold{height:160svh;view-timeline-name:--mwHold;view-timeline-axis:block}
+    .featureStick{position:sticky;top:0;height:100svh;
+      display:grid;place-items:center}
+
+    /* Keeps a 16:9 feature inside the viewport on a short laptop. Without it
+       a 1440x800 screen draws the set taller than the pane holding it and
+       the bottom is cut off for the whole hold. */
+    .featureStick>.feature{max-width:min(100%,calc((92svh - 40px) * 16 / 9))}
+
+    /* Timed off the hold, NOT off the set. The set does not move while it is
+       pinned, so a view() timeline on it would freeze mid-animation for the
+       length of the hold — the hold is the thing still travelling, so the
+       hold is what the clock reads.
+
+       Starts at 19%, the moment the set clears the bottom of the screen, so
+       there is no empty pane scrolling past first. Ends at 46%, which is
+       just after the pin starts at 38.5% — it rises into place, locks, and
+       finishes assembling locked, which is the beat. From 46% to 61.5% it
+       simply sits there, fully assembled, which is the pause. */
+    .feature{animation-name:mwArrive;animation-timeline:--mwHold;
+      animation-range:cover 19% cover 46%}
+
+    /* ---------- where the nav link lands ----------
+       The nav's "The Game of Money" is a jump to #money. With the hold in
+       place, the ordinary landing — the section's top, 72px under the nav —
+       puts the heading on screen and the set below it at cover ~25%: on
+       screen, and still invisible, because nobody has scrolled yet to make it
+       arrive. Measured: opacity 0 on a laptop. Click the nav mid-presentation
+       and the room sees a heading over an empty pane.
+
+       So the jump lands inside the hold instead, 40svh past where the pin
+       starts — locked, fully assembled, glow lit, the middle of the pause.
+       The pin runs 0-60svh past its start and the set is fully assembled
+       from about 20svh, so 40svh sits in the middle with ±20svh to spare.
+
+       The section-to-hold distance is a measured constant per tier, not a
+       guess: 224px on every phone from 360 to 430 wide, 359-396px on
+       everything from 768 to 2560. The ±20svh margin is at least 148px on
+       the shortest screen tested, comfortably wider than either spread.
+
+       Highlighting in the nav is unaffected: it watches the whole section
+       crossing the middle of the screen, and the hold is inside the
+       section. Only the landing point moves. */
+    :global(#money){scroll-margin-top:calc(-385px - 40svh)}
+    @media(max-width:760px){
+      :global(#money){scroll-margin-top:calc(-224px - 40svh)}
+    }
 
     /* Each cover finishes further into its own entry than the one before, so
        they cascade rather than landing together. On a phone the column puts

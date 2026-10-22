@@ -89,8 +89,24 @@ const COVERS: Tile[] = [
 
 const BELOW = 3;
 
+/**
+ * THE TWO WRAPPERS AROUND THE FEATURE ARE THE SCROLL HOLD.
+ *
+ * featureHold is a tall block; featureStick is one viewport tall and sticks
+ * to the top of it. The set therefore locks in the middle of the screen for
+ * the extra height of the hold, assembles while it is locked, and releases
+ * when the hold runs out and the covers rise underneath.
+ *
+ * Both are plain blocks with no styling of their own until the stylesheet
+ * turns the hold on, and it only does that where scroll-driven animations
+ * are supported and motion is wanted. Everywhere else this markup is two
+ * divs that do nothing, which is the whole point — the layout cannot be
+ * changed by a feature the browser cannot run.
+ */
 function Feature({ v }: { v: Tile }) {
   return (
+   <div className={s.featureHold}>
+    <div className={s.featureStick}>
     <div className={s.feature}>
       {/* THE SET IS PHONE-ONLY HERE, and the markup carries it at every width
           because the breakpoint is CSS's business, not React's. Above 760px
@@ -120,6 +136,8 @@ function Feature({ v }: { v: Tile }) {
         </span>
       </span>
     </div>
+    </div>
+   </div>
   );
 }
 
