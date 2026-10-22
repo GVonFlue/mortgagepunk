@@ -84,13 +84,22 @@ const HEAD_Y_SM = -5;
 const HEAD_ZOOM_SM = 0.22;
 const SMALL = 760;
 
-/* When it fades, as fractions of the whole move (0 = top of the page,
-   1 = the moment the hold releases). It holds full strength through the pin
-   and starts to go just before the release, so it is still fading as the
-   plate scrolls on and the Ask section comes up — the hold hands over
-   instead of stopping first. */
-const FADE_START = 0.8;
-const FADE_LEN = 0.45;
+/* THE MOVE OUTLASTS THE PIN. Fractions of the scroll from the top of the page
+   to the moment the hold releases (0 = top, 1 = release).
+
+   MOVE_END is where the growth and the drift finish: 1.3, past the release,
+   so at the moment the page starts moving again the headline is only about
+   three quarters of the way there and is still coming at you as the plate
+   scrolls on. Finishing exactly at the release, as it first did, read as the
+   animation stopping and then the page being allowed to move — two events
+   instead of one.
+
+   The fade starts just before the release and runs well past it, so the
+   headline is still dissolving while you are already on your way down to
+   the Ask section. */
+const MOVE_END = 1.3;
+const FADE_START = 0.9;
+const FADE_LEN = 0.65;
 
 export default function CompHero() {
   const stage = useRef<HTMLElement>(null);
@@ -143,9 +152,10 @@ export default function CompHero() {
          one screen of the plate scrolling away. Now the plate pins for a
          while, so the move runs over everything from the top of the page to
          the moment the pin releases: the stretch before the pin engages,
-         plus the hold itself. p is 0 at the top, 1 at release, and keeps
-         going past 1 as the plate scrolls on, which is what lets the fade
-         finish after the release.
+         plus the hold itself. raw is 0 at the top and 1 at release, and keeps
+         going past 1 as the plate scrolls on; the move is spread over
+         0..MOVE_END of it and the fade over FADE_START onward, so both carry
+         on after the release.
 
          Both lengths are read live — the hold from its spacer's height, the
          pre-pin stretch from how far the hold's top sits below the sticky
@@ -156,7 +166,7 @@ export default function CompHero() {
       const holdTop = holdEl!.getBoundingClientRect().top + window.scrollY;
       const span = Math.max(1, Math.max(0, holdTop - pinTop) + holdLen);
       const raw = window.scrollY / span;
-      const p = clamp01(raw);
+      const p = clamp01(raw / MOVE_END);
       zoom = REST + p * SCROLL_ZOOM;
 
       // The headline rides the same progress, but further and on its own.

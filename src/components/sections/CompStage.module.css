@@ -148,9 +148,17 @@
    the plate is taller than most laptop windows (978px in a 764px window at
    1568 wide). That is only true if it pins at its top. It pins instead at a
    top chosen to centre the HEADLINE in the window — the headline is the
-   point of the hold — clamped so that:
-     - no empty band can open under the plate (never above 100svh - height);
-     - it never slides down away from the nav (never below 72px).
+   point of the hold — limited so that:
+     - no empty band can open under a tall plate (never above
+       100svh - height);
+     - it NEVER pins below the top of the screen (never above 0). It used to
+       allow up to 72px, to leave room for the nav. But the nav hides while
+       you scroll down, so that 72px was an empty dark band across the top of
+       the screen, and the frame — which clips everything outside itself —
+       sliced the PUNK! splat and the growing headline off along its edge.
+       On a phone that was the first thing anyone saw of the pin. A plate
+       shorter than the window now pins at the very top and the spare room
+       sits underneath it instead, where nothing gets cut.
    On a tall plate that hides a little of both ends while pinned. The splat
    above has scrolled away by then anyway, and the "Have questions?" prompt
    below comes into view as the hold releases, arrow pointing down at the Ask
@@ -174,19 +182,27 @@
 @media(prefers-reduced-motion:no-preference){
   .heroHold::after{content:'';display:block;height:100svh}
   .heroFrame{position:sticky;
-    top:clamp(calc(100svh - var(--heroH,100vw * 1622 / 2600)),
-              calc(50svh - var(--heroH,100vw * 1622 / 2600) * var(--heroC)),
-              72px)}
+    top:min(0px,max(calc(100svh - var(--heroH,100vw * 1622 / 2600)),
+                    calc(50svh - var(--heroH,100vw * 1622 / 2600) * var(--heroC))))}
 }
 @media(max-width:760px){
   .heroHold{--heroC:.27}
+  /* The plate's slow push-in scales from the TOP on a phone, not the centre.
+     The phone plate is more than twice as tall as it is wide and pins at the
+     top of the screen, so a centre-origin zoom pushed everything near the
+     top upward as it grew — the PUNK! splat, 27px down the plate, was
+     carried 18px off the top edge by the end of the hold. From the top edge
+     it stays put and the zoom grows downward, into the part of the plate
+     that is already off the bottom of the screen. Desktop keeps the centre:
+     the cursor drift there moves into the overscan on every side, and a
+     phone has no cursor. */
+  .heroMotion{transform-origin:50% 0}
 }
 @media(max-width:760px) and (prefers-reduced-motion:no-preference){
   .heroHold::after{height:80svh}
   .heroFrame{
-    top:clamp(calc(100svh - var(--heroH,100vw * 2800 / 1200)),
-              calc(50svh - var(--heroH,100vw * 2800 / 1200) * var(--heroC)),
-              72px)}
+    top:min(0px,max(calc(100svh - var(--heroH,100vw * 2800 / 1200)),
+                    calc(50svh - var(--heroH,100vw * 2800 / 1200) * var(--heroC))))}
 }
 
 
