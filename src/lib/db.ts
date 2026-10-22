@@ -1,9 +1,9 @@
 import {
   SEED_VIDEOS, SEED_TOPICS, SEED_PRESS, SEED_TALKS, SEED_CONFERENCE,
   SEED_ANNOUNCEMENT,
-  SEED_TESTIMONIALS, SEED_HERO,
+  SEED_TESTIMONIALS,
   type Video, type LibraryTopic, type PressItem, type Talk, type Conference,
-  type Announcement, type Lead, type Testimonial, type Hero,
+  type Announcement, type Lead, type Testimonial,
 } from "./content";
 import { type SiteImage } from "./images";
 import { SEED_SOCIAL_TILES, type SocialTile } from "./socialTiles";
@@ -258,25 +258,6 @@ export async function getAnnouncement(): Promise<Announcement> {
 
 export async function saveAnnouncement(a: Announcement): Promise<void> {
   await rest("site_announcement?id=eq.1", "PATCH", a);
-}
-
-// ---------------------------------------------------------------------------
-// HERO COPY
-// ---------------------------------------------------------------------------
-
-export async function getHero(): Promise<Hero> {
-  return safeRead(
-    async () => {
-      const [row] = await rest<Hero[]>("site_hero?select=*&id=eq.1");
-      return row ?? SEED_HERO;
-    },
-    SEED_HERO,
-    "site_hero"
-  );
-}
-
-export async function saveHero(h: Hero): Promise<void> {
-  await rest("site_hero?id=eq.1", "PATCH", h);
 }
 
 // ---------------------------------------------------------------------------

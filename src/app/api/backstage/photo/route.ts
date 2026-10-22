@@ -7,12 +7,8 @@ export const runtime = "nodejs";
 /**
  * Upload a replacement photograph for one named section slot.
  *
- * SEPARATE FROM /api/backstage/upload ON PURPOSE. That route is for the hero
- * headline artwork: PNG only, and it checks the alpha channel, because the
- * headline sits over a photo and behind Chris. Section photos are ordinary
- * photographs — forcing PNG on them would turn a 400KB JPEG into a 4MB file
- * for no gain. Relaxing the rule on the existing route would have quietly
- * weakened the check the hero depends on, so this is its own endpoint.
+ * Accepts JPG, PNG or WebP. Section photos are ordinary photographs, and
+ * forcing PNG on them would turn a 400KB JPEG into a 4MB file for no gain.
  *
  * Slots that genuinely need a cut-out are marked needsTransparency in the
  * registry, and this route enforces PNG for exactly those.

@@ -165,12 +165,6 @@ export default async function Overview() {
       meta: `${liveVideos} live`,
     },
     {
-      href: "/backstage/homepage",
-      title: "Homepage headline",
-      blurb: "The big words at the top of the site and the two buttons under them.",
-      icon: "layout",
-    },
-    {
       href: "/backstage/settings",
       title: "Announcement bar",
       blurb: "The strip across the top of every page.",
