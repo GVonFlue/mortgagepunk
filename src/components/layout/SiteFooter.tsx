@@ -170,7 +170,16 @@ export default function SiteFooter() {
         Chris Waipa &middot; NMLS #339232. Mortgage Punk is a brand. Lending is
         conducted through Neighborhood Loans.
         <br />
-        &copy; {new Date().getFullYear()} Mortgage Punk. Site by ProyTech.
+        &copy; {new Date().getFullYear()} Mortgage Punk. Site by{" "}
+        <a
+          className={s.byline}
+          href="https://getproytech.com"
+          target="_blank"
+          rel="noopener"
+        >
+          ProyTech
+        </a>
+        .
       </div>
     </footer>
   );

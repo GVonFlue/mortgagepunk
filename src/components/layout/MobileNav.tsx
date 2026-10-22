@@ -27,7 +27,11 @@ const LINKS = [
   { label: "Chris", href: "/about" },
   // still reachable, just no longer on the homepage
   { label: "Lending", href: "/lending" },
-  { label: "Tools", href: "/tools" },
+  /* TOOLS IS DELIBERATELY NOT LISTED. The calculators are not ready to be
+     found yet. /tools still exists and still renders — this removes the
+     signpost, not the page, so the link can come back by uncommenting it
+     rather than by rebuilding anything.
+     { label: "Tools", href: "/tools" }, */
 ];
 
 export default function MobileNav() {

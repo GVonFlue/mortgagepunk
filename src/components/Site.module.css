@@ -330,6 +330,12 @@
   border-top:1px solid var(--mp-line);font-size:12px;line-height:1.7;color:#6E6E6E}
 .marks{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-weight:800;
   letter-spacing:.12em;text-transform:uppercase;font-size:10.5px;color:#8E8E8E}
+/* The build credit. Underlined rather than coloured: this line is fine print
+   and a red link in it would pull the eye away from the disclosure above it,
+   which is the part that legally has to be read. */
+.byline{color:#8E8E8E;text-decoration:underline;text-underline-offset:2px;
+  text-decoration-color:#4A4A4A;transition:color .15s ease,text-decoration-color .15s ease}
+.byline:hover,.byline:focus-visible{color:var(--mp-red);text-decoration-color:var(--mp-red)}
 .todo{border:1px dashed #5A4A2A;background:#1C1710;color:#C9A227;border-radius:10px;
   padding:12px 15px;font-size:12px;line-height:1.6;margin-top:16px}
 @media(max-width:900px){.ftgrid{grid-template-columns:1fr 1fr}}

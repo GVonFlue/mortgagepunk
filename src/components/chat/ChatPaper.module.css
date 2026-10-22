@@ -265,8 +265,17 @@
     /* svh, not vh: on iOS Safari vh is the height with the browser chrome
        RETRACTED, so a 90vh sheet is taller than the window on arrival and the
        field and cards sit under the address bar until you scroll. svh is the
-       smallest viewport, which is the one that is always actually there. */
-    left:50%;top:50%;width:min(94vw,470px);height:min(88svh,760px);
+       smallest viewport, which is the one that is always actually there.
+
+       And svh is still only the fallback. It is the smallest *window*, which
+       is not the same as the part of the window you can see: the keyboard
+       covers the bottom of the window without changing its height. The
+       custom properties below carry the real visible band, measured from
+       visualViewport in ChatPaper.tsx, and the svh values are what stands
+       when a browser does not report one. */
+    left:50%;top:calc(var(--mp-vv-top,0px) + var(--mp-vv-h,88svh) / 2);
+    width:min(94vw,470px);
+    height:min(calc(var(--mp-vv-h,88svh) - 16px),760px);
     border-width:clamp(16px,5.5vw,30px);
     transform-origin:50% 50%;
     animation:popInM .24s cubic-bezier(.22,1.2,.4,1) both}
@@ -326,12 +335,26 @@
 /* Below the dock's own breakpoint it becomes the same centred sheet the Ask
    section uses, because a corner panel on a phone is just a smaller phone. */
 @media(max-width:760px){
-  .dock{right:auto;bottom:auto;left:50%;top:50%;
-    width:min(94vw,470px);height:min(88svh,760px);
+  /* Same keyboard-aware geometry as .pop above — see the note there. */
+  .dock{right:auto;bottom:auto;left:50%;
+    top:calc(var(--mp-vv-top,0px) + var(--mp-vv-h,88svh) / 2);
+    width:min(94vw,470px);
+    height:min(calc(var(--mp-vv-h,88svh) - 16px),760px);
     border-width:clamp(16px,5.5vw,30px);
     transform-origin:50% 50%;
     animation:popInM .24s cubic-bezier(.22,1.2,.4,1) both}
   @media(prefers-reduced-motion:reduce){.dock{animation:none;transform:translate(-50%,-50%)}}
+
+  /* WHILE THE KEYBOARD IS UP, THE TRANSCRIPT GETS THE CARDS' ROOM.
+     Above the keyboard there is about half a screen to work with, and the
+     two CTA cards eat a third of it — which would leave the conversation a
+     couple of lines tall at the moment somebody is typing into it. They are
+     not needed mid-sentence and come straight back when the keyboard closes.
+     The sheet does not resize when they go: it is sized to the viewport, so
+     the list simply grows into the space. */
+  :global(html[data-mp-kb="1"]) .popCards{display:none}
+  /* Nothing else moves. The head stays, the field stays, and the list is the
+     only flexible child, so it absorbs the difference on its own. */
 }
 
 /* ---------- the launcher ----------

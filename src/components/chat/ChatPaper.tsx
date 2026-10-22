@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import p from "./ChatPaper.module.css";
 import CallBooking from "@/components/ui/CallBooking";
@@ -29,6 +30,60 @@ export function Arrow() {
   );
 }
 
+/**
+ * KEEPS THE SHEET ABOVE THE ON-SCREEN KEYBOARD.
+ *
+ * The bug this fixes: the sheet was sized in svh, and svh does not change
+ * when the keyboard opens. iOS does not resize the layout viewport for the
+ * keyboard — it leaves the page exactly as tall as it was and slides the
+ * keyboard over the bottom of it. So a sheet filling 88svh still filled 88%
+ * of the *window*, and the part of it holding the input — the part you are
+ * looking at while you type — sat underneath the keys.
+ *
+ * visualViewport is the only thing that reports the region actually visible.
+ * Its height shrinks when the keyboard opens and its offsetTop tracks where
+ * that region starts, so writing both to custom properties and sizing the
+ * sheet from them pins it to the space above the keyboard, at any keyboard
+ * height, on any device, without hard-coding a single one of them.
+ *
+ * It re-centres on scroll as well as resize because iOS lets the visual
+ * viewport slide over the layout viewport — without the scroll listener the
+ * sheet drifts off the top as soon as you nudge the page.
+ *
+ * No support for visualViewport means the properties are never set and the
+ * svh fallbacks in the stylesheet stand, which is the behaviour as shipped.
+ */
+function useKeyboardSafeSheet() {
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const root = document.documentElement;
+    const apply = () => {
+      root.style.setProperty("--mp-vv-h", `${Math.round(vv.height)}px`);
+      root.style.setProperty("--mp-vv-top", `${Math.round(vv.offsetTop)}px`);
+      /* A visual viewport well short of the window is a keyboard. 140px is
+         comfortably past browser chrome and comfortably under any keyboard.
+         The flag lets the stylesheet give the transcript the room the cards
+         were using, for as long as someone is actually typing. */
+      const kb = window.innerHeight - vv.height > 140;
+      if (kb) root.dataset.mpKb = "1";
+      else delete root.dataset.mpKb;
+    };
+
+    apply();
+    vv.addEventListener("resize", apply);
+    vv.addEventListener("scroll", apply);
+    return () => {
+      vv.removeEventListener("resize", apply);
+      vv.removeEventListener("scroll", apply);
+      root.style.removeProperty("--mp-vv-h");
+      root.style.removeProperty("--mp-vv-top");
+      delete root.dataset.mpKb;
+    };
+  }, []);
+}
+
 export default function ChatPaper({
   place,
   msgs,
@@ -51,6 +106,8 @@ export default function ChatPaper({
   listRef: React.RefObject<HTMLDivElement | null>;
   inputRef: React.RefObject<HTMLInputElement | null>;
 }) {
+  useKeyboardSafeSheet();
+
   return (
     <div className={place} role="dialog" aria-label="Ask Mortgage Punk">
       <div className={p.popHead}>
