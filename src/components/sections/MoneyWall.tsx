@@ -1,6 +1,7 @@
 import Link from "next/link";
 import s from "./MoneyWall.module.css";
 import VideoPlay from "./VideoPlay";
+import Entrance from "./Entrance";
 
 
 /**
@@ -98,7 +99,8 @@ const BELOW = 3;
 
 function Feature({ v }: { v: Tile }) {
   return (
-    <div className={s.feature}>
+    // Entrance plays the fly-in when the set comes into view — see Entrance.tsx.
+    <Entrance className={s.feature}>
       {/* A television at every width, capped by height on desktop so the
           whole set fits on one screen — see MoneyWall.module.css.
 
@@ -135,7 +137,7 @@ function Feature({ v }: { v: Tile }) {
         </span>
         </span>
       </span>
-    </div>
+    </Entrance>
   );
 }
 

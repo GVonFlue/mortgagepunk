@@ -376,7 +376,9 @@
 @supports (animation-timeline: view()){
   @media(prefers-reduced-motion:no-preference){
 
-    .feature,.row .card,.cta{
+    /* The feature is not in this group any more: its entrance is a triggered
+       one-shot, see THE SLAM at the end of this file. */
+    .row .card,.cta{
       animation-timing-function:linear;
       animation-fill-mode:both;
       animation-duration:auto;
@@ -399,7 +401,7 @@
        laptop that is still 240-280px of scrolling to watch it arrive. */
     /* Position overshoot, not scale, at every width now that the set carries
        the glow on desktop too — see mwPopFlat below. */
-    .feature{animation-name:mwPopFlat;animation-range:entry 0% entry 35%}
+
 
     /* Each cover finishes further into its own entry than the one before, so
        they cascade rather than landing together. On a phone the column puts
@@ -493,4 +495,69 @@
       to{opacity:var(--rest,1);transform:none}
     }
   }
+}
+
+/* ---------- THE SLAM ----------
+   The Opening Act flies out of the middle of the screen — out of the viewer,
+   2.8x its size — slams into its place, overshoots under and back, and the
+   wall shudders with the impact. The glow and the red rim switch on at the
+   moment it lands, not before. Entrance.tsx sets data-entrance; see there
+   for when.
+
+   BARE IN FLIGHT, AND THAT IS THE PERFORMANCE DESIGN. The set carries a
+   blurred glow and a stack of drop-shadows. Scaled to nearly three times
+   its size, both would be recomputed across most of the screen on every
+   frame of the flight — the same mistake as the judder fixed this morning,
+   multiplied. So while it flies, the rim filter is off and the glow is at
+   opacity 0, and what moves is two plain images: a transform and an
+   opacity, which the compositor does on its own. The light arriving on
+   impact is the effect anyway.
+
+   Timing: it accelerates in for 55% of the 0.95s (an ease-in, so it is
+   still speeding up when it hits), lands undersized at 0.93 — the squash —
+   rebounds to 1.035, settles. The shudder on .wrap starts at the same 55%.
+   Every keyframe carries its own timing function: one curve on the whole
+   animation would be re-applied between each pair of stops and read as
+   stopping dead several times. */
+.feature[data-entrance="wait"]{opacity:0}
+.feature[data-entrance="wait"] .tvGlow,
+.feature[data-entrance="fly"] .tvGlow{opacity:0}
+.feature[data-entrance="wait"] .tvLit,
+.feature[data-entrance="fly"] .tvLit{filter:none}
+
+.feature[data-entrance="fly"]{position:relative;z-index:5;
+  animation:mwSlam .95s both;will-change:transform,opacity}
+/* The glow comes on as the set hits, with a hard flash past its resting
+   strength. animation-name on the glow overrides the opacity:0 above for
+   the duration, then the resting rule takes over again at the end. */
+.feature[data-entrance="fly"] .tvGlow{animation:mwLightUp .95s both}
+.wrap:has(> .feature[data-entrance="fly"]){animation:mwShudder .95s both}
+
+@keyframes mwSlam{
+  0%  {opacity:0;transform:translateY(var(--fromY,0px)) scale(2.8);
+       animation-timing-function:cubic-bezier(.6,0,.95,.6)}
+  14% {opacity:1}
+  55% {transform:translateY(0) scale(.93);
+       animation-timing-function:cubic-bezier(.2,.9,.3,1)}
+  70% {transform:scale(1.035);animation-timing-function:cubic-bezier(.4,0,.3,1)}
+  84% {transform:scale(.992)}
+  100%{opacity:1;transform:none}
+}
+@keyframes mwLightUp{
+  0%,53%{opacity:0}
+  58%   {opacity:1}
+  100%  {opacity:1}
+}
+@keyframes mwShudder{
+  0%,55%{transform:none}
+  58%{transform:translate(-8px,6px)}
+  62%{transform:translate(7px,-5px)}
+  66%{transform:translate(-4px,3px)}
+  71%{transform:translate(2px,-2px)}
+  77%,100%{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .feature[data-entrance]{opacity:1;animation:none}
+  .feature[data-entrance] .tvGlow{opacity:1;animation:none}
+  .wrap{animation:none}
 }
