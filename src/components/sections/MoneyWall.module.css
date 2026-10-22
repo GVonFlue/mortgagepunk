@@ -249,6 +249,26 @@
   @keyframes onAir{0%,100%{opacity:.84}50%{opacity:1}}
   @keyframes onAirWide{0%,100%{opacity:.58}50%{opacity:.94}}
 
+  /* ---------- the rest of the shelf is turned down ----------
+     The glow can only do half the work. A lit set surrounded by three
+     equally lit sets is still one of four bright things, and the eye has no
+     reason to land on it first — making the feature brighter and leaving the
+     others alone just raises the whole section's volume.
+
+     So the covers sit back instead. Dimming three things is also cheaper
+     than brightening one: there is headroom below the ground's brightness
+     and almost none above it, which is the same ceiling that made the first
+     glow read as maroon.
+
+     opacity rather than a brightness filter, because .tv already carries a
+     filter for its drop-shadows and setting another would replace them. */
+  .row .card{opacity:.74;transition:opacity .35s ease}
+
+  /* Never dim a video somebody is actually watching. VideoPlay swaps the
+     still for an iframe on play and marks nothing an ancestor can see, so
+     :has is doing the asking — no prop, no state, no extra render. */
+  .row .card:has(iframe){opacity:1}
+
   /* And a hard red rim on the set's own alpha. drop-shadow follows the torn
      silhouette rather than a rectangle, so the light hugs every ragged edge
      of the cabinet instead of boxing it. Left out of the animation above on
