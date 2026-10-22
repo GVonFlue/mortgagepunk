@@ -128,7 +128,12 @@
    was 1.553, so a 16:9 video inside it would have been letterboxed or
    cropped all over again; only the screen band was squeezed, which left the
    dials circular and the tape and bezels untouched. */
-.tv{position:relative;display:block;width:100%;aspect-ratio:1223/1087;
+/* container-type:size is what lets the badge below scale with the set rather
+   than with the viewport. These sit one, two or three across depending on
+   width, so a vw-based size would be wrong in two of those three layouts;
+   cqh measures against this box, which is the thing the badge belongs to. */
+.tv{container-type:size;
+  position:relative;display:block;width:100%;aspect-ratio:1223/1087;
   /* A near-black set on a near-black section disappears into it. drop-shadow
      follows the alpha rather than the box, so the torn paper edge casts the
      shadow and the set reads as a cut-out lying ON the page — which a
@@ -146,3 +151,45 @@
 /* Inside the screen the art fills the hole exactly; the tile's own rounding
    and border belong to the bezel now, not to this. */
 .tvScreen .art{height:100%;aspect-ratio:auto;border:0;border-radius:0}
+
+/* ---------- the channel bug ----------
+   MEASURED OFF THE BEZEL, NOT PLACED BY EYE. The top bezel runs from 0 to
+   18.86% (the screen's own top). Across it the artwork is a torn strip of
+   red tape and halftone on the left and scratched black on the right:
+   sampled in five columns, x 0-45% averages luminance 80 with a standard
+   deviation near 90, while x 46-80% averages 24 with a deviation of 35.
+   That right-hand band is the only part flat enough and dark enough to sit
+   white type on, so that is where this goes. */
+.tvBadge{position:absolute;left:46%;top:4.4%;width:34%;height:12%;z-index:3;
+  display:flex;align-items:center;justify-content:center;gap:7%;
+  pointer-events:none}
+/* The mark stays its own red. It is the brand's colour and it holds up
+   against this near-black bezel the same way it does in the footer. */
+.tvBadge img{height:72%;width:auto;display:block}
+.tvBadge b{font-family:var(--font-display),sans-serif;font-weight:400;
+  color:#fff;letter-spacing:.06em;line-height:1;font-size:8.5cqh}
+
+/* The feature set says what it is instead of carrying the mark — it is the
+   one at the top of the wall, so it gets billing rather than a logo. */
+.tvBadgeAct{left:44%;width:40%;
+  font-family:var(--font-display),sans-serif;color:#fff;
+  letter-spacing:.11em;text-transform:uppercase;line-height:1;
+  font-size:6.4cqh;white-space:nowrap}
+/* A red rule under it, like a lower third. Sized in cqh so it keeps its
+   weight relative to the set rather than thinning out as the card grows. */
+.tvBadgeAct::after{content:'';position:absolute;left:0;right:0;bottom:-18%;
+  height:1.1cqh;background:var(--mp-red)}
+
+/* ---------- the big one is only a television on a phone ----------
+   On a laptop the feature runs the full width of the column, and a set
+   drawn at that size stops being a prop and becomes a picture of furniture
+   — the bezel alone would be wider than the three cards below it. The
+   markup carries the television at every width and this unwinds it above
+   the phone breakpoint: no frame, no badge, no fixed ratio, and the screen
+   returns to normal flow so the 16:9 video sets the height itself. */
+@media(min-width:761px){
+  .tvFeature{container-type:normal;aspect-ratio:auto;filter:none}
+  .tvFeature .tvScreen{position:static;width:100%;height:auto}
+  .tvFeature .tvFrame,.tvFeature .tvBadge{display:none}
+  .tvFeature .art{height:auto;aspect-ratio:16/9}
+}

@@ -92,15 +92,29 @@ const BELOW = 3;
 function Feature({ v }: { v: Tile }) {
   return (
     <div className={s.feature}>
-      <VideoPlay
-        youtubeId={v.youtube_id}
-        title={v.title}
-        feature
-        playlistId={v.playlist}
-        poster={v.poster}
-        frameClassName={`${s.art} ${s.artFeature}`}
-        playClassName={s.play}
-      />
+      {/* THE SET IS PHONE-ONLY HERE, and the markup carries it at every width
+          because the breakpoint is CSS's business, not React's. Above 760px
+          .tvFeature unwinds all of this back to a plain 16:9 frame — see the
+          note in MoneyWall.module.css for why the big one does not get a
+          television on a laptop. */}
+      <span className={`${s.tv} ${s.tvFeature}`}>
+        <span className={s.tvScreen}>
+          <VideoPlay
+            youtubeId={v.youtube_id}
+            title={v.title}
+            feature
+            playlistId={v.playlist}
+            poster={v.poster}
+            frameClassName={`${s.art} ${s.artFeature}`}
+            playClassName={s.play}
+          />
+        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className={s.tvFrame} src="/brand/tv-frame.webp" alt="" aria-hidden="true" />
+        <span className={`${s.tvBadge} ${s.tvBadgeAct}`} aria-hidden="true">
+          Opening Act
+        </span>
+      </span>
     </div>
   );
 }
@@ -123,6 +137,15 @@ function Cover({ v }: { v: Tile }) {
             part of this file's alpha, so the bezel does the clipping. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className={s.tvFrame} src="/brand/tv-frame.webp" alt="" aria-hidden="true" loading="lazy" />
+        {/* The channel bug on the bezel: the mark plus TV, so a row of these
+            reads as Mortgage Punk TV. aria-hidden because it is branding on
+            a picture of a television, not information — the video's real
+            title is the h3 below. */}
+        <span className={s.tvBadge} aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/mortgagepunk-logo@3x.png" alt="" loading="lazy" />
+          <b>TV</b>
+        </span>
       </span>
       <span className={s.info}>
         <h3>{v.title}</h3>
