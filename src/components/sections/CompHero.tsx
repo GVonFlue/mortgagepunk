@@ -67,7 +67,12 @@ const DRIFT_Y = 0.014;
    scroll so it stays on screen while it grows, which is what reads as coming
    towards you rather than simply leaving. */
 const HEAD_X = 55;
-const HEAD_Y = 14;
+/* Was 14: the downward drift made the headline lag a plate that was
+   scrolling up, so it stayed on screen while it grew. The plate is pinned
+   for most of the move now, centred on the headline, so there is nothing to
+   lag behind and the drift would only walk it off centre. 4 keeps a hint of
+   it for the stretch before the pin engages. */
+const HEAD_Y = 4;
 const HEAD_ZOOM = 0.34;
 
 /* The phone composition is vertical, so the headline has nowhere to travel
@@ -79,13 +84,25 @@ const HEAD_Y_SM = -5;
 const HEAD_ZOOM_SM = 0.22;
 const SMALL = 760;
 
+/* When it fades, as fractions of the whole move (0 = top of the page,
+   1 = the moment the hold releases). It holds full strength through the pin
+   and starts to go just before the release, so it is still fading as the
+   plate scrolls on and the Ask section comes up — the hold hands over
+   instead of stopping first. */
+const FADE_START = 0.8;
+const FADE_LEN = 0.45;
+
 export default function CompHero() {
   const stage = useRef<HTMLElement>(null);
+  const hold = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
   const headline = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const el = stage.current;
-    if (!el) return;
+    const holdEl = hold.current;
+    const frameEl = frameRef.current;
+    if (!el || !holdEl || !frameEl) return;
 
     // One switch for everything below. Someone who has asked their system not
     // to animate things gets the plate at rest, not a quieter version of it.
@@ -112,15 +129,34 @@ export default function CompHero() {
       targetY = -((e.clientY - r.top) / r.height - 0.5) * 2 * (r.height * DRIFT_Y);
     }
 
+    const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+
+    /* The pin's top depends on the plate's real height, so hand the
+       stylesheet the measured value rather than letting it estimate from
+       100vw, which includes a classic scrollbar the plate does not. */
+    function measure() {
+      holdEl!.style.setProperty("--heroH", `${frameEl!.offsetHeight}px`);
+    }
+
     function readScroll() {
-      /* How far the plate itself has travelled up the window, 0 to 1 over one
-         screen. The hero scrolls normally — see the note in CompStage.module
-         .css about why there is no sticky hold — so the plate's own rect is
-         the honest measure of progress. */
-      const p = Math.min(
-        1,
-        Math.max(0, -el!.getBoundingClientRect().top / window.innerHeight)
-      );
+      /* THE SAME MOVE AS BEFORE, STRETCHED OVER THE HOLD. It used to run over
+         one screen of the plate scrolling away. Now the plate pins for a
+         while, so the move runs over everything from the top of the page to
+         the moment the pin releases: the stretch before the pin engages,
+         plus the hold itself. p is 0 at the top, 1 at release, and keeps
+         going past 1 as the plate scrolls on, which is what lets the fade
+         finish after the release.
+
+         Both lengths are read live — the hold from its spacer's height, the
+         pre-pin stretch from how far the hold's top sits below the sticky
+         top it pins at — so a resize or a late image cannot leave the
+         timing behind. */
+      const holdLen = parseFloat(getComputedStyle(holdEl!, "::after").height) || 0;
+      const pinTop = parseFloat(getComputedStyle(frameEl!).top) || 0;
+      const holdTop = holdEl!.getBoundingClientRect().top + window.scrollY;
+      const span = Math.max(1, Math.max(0, holdTop - pinTop) + holdLen);
+      const raw = window.scrollY / span;
+      const p = clamp01(raw);
       zoom = REST + p * SCROLL_ZOOM;
 
       // The headline rides the same progress, but further and on its own.
@@ -133,11 +169,14 @@ export default function CompHero() {
         h.style.setProperty("--dx", `${(p * hx).toFixed(2)}%`);
         h.style.setProperty("--dy", `${(p * hy).toFixed(2)}%`);
         h.style.setProperty("--dz", (1 + p * hz).toFixed(4));
-        // Holds full strength through the first half, then dissolves as it
-        // crosses Chris — without this it simply sits on top of him.
-        const fade = Math.min(1, Math.max(0, (p - 0.5) / 0.42));
+        const fade = clamp01((raw - FADE_START) / FADE_LEN);
         h.style.setProperty("--do", (1 - fade).toFixed(3));
       }
+    }
+
+    function onResize() {
+      measure();
+      readScroll();
     }
 
     function tick() {
@@ -168,10 +207,12 @@ export default function CompHero() {
     );
     io.observe(el);
 
+    measure();
     readScroll();
+    window.addEventListener("load", onResize, { once: true });
     if (fine) window.addEventListener("pointermove", onPointer, { passive: true });
     window.addEventListener("scroll", readScroll, { passive: true });
-    window.addEventListener("resize", readScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     frame = requestAnimationFrame(tick);
 
     return () => {
@@ -180,7 +221,8 @@ export default function CompHero() {
       io.disconnect();
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("scroll", readScroll);
-      window.removeEventListener("resize", readScroll);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("load", onResize);
     };
   }, []);
 
@@ -188,7 +230,9 @@ export default function CompHero() {
     /* The frame clips. The plate inside is scaled past its own box, so without
        something to crop it the hero would paint over the nav above and the
        Ask section below. */
-    <div className={s.heroFrame}>
+    /* The hold is the scroll length the pin lasts for — see .heroHold. */
+    <div className={s.heroHold} ref={hold}>
+    <div className={s.heroFrame} ref={frameRef}>
       <div className={s.heroIntro}>
       <section
         ref={stage}
@@ -265,6 +309,7 @@ export default function CompHero() {
         </a>
       </section>
       </div>
+    </div>
     </div>
   );
 }

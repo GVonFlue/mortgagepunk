@@ -97,7 +97,7 @@ export default function SiteNav() {
    *
    * Scrolling down means "show me more of the page", so the bar gets out of
    * the way. Scrolling up is the gesture people already make when they want
-   * navigation, so it comes straight back rather than waiting for the top.
+   * navigation — but only a deliberate move up, not a nudge (see comeBack).
    *
    * The 6px threshold ignores the sub-pixel jitter of a trackpad, which would
    * otherwise flicker the bar constantly. It never hides within the first
@@ -105,6 +105,10 @@ export default function SiteNav() {
    */
   useEffect(() => {
     let last = window.scrollY;
+    // The lowest point of the current run down the page. Scrolling up is
+    // measured from here, not from the previous frame.
+    let low = last;
+    let hidden = false;
     let frame = 0;
 
     /* THE FLOOR IS LOWER ON A PHONE. 120px is a small fraction of a desktop
@@ -112,6 +116,16 @@ export default function SiteNav() {
        is a seventh of the screen, so the bar hung around well past the point
        it was in the way. 36px is about one flick. */
     const floor = () => (window.innerWidth <= 760 ? 36 : 120);
+
+    /* IT DOES NOT COME BACK ON THE FIRST FLICK UP. It used to return the
+       moment the page moved up at all, which during a scroll-driven section
+       meant it dropped back over the artwork every time somebody eased back
+       a few lines to rewatch something. It now waits for a deliberate move
+       back up the page: an eighth of the window on desktop, a quarter on a
+       phone, where a casual thumb drag covers far more of the screen. Below
+       the floor near the top it is always there, as before. */
+    const comeBack = () =>
+      window.innerHeight * (window.innerWidth <= 760 ? 0.25 : 0.125);
 
     const onScroll = () => {
       if (frame) return;                 // one update per painted frame
@@ -121,9 +135,22 @@ export default function SiteNav() {
         const delta = y - last;
 
         setScrolled(y > 24);
-        if (Math.abs(delta) > 6) {
-          setHidden(delta > 0 && y > floor());
-          last = y;
+        if (Math.abs(delta) <= 6) return;  // trackpad jitter
+        last = y;
+
+        let next = hidden;
+        if (y <= floor()) {
+          next = false;
+          low = y;
+        } else if (delta > 0) {
+          next = true;
+          low = y;
+        } else if (low - y >= comeBack()) {
+          next = false;
+        }
+        if (next !== hidden) {
+          hidden = next;
+          setHidden(next);
         }
       });
     };

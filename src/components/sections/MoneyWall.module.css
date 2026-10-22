@@ -207,8 +207,12 @@
    z-index:-1 works because .tv's filter makes it a stacking context, so
    this sits behind the set's artwork while staying inside it. And
    container-type gives size containment, not paint containment, so the
-   bloom is free to spill past the edges — which is the whole point. */
-@media(max-width:760px){
+   bloom is free to spill past the edges — which is the whole point.
+
+   EVERY WIDTH NOW. This was phone-only while the desktop feature was a
+   plain 16:9 frame; the desktop feature is a television too now (see the
+   end of this block), so it gets the light as well. */
+@media all{
   /* TWO LAYERS, BECAUSE A CENTRED GLOW BEHIND AN OPAQUE OBJECT IS INVISIBLE.
      The first attempt put a radial gradient behind the set with its peak at
      50% 50% — directly behind the television, which covers it. All that
@@ -269,6 +273,10 @@
 
      opacity rather than a brightness filter, because .tv already carries a
      filter for its drop-shadows and setting another would replace them. */
+  /* Phone only: on a laptop the three covers sit side by side under the
+     set rather than stacked in a column beneath it, and they are not
+     competing for the same glance. */
+  @media(max-width:760px){
   .row .card{--rest:.74;opacity:var(--rest);transition:opacity .35s ease}
 
   /* Never dim a video somebody is actually watching. VideoPlay swaps the
@@ -279,6 +287,7 @@
      with a video playing in it. The animation reads --rest, so changing the
      property moves the animation's own end frame. */
   .row .card:has(iframe){--rest:1}
+  }
 
   /* And a hard red rim on the set's own alpha. drop-shadow follows the torn
      silhouette rather than a rectangle, so the light hugs every ragged edge
@@ -296,19 +305,24 @@
   .tvFeature::after{animation:none;opacity:.8}
 }
 
-/* ---------- the big one is only a television on a phone ----------
-   On a laptop the feature runs the full width of the column, and a set
-   drawn at that size stops being a prop and becomes a picture of furniture
-   — the bezel alone would be wider than the three cards below it. The
-   markup carries the television at every width and this unwinds it above
-   the phone breakpoint: no frame, no badge, no fixed ratio, and the screen
-   returns to normal flow so the 16:9 video sets the height itself. */
+/* ---------- the big one on a laptop, and on a TV ----------
+   It is a television at every width now. It used to unwind to a plain
+   full-width 16:9 frame above the phone breakpoint, on the reasoning that a
+   set the full width of the column becomes a picture of furniture — the
+   cabinet is 0.89 as tall as it is wide, so at 1500px across it would be
+   1330px tall, a screen and a half.
+
+   So it is capped by HEIGHT, which is the thing that has to fit. The whole
+   set, bezel and all, stays inside the window under the nav with room to
+   spare: its height is held to the window less 100px (72 for the nav, the
+   rest air), and its width follows from the cabinet's 1223:1087. On the
+   1568x764 laptop this was planned for that is a 747px set; on a full
+   1920x1080 window, 1102px. The screen inside is 85.7% of that width. margin-inline:auto centres it once it is narrower than the
+   column. svh, not vh, so a browser toolbar can never push it off the
+   bottom. */
 @media(min-width:761px){
-  .tvFeature{container-type:normal;aspect-ratio:auto;filter:none}
-  .tvFeature .tvScreen{position:static;width:100%;height:auto}
-  .tvFeature .tvFrame,.tvFeature .tvBadge,
-  .tvFeature::before,.tvFeature::after{display:none}
-  .tvFeature .art{height:auto;aspect-ratio:16/9}
+  .tvFeature{max-width:min(100%,calc((100svh - 100px) * 1223 / 1087));
+    margin-inline:auto}
 }
 
 /* ---------- the wall assembles as you scroll ----------
@@ -357,7 +371,9 @@
        resolution). Finishing by 35% means the nav click always lands on a
        finished set, never one caught mid-pop with a room watching. On a
        laptop that is still 240-280px of scrolling to watch it arrive. */
-    .feature{animation-name:mwPop;animation-range:entry 0% entry 35%}
+    /* Position overshoot, not scale, at every width now that the set carries
+       the glow on desktop too — see mwPopFlat below. */
+    .feature{animation-name:mwPopFlat;animation-range:entry 0% entry 35%}
 
     /* Each cover finishes further into its own entry than the one before, so
        they cascade rather than landing together. On a phone the column puts
@@ -367,6 +383,16 @@
     .row .card{animation-name:mwRise;animation-range:entry 0% entry 78%}
     .row .card:nth-child(2){animation-range:entry 10% entry 88%}
     .row .card:nth-child(3){animation-range:entry 20% entry 98%}
+
+    /* Three across: twice the gap between them. Each starts 20% of its own
+       entry after the one before instead of 10%, and runs 60% instead of
+       78% so the last still lands by entry 100% — fully on screen means
+       fully landed, the rule everything in this file keeps to. */
+    @media(min-width:821px){
+      .row .card{animation-range:entry 0% entry 60%}
+      .row .card:nth-child(2){animation-range:entry 20% entry 80%}
+      .row .card:nth-child(3){animation-range:entry 40% entry 100%}
+    }
 
     .cta{animation-name:mwArrive;animation-range:entry 0% entry 70%}
 
@@ -415,18 +441,19 @@
       70%{transform:translateY(-4px) scale(1.03)}
       100%{opacity:var(--rest,1);transform:none}
     }
-    /* The phone version overshoots in position instead of size — up past its
-       spot and back down — for the same reason it never scaled: see THE
-       FEATURE DOES NOT SCALE ON A PHONE above. It still reads as a pop. */
+    /* The feature overshoots in position instead of size — up past its spot
+       and back down — at every width, because it carries the glow at every
+       width now: four drop-shadows and two blurred layers, which a scale
+       would redraw on every frame of the pop. It will be presented from a
+       laptop driving a TV, which could not be tested from here, so the
+       expensive move is simply not made. mwPop stays for the record. */
     @keyframes mwPopFlat{
       0%{opacity:0;transform:translateY(70px)}
       45%{opacity:1}
       70%{transform:translateY(-10px)}
       100%{opacity:var(--rest,1);transform:none}
     }
-    @media(max-width:760px){
-      .feature{animation-name:mwPopFlat}
-    }
+
 
     /* Opacity is full by 26% while the scale is still only about half, so the
        growth is the part you watch. Starting the scale at a literal 0 was the
