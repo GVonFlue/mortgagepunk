@@ -69,6 +69,11 @@ const COVERS: Tile[] = [
     // Full title on YouTube is "The American Dream Home Buying Conference | A
     // New Kind of Event (VIP Access)" — too long to set under a square cover.
     title: "The American Dream Conference",
+    /* Ours, not YouTube's — chosen for the wall, and left alone on YouTube.
+       The art is 2:1, wider than the 16:9 screen, so it was padded with its
+       own white above and below rather than cropped: cropping to fill would
+       have cut about 98px off each side and taken Chris's sneaker with it. */
+    poster: "/brand/thumb-adc.jpg",
   },
   {
     id: "long-game",
@@ -84,6 +89,8 @@ const COVERS: Tile[] = [
     youtube_id: "ZWJYJ8hCSzQ",
     title: "The Loan Process, Start to Finish",
     playlist: "PLMXmAZ6CDQgqG9JJvMPEtQw7sm-gByPN4",
+    // Ours, not YouTube's — "The Suck-Less Mortgage Process" cover art.
+    poster: "/brand/thumb-loan-process.jpg",
   },
 ];
 
