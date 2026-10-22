@@ -41,12 +41,7 @@
    animates in to full brightness and then snaps down to dim. */
 .feature,.card{--rest:1;display:block;width:100%;text-align:left;color:inherit}
 
-/* The scroll hold's two wrappers (see Feature in MoneyWall.tsx). Full width
-   always, because .wrap is a centred flex column: a child with no width of
-   its own shrinks to its content there, and .feature's width:100% would then
-   resolve against a box sized by .feature — the set collapses. Everything
-   else about them is switched on only in the @supports block at the end. */
-.featureHold,.featureStick{display:block;width:100%}
+
 
 /* ---------- artwork ---------- */
 /* The box is sized by aspect-ratio and the image fills it. Setting the ratio
@@ -347,94 +342,22 @@
       animation-duration:auto;
       animation-timeline:view()}
 
-    /* ---------- the scroll hold ----------
-       The set itself is sticky, inside a hold that is the set's height plus
-       50svh. It sits in normal flow until it reaches --pinTop, stays there
-       for 50svh of scrolling, and lets go.
+    /* ---------- the opening act pops into place ----------
+       NO HOLD. It was pinned for a while, and a pinned set has to leave the
+       heading behind: the page keeps scrolling, the set does not, and "The
+       Game of Money" drifts off the top while the video it titles stays put.
+       The heading and the video are one unit. So the set moves with the page
+       like everything else, and the drama is in the arrival instead: it comes
+       up from below, overshoots a touch past full size, and snaps back.
 
-       WHY THE SET STICKS AND NOT A FULL-SCREEN PANE. The first build stuck a
-       viewport-tall pane with the set centred in it, which made the timings
-       tidy fractions — and put half a screen of empty pane between the
-       heading and the video, and the other half between the first video and
-       the second. The spacing on the page is the design; the effect has to
-       live inside it. Sticking the set leaves the static layout exactly as
-       it was: before the pin the set sits right under the heading, and
-       because a sticky element releases at the bottom of its container, it
-       lets go flush against the covers. The 50svh only exists *during* the
-       pin, as the covers rising from the bottom of the screen to meet it.
-
-       The price is that the timings now depend on where the set pins, so
-       they are written as lengths below rather than percentages. */
-    :global(#money){--pinTop:84px}
-    @media(max-width:760px){
-      /* Centred on a phone. The set there is the television, whose width is
-         the viewport less the wall's 24px gutters and whose height is that
-         times 1087/1223, so its height is known in CSS and centring it needs
-         no guessing. 84px is the floor, so it never tucks under the nav. */
-      :global(#money){--pinTop:max(84px,calc((100svh - (100vw - 48px) * 1087 / 1223) / 2))}
-    }
-    /* The extra length is a spacer INSIDE the hold, not padding on it. A sticky
-       element travels within its container's content box, and padding is
-       outside that box — with padding-bottom the set had nowhere to go, never
-       moved, and was left stranded at the top of 50svh of empty space. */
-    .featureHold{view-timeline-name:--mwHold;view-timeline-axis:block}
-    .featureHold::after{content:'';display:block;height:50svh}
-    .featureStick{position:sticky;top:var(--pinTop)}
-
-    /* Keeps a 16:9 feature inside the viewport on a short laptop. Without it
-       a 1440x800 screen pins a set taller than the space under the nav and
-       the bottom is cut off for the whole hold. margin-inline:auto because
-       once capped it is narrower than the column and would otherwise sit
-       against the left edge. */
-    .featureStick>.feature{margin-inline:auto;
-      max-width:min(100%,calc((100svh - var(--pinTop) - 24px) * 16 / 9))}
-
-    /* Timed off the hold, NOT off the set. The set does not move while it is
-       pinned, so a view() timeline on it would freeze mid-animation for the
-       length of the hold — the hold is the thing still travelling, so the
-       hold is what the clock reads.
-
-       In scroll distance from the moment the hold's top reaches the bottom
-       of the screen: the set starts entering at 0; it locks at
-       100svh - pinTop; the pin ends 50svh after that. The pop runs from the
-       first pixel to 18svh past the lock, so it rises into place, locks, and
-       finishes assembling locked — then holds, complete, for the last 32svh.
-
-       The percentage line first is a fallback: a browser that runs
-       scroll-driven animations but cannot read a calc() range drops the
-       second declaration and keeps an approximation rather than the default
-       range, which would leave the set half-built for the whole pause. */
-    .feature{animation-name:mwArrive;animation-timeline:--mwHold;
-      animation-range:cover 0% cover 52%;
-      animation-range:cover 0px cover calc(100svh - var(--pinTop) + 18svh)}
-
-    /* ---------- where the nav link lands ----------
-       The nav's "The Game of Money" is a jump to #money. With the hold in
-       place, the ordinary landing — the section's top, 72px under the nav —
-       puts the heading on screen and the set below it at cover ~25%: on
-       screen, and still invisible, because nobody has scrolled yet to make it
-       arrive. Measured: opacity 0 on a laptop. Click the nav mid-presentation
-       and the room sees a heading over an empty pane.
-
-       So the jump lands inside the hold instead, 30svh past where the pin
-       starts — locked, fully assembled, glow lit. The pin runs 0-50svh past
-       its start and the set is complete from 18svh, so 30svh has 12svh of
-       slack one way and 20svh the other.
-
-       The pin starts when the hold's top reaches --pinTop, so the landing is
-       (section-to-hold) - pinTop + 30svh below the section's top, and the
-       scroll margin is the negative of that. Section-to-hold is a measured
-       constant per tier, not a guess: 224px on every phone from 360 to 430
-       wide, 359-396px on everything from 768 to 2560. The worst error that
-       leaves is 26px, against at least 89px of slack on a 740px screen.
-
-       Highlighting in the nav is unaffected: it watches the whole section
-       crossing the middle of the screen, and the hold is inside the
-       section. Only the landing point moves. */
-    :global(#money){scroll-margin-top:calc(var(--pinTop) - 385px - 30svh)}
-    @media(max-width:760px){
-      :global(#money){scroll-margin-top:calc(var(--pinTop) - 224px - 30svh)}
-    }
+       ENDS AT entry 35%, AND THAT NUMBER IS FROM THE NAV. Clicking "The Game
+       of Money" lands with the section 72px under the nav, which leaves the
+       set part-way into the screen — the least it has entered at that landing
+       is about 38% of its height, on a 1280x720 window (a common projector
+       resolution). Finishing by 35% means the nav click always lands on a
+       finished set, never one caught mid-pop with a room watching. On a
+       laptop that is still 240-280px of scrolling to watch it arrive. */
+    .feature{animation-name:mwPop;animation-range:entry 0% entry 35%}
 
     /* Each cover finishes further into its own entry than the one before, so
        they cascade rather than landing together. On a phone the column puts
@@ -483,8 +406,26 @@
       from{opacity:0;transform:translateY(30px)}
       to{opacity:var(--rest,1);transform:none}
     }
+    /* The pop. Scroll-linked, so "overshoot" is a position in the scroll
+       rather than a bounce in time: it reaches 103% at 70% of the range and
+       settles to exactly full size by the end. */
+    @keyframes mwPop{
+      0%{opacity:0;transform:translateY(70px) scale(.8)}
+      45%{opacity:1}
+      70%{transform:translateY(-4px) scale(1.03)}
+      100%{opacity:var(--rest,1);transform:none}
+    }
+    /* The phone version overshoots in position instead of size — up past its
+       spot and back down — for the same reason it never scaled: see THE
+       FEATURE DOES NOT SCALE ON A PHONE above. It still reads as a pop. */
+    @keyframes mwPopFlat{
+      0%{opacity:0;transform:translateY(70px)}
+      45%{opacity:1}
+      70%{transform:translateY(-10px)}
+      100%{opacity:var(--rest,1);transform:none}
+    }
     @media(max-width:760px){
-      .feature{animation-name:mwArriveFlat}
+      .feature{animation-name:mwPopFlat}
     }
 
     /* Opacity is full by 26% while the scale is still only about half, so the

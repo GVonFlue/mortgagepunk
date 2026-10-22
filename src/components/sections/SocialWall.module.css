@@ -52,8 +52,12 @@
   background:#151515;border:1px solid rgba(255,255,255,.08)}
 .tile img{width:100%;height:100%;object-fit:cover;display:block;
   filter:grayscale(1) contrast(1.04);
+  /* Short on filter, because the scroll animation rewrites the grey level
+     every frame and a long transition would trail behind the scroll. The
+     slow, deliberate fade belongs to hover, so hover carries its own. */
+  transition:filter .12s linear,transform .8s cubic-bezier(.16,1,.3,1)}
+.tile:hover img{filter:grayscale(0);transform:scale(1.05);
   transition:filter .45s,transform .8s cubic-bezier(.16,1,.3,1)}
-.tile:hover img{filter:grayscale(0);transform:scale(1.05)}
 .tile::after{content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(160deg,rgba(235,41,51,.22),rgba(235,41,51,0) 60%);
   opacity:0;transition:opacity .4s}
@@ -86,94 +90,36 @@
 /* ---------- the wall arrives ----------
    Desktop: the snake. Each visual row sweeps in from one side — the first
    left to right, the next right to left — and every tile lands in colour,
-   then settles to the wall's black and white. The colour runs across the
-   wall in the same snake as the tiles, a little behind them.
+   then settles to the wall's black and white. Phone: a zigzag, and each tile
+   keeps its colour until it is half way up the screen.
 
-   Phone: a zigzag. The left column lands from the left, the right column
-   from the right and a beat later. Each tile stays in colour while it is the
-   one you are looking at, and goes back to black and white as it rises past
-   the middle of the screen and the next one comes up.
+   DRIVEN BY SCRIPT, NOT BY CSS SCROLL TIMELINES. The first build used
+   animation-timeline: view(), which Chrome on a laptop runs perfectly and an
+   iPhone did not run at all — every browser on an iPhone is Safari's engine
+   underneath, whatever icon it wears, and scroll timelines there depend on
+   the iOS version and on a multi-column layout this wall is built from.
+   SnakeGrid.tsx now works out each tile's progress from the scroll position
+   and writes it here as two numbers, so the wall moves identically on every
+   engine that can run a scroll listener:
 
-   --lag and --dir come from SnakeGrid.tsx, which measures where each tile
-   ended up. Without it they fall back to 0 and -1: no sweep, everything from
-   the left, everything still arriving.
+     --e  0..1  how far the tile has landed (0 = still off to the side)
+     --g  0..1  how grey it is (0 = full colour, 1 = the wall's resting B&W)
 
-   FILL-MODE BACKWARDS, NOT BOTH, AND IT IS WHAT KEEPS HOVER WORKING. A filled
-   animation outranks every ordinary rule, so a tile that finished on
-   grayscale(1) with fill `both` would hold it forever and the hover colour
-   would never come back. With `backwards` the animation stops applying the
-   moment its range ends, and each end keyframe is written to equal the
-   tile's resting style exactly — so the hand-off is invisible and :hover is
-   back in charge.
+   Both default to the resting state, so without the script, or with reduced
+   motion (which the script respects by never starting), the wall is exactly
+   what it was before any of this.
 
-   Same safety rules as the Game of Money wall: inside @supports so a browser
-   without scroll timelines gets the wall exactly as it was, off under
-   reduced motion, longhand so the shorthand cannot reset the timeline, and
-   the percentage range first as a fallback for a browser that cannot read
-   the calc() range after it. */
-@supports (animation-timeline: view()){
-  @media(prefers-reduced-motion:no-preference){
-
-    /* THE IMAGE READS THE TILE'S TIMELINE BY NAME. The tile has
-       overflow:hidden for its rounded corners, and overflow:hidden quietly
-       makes it a scroll container. view() measures against the nearest
-       scroll container — so on the image it measured the image against its
-       own tile, where it is always fully in view, and reported the colour as
-       permanently finished. Measured: progress 1 on a tile barely a quarter
-       of the way up the screen, and not one tile in colour across the whole
-       wall. Naming the tile's own timeline makes both read the same clock. */
-    .tile{view-timeline-name:--swTile;view-timeline-axis:block}
-    .tile,.tile img{
-      animation-timing-function:linear;
-      animation-fill-mode:backwards;
-      animation-duration:auto;
-      animation-timeline:--swTile}
-
-    /* Desktop: the tile lands somewhere in the first 60% of its own entry,
-       later the further along the sweep it is, and every one is down by
-       entry 100% — fully on screen means fully landed. */
-    .tile{animation-name:swLand;
-      animation-range:entry 0% entry 60%;
-      animation-range:entry calc(var(--lag,0) * 60%) entry calc(var(--lag,0) * 60% + 40%)}
-
-    /* The colour starts with the tile and lasts until it is half way up the
-       screen, so the band of colour is visible rather than over before you
-       notice it. */
-    .tile img{animation-name:swInk;
-      animation-range:entry 0% cover 50%;
-      animation-range:entry calc(var(--lag,0) * 60%) cover 50%}
-
-    @keyframes swLand{
-      0%{opacity:0;transform:translateX(calc(var(--dir,-1) * 70px)) scale(.82)
-         rotate(calc(var(--dir,-1) * 2.5deg))}
-      55%{opacity:1}
-      100%{opacity:1;transform:none}
-    }
-    /* Ends on the tile's resting filter, exactly — see FILL-MODE above. */
-    @keyframes swInk{
-      0%,40%{filter:grayscale(0) contrast(1.04) saturate(1.2)}
-      100%{filter:grayscale(1) contrast(1.04)}
-    }
-
-    /* Phone: the zigzag. The range runs through the whole of the tile's pass
-       up the screen, so "in colour while it is the one you are looking at"
-       is literal: it arrives in the first fifth, holds its colour to 45% —
-       about the middle of the screen — and is back to black and white by
-       65%. */
-    @media(max-width:700px){
-      .tile{animation-name:swLandM;
-        animation-range:cover 0% cover 22%;
-        animation-range:cover calc(var(--lag,0) * 6%) cover calc(var(--lag,0) * 6% + 22%)}
-      .tile img{animation-range:cover 0% cover 65%}
-      @keyframes swLandM{
-        0%{opacity:0;transform:translateX(calc(var(--dir,-1) * 46px)) scale(.7)}
-        60%{opacity:1}
-        100%{opacity:1;transform:none}
-      }
-      @keyframes swInk{
-        0%,45%{filter:grayscale(0) contrast(1.04) saturate(1.2)}
-        100%{filter:grayscale(1) contrast(1.04)}
-      }
-    }
-  }
+   The image's filter reads --g, and :hover outranks it — `.tile:hover img`
+   is more specific than `.tile img` — so hovering any tile still turns it to
+   colour, landed or not. */
+.tile{--e:1;--g:1;--dir:-1;
+  opacity:min(1,calc(var(--e) / .55));
+  transform:translateX(calc((1 - var(--e)) * var(--dir) * var(--slide,70px)))
+            scale(calc(1 - (1 - var(--e)) * var(--shrink,.18)))
+            rotate(calc((1 - var(--e)) * var(--dir) * var(--tilt,2.5deg)))}
+.tile img{filter:grayscale(var(--g)) contrast(1.04)
+  saturate(calc(1 + (1 - var(--g)) * .2))}
+.tile:hover img{filter:grayscale(0) contrast(1.04)}
+@media(max-width:700px){
+  .tile{--slide:46px;--shrink:.3;--tilt:0deg}
 }

@@ -142,76 +142,22 @@
    z-index moves here from .stage because the transform below makes the stage
    its own stacking context anyway — see the note on PageGround above, which
    is what that z-index is defending against. */
-/* ---------- the hero hold ----------
-   THE HERO PINS NOW, AT FULL WIDTH, AND IT DOES NOT FIT THE SCREEN. Both
-   halves of that were the reason an earlier pin was dropped: the plate is
-   taller than the viewport on most laptops (978px in a 764px window at
-   1568 wide), and capping its width until it fit would have letterboxed the
-   brand artwork. Neither is needed if the pin is placed rather than assumed.
+/* THE HERO IS FULL WIDTH, AND THERE IS NO SCROLL PIN. Both of those were
+   tried and both are deliberately gone.
 
-   The frame sticks at a top chosen so the HEADLINE is centred in the
-   window, since the headline is the whole point of the hold. On a tall plate
-   that crops a little off both ends while pinned — the splat above has
-   already scrolled away by then, and the "Have questions?" prompt below is
-   hidden only until the hold releases, when the plate scrolls on and the
-   prompt arrives with its arrow pointing down at the Ask section. That is
-   the exact moment it is useful.
+   A sticky hold — the hero staying put while the headline comes at you —
+   requires the whole plate to fit inside one screen, because the hand-drawn
+   "Have questions?" prompt sits at 81–95% of its height and is the only
+   instruction in the hero. Making it fit means capping the frame's width to
+   100svh * 1.6029, which at 1920x1080 letterboxes about 95px off each side.
+   That is a smaller hero, and a full-bleed hero is worth more than the hold:
+   the artwork IS the brand here, and shrinking it to buy a scroll effect is
+   the wrong trade. The headline still grows and moves on scroll — it just
+   does it while the hero scrolls normally, which is where this started.
 
-   The clamp keeps it honest at the extremes:
-     - never higher than (100svh - plate height): no empty band may open
-       under the plate while it is pinned;
-     - never lower than 72px: it never slides down away from the nav.
-   When the plate is shorter than the window (1280x900) the first rule wins
-   and it simply pins bottom-aligned, which is where it already sits.
-
-   --heroH is written by CompHero.tsx from the frame's measured height, so a
-   classic scrollbar taking 15px out of 100vw cannot put the pin 9px off.
-   The fallback is the plate's own ratio. --heroC is where the headline's
-   centre sits as a share of the plate, measured off the art: 54.1% on the
-   landscape plate, 27% on the phone plate.
-
-   IN THE PAGE FROM THE FIRST BYTE, NOT SWITCHED ON BY SCRIPT. It used to be
-   gated on an attribute the script set after hydration, so that a visitor
-   without JavaScript would not get a pin with nothing moving in it. That
-   made the hold appear a moment after the page loaded, and everything
-   below it moved down by a screen while the browser was still scrolling to
-   a #fragment it had measured without it: a link to /#money landed a whole
-   hold short, traced at exactly 840px on a 764px window. Moving the switch
-   earlier only turned it into a race that passed on some screens and not
-   others. Present from the start, there is nothing to race. A site that
-   cannot hydrate is broken in larger ways than a still headline.
-
-   Reduced motion is handled here rather than by the script: no spacer and
-   no sticky, so that visitor gets the hero exactly as it always was. */
-.heroHold{position:relative;--heroC:.541}
+   Keep this in mind if the pin is ever revisited: it needs a hero crop that
+   fits the viewport at full width, not a cap on the one we have. */
 .heroFrame{position:relative;z-index:1;overflow:hidden}
-@media(prefers-reduced-motion:no-preference){
-  /* A spacer inside the hold, not padding on it: a sticky element only
-     travels within its container's content box, which padding sits outside.
-     The script reads this spacer's height as the length of the hold. */
-  .heroHold::after{content:'';display:block;height:110svh}
-  .heroFrame{position:sticky;
-    top:clamp(calc(100svh - var(--heroH,100vw * 1622 / 2600)),
-              calc(50svh - var(--heroH,100vw * 1622 / 2600) * var(--heroC)),
-              72px)}
-}
-@media(max-width:760px){
-  .heroHold{--heroC:.27}
-}
-@media(max-width:760px) and (prefers-reduced-motion:no-preference){
-  .heroHold::after{height:90svh}
-  .heroFrame{
-    top:clamp(calc(100svh - var(--heroH,100vw * 2800 / 1200)),
-              calc(50svh - var(--heroH,100vw * 2800 / 1200) * var(--heroC)),
-              72px)}
-}
-
-/* The room goes dark as the headline comes at you. The plate is the stage's
-   own background, so this sits over the plate and under everything lifted
-   off it — first in the stage, so every later layer paints above it without
-   needing a z-index. --hdim is written by the same scroll handler. */
-.heroDim{position:absolute;inset:0;pointer-events:none;background:#000;
-  opacity:var(--hdim,0)}
 
 
 
