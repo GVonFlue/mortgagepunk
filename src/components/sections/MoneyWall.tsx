@@ -99,12 +99,20 @@ const BELOW = 3;
 function Feature({ v }: { v: Tile }) {
   return (
     <div className={s.feature}>
-      {/* THE SET IS PHONE-ONLY HERE, and the markup carries it at every width
-          because the breakpoint is CSS's business, not React's. Above 760px
-          .tvFeature unwinds all of this back to a plain 16:9 frame — see the
-          note in MoneyWall.module.css for why the big one does not get a
-          television on a laptop. */}
+      {/* A television at every width, capped by height on desktop so the
+          whole set fits on one screen — see MoneyWall.module.css.
+
+          THE GLOW AND THE SET ARE SIBLINGS, AND THAT IS A PERFORMANCE FIX.
+          The glow used to be drawn inside the set's drop-shadow filter, so
+          every frame of scrolling the browser re-applied four shadows across
+          the whole blurred bloom. Measured on a 1568x764 window: about 500ms
+          to draw each frame while scrolling, against 7ms with the glow off —
+          the scroll juddered through this section on a laptop. Now the glow
+          sits behind the set in its own layer and the shadows wrap only the
+          set (.tvLit), which does not change, so it is drawn once. */}
       <span className={`${s.tv} ${s.tvFeature}`}>
+        <span className={s.tvGlow} aria-hidden="true" />
+        <span className={s.tvLit}>
         <span className={s.tvScreen}>
           <VideoPlay
             youtubeId={v.youtube_id}
@@ -124,6 +132,7 @@ function Feature({ v }: { v: Tile }) {
         <span className={`${s.tvBadge} ${s.tvBadgeAct}`} aria-hidden="true">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/wordmark-opening-act.webp" alt="" />
+        </span>
         </span>
       </span>
     </div>

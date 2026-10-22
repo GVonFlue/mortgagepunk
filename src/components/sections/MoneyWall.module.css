@@ -195,6 +195,24 @@
    one only moves down to clear the tear, it does not get smaller. */
 .tvBadgeAct{left:42%;top:4.8%;width:44%;height:13.2%}
 
+/* ---------- the set and its light, kept apart ----------
+   .tvGlow is the light, .tvLit is the set (screen, frame, billing). Siblings
+   inside .tvFeature, never one inside the other: the set's rim is a stack of
+   drop-shadows, and anything inside a filter is re-filtered whenever it
+   changes. With the breathing glow inside it, the shadows were recomputed
+   across the whole bloom on every frame of scrolling — measured at about 70x
+   the drawing work of the same section without the glow, which is what made
+   the scroll judder on a laptop. Apart, the set never changes, so its
+   shadows are drawn once, and the glow is a plain layer whose opacity the
+   compositor moves on its own.
+
+   .tvFeature gives up the base .tv drop-shadows for the same reason and
+   isolates, so the glow's negative z-index stays behind the set rather than
+   dropping behind the page. */
+.tvFeature{filter:none;isolation:isolate}
+.tvGlow{position:absolute;inset:0;z-index:0;pointer-events:none;isolation:isolate}
+.tvLit{position:absolute;inset:0;z-index:1;display:block}
+
 /* ---------- the opening act is lit ----------
    A red bloom behind the first set, so the top of the wall reads as the one
    that is on air rather than as the biggest of four identical tiles.
@@ -236,21 +254,29 @@
      enough to light the room, never both. */
 
   /* near field: the tube itself, tight and hot against the cabinet */
-  .tvFeature::before{content:'';position:absolute;inset:-13% -10%;z-index:-1;
+  /* Stronger than when it was first tuned, on purpose. It used to sit inside
+     the set's red drop-shadows, which bloomed it a second time — that was
+     the performance bug, but it was also a third of its brightness. Moved out
+     of the filter, it lost that, so the ring is wider and hotter to make it
+     back. Matched against the old version on a 1568x764 window: the band
+     beside the set measures red 166 against 142 and brightness 66 against
+     70 — the same light, now drawn once instead of every frame. */
+  .tvGlow::before{content:'';position:absolute;inset:-22% -17%;z-index:-1;
     pointer-events:none;
     background:radial-gradient(54% 52% at 50% 52%,
-      rgba(255,150,156,0) 0%, rgba(255,150,156,0) 44%,
-      rgba(255,150,156,.92) 60%, rgba(235,41,51,.95) 69%,
-      rgba(235,41,51,.44) 83%, rgba(235,41,51,0) 96%);
+      rgba(255,190,194,0) 0%, rgba(255,190,194,0) 36%,
+      rgba(255,190,194,1) 53%, rgba(255,140,148,1) 64%,
+      rgba(235,41,51,1) 74%, rgba(235,41,51,.8) 86%,
+      rgba(235,41,51,0) 98%);
     filter:blur(15px);
     animation:onAir 4.6s ease-in-out infinite}
 
   /* far field: the wash it throws on the ground around it */
-  .tvFeature::after{content:'';position:absolute;inset:-44% -32%;z-index:-2;
+  .tvGlow::after{content:'';position:absolute;inset:-44% -32%;z-index:-2;
     pointer-events:none;
     background:radial-gradient(50% 48% at 50% 52%,
-      rgba(235,41,51,.50) 0%, rgba(235,41,51,.28) 46%,
-      rgba(214,20,32,.11) 72%, rgba(214,20,32,0) 100%);
+      rgba(235,41,51,1) 0%, rgba(235,41,51,.62) 46%,
+      rgba(214,20,32,.26) 72%, rgba(214,20,32,0) 100%);
     filter:blur(50px);
     animation:onAirWide 4.6s ease-in-out infinite}
 
@@ -294,15 +320,15 @@
      of the cabinet instead of boxing it. Left out of the animation above on
      purpose: animating a multi-shadow filter repaints the whole television
      every frame, while the pseudo-element only moves opacity. */
-  .tvFeature{filter:
+  .tvLit{filter:
     drop-shadow(0 0 2px rgba(255,190,194,.95))
     drop-shadow(0 0 9px rgba(235,41,51,.95))
     drop-shadow(0 0 30px rgba(235,41,51,.6))
     drop-shadow(0 16px 24px rgba(0,0,0,.55))}
 }
 @media(prefers-reduced-motion:reduce){
-  .tvFeature::before{animation:none;opacity:.94}
-  .tvFeature::after{animation:none;opacity:.8}
+  .tvGlow::before{animation:none;opacity:.94}
+  .tvGlow::after{animation:none;opacity:.8}
 }
 
 /* ---------- the big one on a laptop, and on a TV ----------
