@@ -8,12 +8,15 @@ import CompHero from "@/components/sections/CompHero";
 import CompAsk from "@/components/sections/CompAsk";
 import MoneyWall from "@/components/sections/MoneyWall";
 import SocialWall from "@/components/sections/SocialWall";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
+export const metadata = pageMeta({
   title: "Mortgage Punk — Reimagining the American Dream",
   description:
     "A world-class lending team and a movement to change the Game of Money. Ask anything, watch the library, or follow the movement.",
-};
+  path: "/",
+  absolute: true,
+});
 
 export const revalidate = 300;
 

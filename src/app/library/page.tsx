@@ -7,12 +7,14 @@ import s from "@/components/Site.module.css";
 import VideoPlay from "@/components/sections/VideoPlay";
 import { topicSlug } from "@/lib/library";
 import { getVideos, getTopics } from "@/lib/db";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "The Game of Money — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "The Game of Money",
   description:
     "Free education on homeownership, mortgages, investing, taxes and building wealth. Everything they never taught you.",
-};
+  path: "/library",
+});
 
 export const revalidate = 300;
 

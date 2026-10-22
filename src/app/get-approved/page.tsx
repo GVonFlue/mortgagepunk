@@ -4,12 +4,14 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import LeadSection from "@/components/sections/LeadSection";
 import s from "@/components/Site.module.css";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Get Approved the Right Way — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Get Approved the Right Way",
   description:
     "Start your mortgage approval with a team that answers the phone. No runaround, no fine print.",
-};
+  path: "/get-approved",
+});
 
 const STEPS = [
   ["01", "Tell us where you are", "Two minutes. What you're trying to do and how to reach you. No credit pull to start the conversation."],

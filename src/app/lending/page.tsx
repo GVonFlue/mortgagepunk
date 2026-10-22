@@ -6,12 +6,14 @@ import ProcessScroll from "@/components/sections/ProcessScroll";
 import LendingPaths from "@/components/sections/LendingPaths";
 import LoudLead from "@/components/sections/LoudLead";
 import s from "@/components/Site.module.css";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Lending — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Lending",
   description:
     "Buy a home, refinance, or finance an investment property with a lending team that answers the phone. No runaround, no fine print.",
-};
+  path: "/lending",
+});
 
 /**
  * Page rhythm, deliberately alternating so the eye has somewhere to rest:

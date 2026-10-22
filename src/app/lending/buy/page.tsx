@@ -4,12 +4,14 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import DeepPage from "@/components/sections/DeepPage";
 import LoudLead from "@/components/sections/LoudLead";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Buy a Home — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Buy a Home",
   description:
     "First home or fifth. A pre-approval that holds up with sellers, a straight timeline, and a lending team you can actually reach.",
-};
+  path: "/lending/buy",
+});
 
 export default function Buy() {
   return (

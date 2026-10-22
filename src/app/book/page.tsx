@@ -7,12 +7,14 @@ import s from "@/components/Site.module.css";
 import { getTalks } from "@/lib/db";
 import { asRequestKey } from "@/lib/booking";
 import { APPLY_URL, EXTERNAL } from "@/lib/links";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Book Chris Waipa — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Book Chris Waipa",
   description:
     "Book Chris Waipa for your stage, podcast or publication, or partner on the American Dream Conference.",
-};
+  path: "/book",
+});
 
 /**
  * /book — every request to get Chris somewhere.

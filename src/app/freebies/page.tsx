@@ -4,12 +4,14 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import LoudLead from "@/components/sections/LoudLead";
 import s from "@/components/Site.module.css";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Free Guides — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Free Guides",
   description:
     "Checklists, walkthroughs and worksheets you can keep. No gate on the ones that are genuinely useful.",
-};
+  path: "/freebies",
+});
 
 /**
  * Deliberately ungated.

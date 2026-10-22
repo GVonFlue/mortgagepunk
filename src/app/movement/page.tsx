@@ -8,12 +8,14 @@ import { TICKET_PRICE } from "@/lib/event";
 import c from "@/components/sections/Conference.module.css";
 import { getConference, getImages } from "@/lib/db";
 import { pickImage } from "@/lib/images";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "The American Dream Conference — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "The American Dream Conference",
   description:
     "A live day on the Game of Money, ownership, and building a life beyond a paycheck. Keynotes, breakouts, live music, and real giveaways.",
-};
+  path: "/movement",
+});
 
 export const revalidate = 300;
 

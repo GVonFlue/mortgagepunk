@@ -4,12 +4,14 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import DeepPage from "@/components/sections/DeepPage";
 import LoudLead from "@/components/sections/LoudLead";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Refinance — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Refinance",
   description:
     "A straight answer on whether refinancing makes sense for you, including the times it doesn't. Rate and term, cash-out, or consolidation.",
-};
+  path: "/lending/refinance",
+});
 
 export default function Refinance() {
   return (

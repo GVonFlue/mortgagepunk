@@ -5,12 +5,14 @@ import PageHead from "@/components/layout/PageHead";
 import LoudLead from "@/components/sections/LoudLead";
 import s from "@/components/Site.module.css";
 import { getTestimonials } from "@/lib/db";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Client Stories — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Client Stories",
   description:
     "What it's actually like to work with the Mortgage Punk lending team, in clients' own words.",
-};
+  path: "/testimonials",
+});
 
 export const revalidate = 300;
 

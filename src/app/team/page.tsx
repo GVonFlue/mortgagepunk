@@ -5,12 +5,14 @@ import PageHead from "@/components/layout/PageHead";
 import TeamGrid from "@/components/sections/TeamGrid";
 import LoudLead from "@/components/sections/LoudLead";
 import s from "@/components/Site.module.css";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "The Team — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "The Team",
   description:
     "The lending team behind Mortgage Punk. Real people, real NMLS numbers, and a phone that gets answered.",
-};
+  path: "/team",
+});
 
 export default function Team() {
   return (

@@ -4,12 +4,14 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import DeepPage from "@/components/sections/DeepPage";
 import LoudLead from "@/components/sections/LoudLead";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Investor Financing — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Investor Financing",
   description:
     "Financing for your second, fifth, or twentieth property. Conventional, portfolio, and cash-flow based options from someone who runs the same math you do.",
-};
+  path: "/lending/investors",
+});
 
 export default function Investors() {
   return (

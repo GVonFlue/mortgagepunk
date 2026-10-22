@@ -8,6 +8,7 @@ import s from "@/components/Site.module.css";
 import VideoPlay from "@/components/sections/VideoPlay";
 import { topicSlug } from "@/lib/library";
 import { getVideos, getTopics } from "@/lib/db";
+import { pageMeta } from "@/lib/meta";
 
 export const revalidate = 300;
 
@@ -26,10 +27,13 @@ export async function generateMetadata({
   const { topic } = await params;
   const topics = await getTopics();
   const match = topics.find((t) => topicSlug(t.name) === topic);
-  return {
-    title: match ? `${match.name} — Mortgage Punk` : "Library — Mortgage Punk",
-    description: match ? `${match.name}: free education from Mortgage Punk.` : undefined,
-  };
+  return pageMeta({
+    title: match ? match.name : "Library",
+    description: match
+      ? `${match.name}: free education from Mortgage Punk.`
+      : "Free education on homeownership, mortgages, investing and building wealth.",
+    path: `/library/${topic}`,
+  });
 }
 
 export default async function TopicPage({

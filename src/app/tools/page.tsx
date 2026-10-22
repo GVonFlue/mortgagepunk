@@ -6,12 +6,14 @@ import ToolsTiles from "@/components/tools/ToolsTiles";
 import LoudLead from "@/components/sections/LoudLead";
 import s from "@/components/Site.module.css";
 import { APPLY_URL, EXTERNAL } from "@/lib/links";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Tools — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "Tools",
   description:
     "Free mortgage calculators that include taxes, insurance and PMI instead of hiding them. Affordability, monthly payment, and refinance break-even.",
-};
+  path: "/tools",
+});
 
 export default function Tools() {
   return (

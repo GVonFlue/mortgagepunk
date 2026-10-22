@@ -6,14 +6,16 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import PhotoSlot from "@/components/ui/PhotoSlot";
 import CallBooking from "@/components/ui/CallBooking";
 import a from "@/components/sections/About.module.css";
-import { getPress, getTalks, getImages } from "@/lib/db";
+import { getTalks, getImages } from "@/lib/db";
 import { pickImage } from "@/lib/images";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "About Chris Waipa — Mortgage Punk",
+export const metadata = pageMeta({
+  title: "About Chris Waipa",
   description:
     "Founder of Mortgage Punk, loan officer, speaker, and creator of the American Dream Conference. Reimagining the American Dream.",
-};
+  path: "/about",
+});
 
 /**
  * /about — built as an ARTIST SITE, not a corporate bio page.
@@ -27,18 +29,6 @@ export const metadata = {
  * Copy is Chris's own, from onboarding. Do not rewrite it without asking.
  */
 
-/**
- * Cycled behind the press cards until real article artwork exists.
- *
- * Indexed by position rather than matched per outlet, so adding or removing a
- * press item can't leave a card with no image.
- */
-const PRESS_SHOTS = [
-  "/brand/adc-stage-crowd.jpg",
-  "/brand/adc-education.jpg",
-  "/brand/adc-concert.jpg",
-  "/brand/adc-interview.jpg",
-];
 
 const MARQUEE = [
   "Reimagining the American Dream",
@@ -50,9 +40,8 @@ const MARQUEE = [
 export const revalidate = 300;
 
 export default async function About() {
-  const [talks, press, images] = await Promise.all([
+  const [talks, images] = await Promise.all([
     getTalks(),
-    getPress({ publicOnly: false }),
     getImages(),
   ]);
 
@@ -265,55 +254,14 @@ export default async function About() {
         </div>
       </section>
 
-      {/* 5 — press */}
-      <section className={a.press} id="press">
-        <div className={a.pressInner}>
-          <div className={a.pressLead}>
-            <div>
-              <div className={a.kick}>Press &amp; Appearances</div>
-              <h2 className={a.h2} style={{ color: "var(--mp-bone)" }}>
-                In the wild.
-              </h2>
-            </div>
-            <p className={a.lede} style={{ color: "#8E8E8E", margin: 0, maxWidth: "44ch" }}>
-              Features, recognition, and coverage. Only verified appearances get
-              published here.
-            </p>
-          </div>
+      {/* 5 — PRESS & APPEARANCES IS REMOVED, NOT HIDDEN.
+          Taken down at Garrett's request until there is coverage worth
+          showing. It was also rendering a developer TODO on the live page
+          and carrying an unverified Wall Street Journal appearance, neither
+          of which belongs on a client site.
 
-          <div className={a.pressCards}>
-            {press.map((p, i) => (
-              <article
-                key={p.id}
-                className={`${a.pressCard} ${p.pending ? a.pressPending : ""}`}
-              >
-                {/* Was a marked PhotoSlot per card. Real conference frames
-                    now, cycled so no two adjacent cards repeat. */}
-                <div className={a.pressCover} style={{ border: 0, padding: 0 }}>
-                  <Image
-                    src={PRESS_SHOTS[i % PRESS_SHOTS.length]}
-                    alt=""
-                    width={1600}
-                    height={1067}
-                    sizes="(max-width: 700px) 92vw, 30vw"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                </div>
-                <div className={a.pressMeta}>
-                  <span className={a.pressOutlet}>{p.pending ? "Pending" : p.kind}</span>
-                  <h3 className={a.pressTitle}>{p.outlet}</h3>
-                  <p className={a.pressNote}>{p.note}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className={a.todo}>
-            TODO: cover images needed for each item, and the Wall Street Journal
-            appearance must be verified before it publishes.
-          </div>
-        </div>
-      </section>
+          The data layer is untouched: getPress() and the Backstage editor
+          still exist, so restoring this is putting the markup back. */}
 
       {/* 6 — booking */}
       <section className={a.book}>

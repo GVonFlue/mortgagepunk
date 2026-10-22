@@ -7,6 +7,7 @@ import PageHead from "@/components/layout/PageHead";
 import LoudLead from "@/components/sections/LoudLead";
 import s from "@/components/Site.module.css";
 import { TEAM, memberBySlug } from "@/lib/team";
+import { pageMeta } from "@/lib/meta";
 
 export function generateStaticParams() {
   return TEAM.map((m) => ({ slug: m.slug }));
@@ -19,13 +20,21 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const m = memberBySlug(slug);
-  if (!m) return { title: "The Team — Mortgage Punk" };
-  return {
-    title: `${m.name} — Mortgage Punk`,
+  if (!m) {
+    return pageMeta({
+      title: "The Team",
+      description:
+        "The lending team behind Mortgage Punk. Real people, real NMLS numbers.",
+      path: "/team",
+    });
+  }
+  return pageMeta({
+    title: m.name,
     description: m.short,
+    path: `/team/${slug}`,
     // pending members are placeholders; keep them out of the index
-    robots: m.pending ? { index: false, follow: false } : undefined,
-  };
+    index: !m.pending,
+  });
 }
 
 export default async function MemberPage({

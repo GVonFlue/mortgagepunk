@@ -3,11 +3,14 @@ import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
 import PageHead from "@/components/layout/PageHead";
 import s from "@/components/Site.module.css";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata = {
-  title: "Merch — Mortgage Punk",
-  description: "Mortgage Punk merch. Coming soon.",
-};
+export const metadata = pageMeta({
+  title: "Merch",
+  description:
+    "Mortgage Punk merch. Coming soon.",
+  path: "/merch",
+});
 
 /**
  * Deliberate placeholder. Chris named a real merch store a priority twice, and
