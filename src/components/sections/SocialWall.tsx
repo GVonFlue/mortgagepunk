@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import s from "./SocialWall.module.css";
+import SnakeGrid from "./SnakeGrid";
 
 /**
  * The Movement — a wall of Instagram posts at mixed sizes.
@@ -109,7 +110,9 @@ const SIZES =
 export default function SocialWall() {
   return (
     <div className={s.wrap}>
-      <div className={s.grid}>
+      {/* SnakeGrid works out where each tile landed so the scroll animation
+          can sweep each row — see SnakeGrid.tsx. */}
+      <SnakeGrid className={s.grid}>
         {TILES.map((t, i) => {
           const [w, h] = DIMS[t.shape];
           return (
@@ -135,7 +138,7 @@ export default function SocialWall() {
             </a>
           );
         })}
-      </div>
+      </SnakeGrid>
 
       <Link href="/movement" className={s.cta}>
         Join the movement <span aria-hidden="true">&rarr;</span>

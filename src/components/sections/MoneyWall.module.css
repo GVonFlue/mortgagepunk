@@ -348,42 +348,65 @@
       animation-timeline:view()}
 
     /* ---------- the scroll hold ----------
-       featureStick is exactly one viewport tall and sticks to the top of a
-       hold 60svh taller than that, so the set locks in the middle of the
-       screen for 60svh of scrolling and then lets go.
+       The set itself is sticky, inside a hold that is the set's height plus
+       50svh. It sits in normal flow until it reaches --pinTop, stays there
+       for 50svh of scrolling, and lets go.
 
-       ONE VIEWPORT TALL IS THE WHOLE TRICK. The obvious build is to stick
-       the feature itself, but then when it pins — and so every number below
-       — depends on how tall the feature happens to be, which changes with
-       the column width, and the timings drift from screen to screen. With a
-       viewport-tall container the hold is 100svh + 60svh however big the set
-       inside it is, so the fractions underneath hold everywhere.
+       WHY THE SET STICKS AND NOT A FULL-SCREEN PANE. The first build stuck a
+       viewport-tall pane with the set centred in it, which made the timings
+       tidy fractions — and put half a screen of empty pane between the
+       heading and the video, and the other half between the first video and
+       the second. The spacing on the page is the design; the effect has to
+       live inside it. Sticking the set leaves the static layout exactly as
+       it was: before the pin the set sits right under the heading, and
+       because a sticky element releases at the bottom of its container, it
+       lets go flush against the covers. The 50svh only exists *during* the
+       pin, as the covers rising from the bottom of the screen to meet it.
 
-       Totals: the hold crosses the viewport over 100svh + 160svh = 260svh.
-       The pin starts at 100/260 = 38.5% and ends at 160/260 = 61.5%, and the
-       set first appears at the top of the screen at about 19%. Those three
-       numbers are what the range below is built from. */
-    .featureHold{height:160svh;view-timeline-name:--mwHold;view-timeline-axis:block}
-    .featureStick{position:sticky;top:0;height:100svh;
-      display:grid;place-items:center}
+       The price is that the timings now depend on where the set pins, so
+       they are written as lengths below rather than percentages. */
+    :global(#money){--pinTop:84px}
+    @media(max-width:760px){
+      /* Centred on a phone. The set there is the television, whose width is
+         the viewport less the wall's 24px gutters and whose height is that
+         times 1087/1223, so its height is known in CSS and centring it needs
+         no guessing. 84px is the floor, so it never tucks under the nav. */
+      :global(#money){--pinTop:max(84px,calc((100svh - (100vw - 48px) * 1087 / 1223) / 2))}
+    }
+    /* The extra length is a spacer INSIDE the hold, not padding on it. A sticky
+       element travels within its container's content box, and padding is
+       outside that box — with padding-bottom the set had nowhere to go, never
+       moved, and was left stranded at the top of 50svh of empty space. */
+    .featureHold{view-timeline-name:--mwHold;view-timeline-axis:block}
+    .featureHold::after{content:'';display:block;height:50svh}
+    .featureStick{position:sticky;top:var(--pinTop)}
 
     /* Keeps a 16:9 feature inside the viewport on a short laptop. Without it
-       a 1440x800 screen draws the set taller than the pane holding it and
-       the bottom is cut off for the whole hold. */
-    .featureStick>.feature{max-width:min(100%,calc((92svh - 40px) * 16 / 9))}
+       a 1440x800 screen pins a set taller than the space under the nav and
+       the bottom is cut off for the whole hold. margin-inline:auto because
+       once capped it is narrower than the column and would otherwise sit
+       against the left edge. */
+    .featureStick>.feature{margin-inline:auto;
+      max-width:min(100%,calc((100svh - var(--pinTop) - 24px) * 16 / 9))}
 
     /* Timed off the hold, NOT off the set. The set does not move while it is
        pinned, so a view() timeline on it would freeze mid-animation for the
        length of the hold — the hold is the thing still travelling, so the
        hold is what the clock reads.
 
-       Starts at 19%, the moment the set clears the bottom of the screen, so
-       there is no empty pane scrolling past first. Ends at 46%, which is
-       just after the pin starts at 38.5% — it rises into place, locks, and
-       finishes assembling locked, which is the beat. From 46% to 61.5% it
-       simply sits there, fully assembled, which is the pause. */
+       In scroll distance from the moment the hold's top reaches the bottom
+       of the screen: the set starts entering at 0; it locks at
+       100svh - pinTop; the pin ends 50svh after that. The pop runs from the
+       first pixel to 18svh past the lock, so it rises into place, locks, and
+       finishes assembling locked — then holds, complete, for the last 32svh.
+
+       The percentage line first is a fallback: a browser that runs
+       scroll-driven animations but cannot read a calc() range drops the
+       second declaration and keeps an approximation rather than the default
+       range, which would leave the set half-built for the whole pause. */
     .feature{animation-name:mwArrive;animation-timeline:--mwHold;
-      animation-range:cover 19% cover 46%}
+      animation-range:cover 0% cover 52%;
+      animation-range:cover 0px cover calc(100svh - var(--pinTop) + 18svh)}
 
     /* ---------- where the nav link lands ----------
        The nav's "The Game of Money" is a jump to #money. With the hold in
@@ -393,22 +416,24 @@
        arrive. Measured: opacity 0 on a laptop. Click the nav mid-presentation
        and the room sees a heading over an empty pane.
 
-       So the jump lands inside the hold instead, 40svh past where the pin
-       starts — locked, fully assembled, glow lit, the middle of the pause.
-       The pin runs 0-60svh past its start and the set is fully assembled
-       from about 20svh, so 40svh sits in the middle with ±20svh to spare.
+       So the jump lands inside the hold instead, 30svh past where the pin
+       starts — locked, fully assembled, glow lit. The pin runs 0-50svh past
+       its start and the set is complete from 18svh, so 30svh has 12svh of
+       slack one way and 20svh the other.
 
-       The section-to-hold distance is a measured constant per tier, not a
-       guess: 224px on every phone from 360 to 430 wide, 359-396px on
-       everything from 768 to 2560. The ±20svh margin is at least 148px on
-       the shortest screen tested, comfortably wider than either spread.
+       The pin starts when the hold's top reaches --pinTop, so the landing is
+       (section-to-hold) - pinTop + 30svh below the section's top, and the
+       scroll margin is the negative of that. Section-to-hold is a measured
+       constant per tier, not a guess: 224px on every phone from 360 to 430
+       wide, 359-396px on everything from 768 to 2560. The worst error that
+       leaves is 26px, against at least 89px of slack on a 740px screen.
 
        Highlighting in the nav is unaffected: it watches the whole section
        crossing the middle of the screen, and the hold is inside the
        section. Only the landing point moves. */
-    :global(#money){scroll-margin-top:calc(-385px - 40svh)}
+    :global(#money){scroll-margin-top:calc(var(--pinTop) - 385px - 30svh)}
     @media(max-width:760px){
-      :global(#money){scroll-margin-top:calc(-224px - 40svh)}
+      :global(#money){scroll-margin-top:calc(var(--pinTop) - 224px - 30svh)}
     }
 
     /* Each cover finishes further into its own entry than the one before, so
