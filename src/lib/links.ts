@@ -41,3 +41,15 @@ export const EXTERNAL = {
  * audiences share nothing and the same link cannot serve both.
  */
 export const CALENDLY_URL = "https://calendly.com/cmpunk/phone-call";
+
+/**
+ * The longer, free pre-approval consultation — a different Calendly event to
+ * the phone call above, not the same one relabelled.
+ *
+ * The two are deliberately separate asks. "Schedule a call" is for somebody
+ * mid-thought who wants a question answered; this one is for somebody ready
+ * to find out what they can actually borrow, and it carries a different
+ * length and a different set of intake questions on Chris's side.
+ */
+export const CALENDLY_PREAPPROVAL_URL =
+  "https://calendly.com/cmpunk/mortgage-punk-pre-approval";

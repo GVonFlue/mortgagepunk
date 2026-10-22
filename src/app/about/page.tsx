@@ -83,10 +83,26 @@ export default async function About() {
         </div>
         <div className={a.heroInner}>
           <div className={a.eyebrow}>Founder &middot; Speaker &middot; Movement Leader</div>
+          {/* THE NAME IS DRAWN, NOT SET — the same ransom-note system as The
+              Game of Money and The Movement, so the one page that is about
+              the person behind the brand is finally in the brand's own
+              lettering instead of a typeface approximating it.
+
+              The h1 keeps real words in it. The artwork is decorative and
+              carries alt="", with the name visually hidden beside it, so the
+              heading is still a real h1 for search and assistive tech — the
+              same arrangement Section uses for its titleArt. */}
           <h1 className={a.name}>
-            Chris
-            <br />
-            <span className={a.nameSub}>Waipa</span>
+            <span className={a.srOnly}>Chris Waipa</span>
+            <Image
+              className={a.nameArt}
+              src="/brand/wordmark-chris-waipa.png"
+              alt=""
+              width={2107}
+              height={1105}
+              priority
+              sizes="(max-width: 900px) 86vw, 46vw"
+            />
           </h1>
           <div className={a.heroMeta}>
             <span>Loan Officer</span>
@@ -157,17 +173,38 @@ export default async function About() {
             </div>
           </div>
           <div className={a.portrait}>
-            {/* The shipped default here is 1080x1200. The previous file was
-                630x954 and was being drawn larger than its own pixels, which
-                is what made it look soft against everything around it. */}
-            <Image
-              src={portrait.src}
-              alt="Chris Waipa"
-              width={portrait.width}
-              height={portrait.height}
-              sizes="(max-width: 900px) 80vw, 34vw"
+            {/* THE FRAME EXISTS SO THE BUTTON BELOW CANNOT MOVE THE SLAB OR
+                THE TAG. Both are positioned in percentages — the red slab is
+                inset 6%/12% and the tag sits at bottom:6% — so measuring
+                them against a box that now also contains a call to action
+                would stretch the slab past the photo and slide the tag down
+                off it. They measure against the picture instead. */}
+            <div className={a.portraitFrame}>
+              {/* The shipped default here is 1080x1200. The previous file was
+                  630x954 and was being drawn larger than its own pixels,
+                  which is what made it look soft against everything around
+                  it. */}
+              <Image
+                src={portrait.src}
+                alt="Chris Waipa"
+                width={portrait.width}
+                height={portrait.height}
+                sizes="(max-width: 900px) 80vw, 34vw"
+              />
+              <span className={a.portraitTag}>Wichita, Kansas</span>
+            </div>
+
+            {/* THE SAME EVENT AS THE HOME PAGE'S CARD, not the speaking desk.
+                There is a second one of these further down in the lending
+                band, and that is deliberate rather than an oversight: this
+                page is long, and the point at which somebody finishes
+                reading his story is the point at which they want to talk to
+                him. Making them scroll on to find the ask loses the ones who
+                stop here. */}
+            <CallBooking
+              className={`${a.btn} ${a.btnRed} ${a.portraitCta}`}
+              label="Schedule a call with Chris"
             />
-            <span className={a.portraitTag}>Wichita, Kansas</span>
           </div>
         </div>
       </section>

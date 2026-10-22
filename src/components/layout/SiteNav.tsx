@@ -142,8 +142,9 @@ export default function SiteNav() {
         hidden ? n.navHidden : ""
       }`}
     >
-      {/* logoHome hides this on the home page at phone width, where the hero's
-          splat is the mark instead — see SiteNav.module.css. */}
+      {/* logoHome hides this on the home page at every width, where the
+          hero's splat is the mark instead — see SiteNav.module.css. It still
+          renders on every other page, where it is the way back home. */}
       <Link
         href="/"
         className={`${n.logo} ${onHome ? n.logoHome : ""}`}

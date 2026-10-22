@@ -38,14 +38,26 @@
   color:#fff;margin-bottom:clamp(12px,1.4vw,20px)}
 .eyebrow::before{content:'';width:30px;height:2px;background:#fff}
 
-/* the name at poster scale, bleeding to both edges */
-.name{margin:0;font-family:var(--font-display),sans-serif;font-weight:400;
-  font-size:clamp(64px,15.4vw,260px);line-height:.82;letter-spacing:-.035em;
-  text-transform:uppercase;color:#fff;
-  text-shadow:0 clamp(6px,.8vw,14px) clamp(24px,3vw,54px) rgba(0,0,0,.5)}
-.nameSub{display:block;color:#0A0A0A;
-  -webkit-text-stroke-width:clamp(1px,.13vw,2.4px);
-  -webkit-text-stroke-color:rgba(255,255,255,.5);paint-order:stroke fill}
+/* the name at poster scale, as drawn artwork rather than set type */
+.name{margin:0;display:block}
+
+/* WIDTH, NOT FONT-SIZE. The mark is an image, so what used to be a clamp on
+   type is a clamp on how wide the picture is allowed to get. 46vw lands it
+   at roughly the weight the typeset name had, and the 760px ceiling stops it
+   growing past its own 2107px on an ultrawide, where upscaling would soften
+   the cut edges that are the whole point of it.
+
+   The shadow follows the alpha rather than the box, so it falls off the torn
+   tiles and the mark reads as paper lying ON the photograph — a box-shadow
+   would draw a rectangle around the whole thing. */
+.nameArt{display:block;width:clamp(260px,46vw,760px);height:auto;
+  filter:drop-shadow(0 clamp(8px,1vw,18px) clamp(22px,2.6vw,46px) rgba(0,0,0,.62))}
+@media(max-width:900px){.nameArt{width:min(86vw,520px)}}
+
+/* Visually gone, still read aloud and still indexed — the heading's real
+   words, beside the artwork that replaced them. */
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 .heroMeta{display:flex;gap:clamp(18px,2.6vw,44px);flex-wrap:wrap;
   margin-top:clamp(18px,2vw,34px);
@@ -89,7 +101,11 @@
 
 /* the suit cutout, layered like a collage cut-out rather than framed */
 .portrait{position:relative}
-.portrait::before{content:'';position:absolute;inset:6% -6% 12% 4%;z-index:0;
+/* The slab and the tag measure against THIS, not against .portrait — see the
+   note in page.tsx. .portrait now also holds the booking button, and both of
+   these are positioned in percentages of their containing block. */
+.portraitFrame{position:relative}
+.portraitFrame::before{content:'';position:absolute;inset:6% -6% 12% 4%;z-index:0;
   background:linear-gradient(160deg,var(--mp-red) 0%,#8E0E17 100%);
   clip-path:polygon(4% 2%,97% 0,100% 94%,88% 100%,2% 97%)}
 .portrait img{position:relative;z-index:1;width:100%;height:auto;display:block;
@@ -99,6 +115,11 @@
   font-family:var(--font-body),sans-serif;font-size:11px;font-weight:800;
   letter-spacing:.2em;text-transform:uppercase;
   box-shadow:0 12px 30px rgba(0,0,0,.5)}
+/* Full width under the photo rather than hugging the left edge: the picture
+   is a tall column, and a short button under it reads as a loose offcut. */
+.portraitCta{width:100%;justify-content:center;
+  margin-top:clamp(26px,2.6vw,38px)}
+
 @media(max-width:900px){.storyGrid{grid-template-columns:1fr}
   .portrait{max-width:420px;margin:0 auto}}
 

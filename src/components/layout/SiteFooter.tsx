@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import s from "../Site.module.css";
-import { APPLY_URL, EXTERNAL } from "@/lib/links";
+import CallBooking from "@/components/ui/CallBooking";
+import { APPLY_URL, CALENDLY_PREAPPROVAL_URL, EXTERNAL } from "@/lib/links";
 
 /**
  * Compliance note: NMLS 339232 is confirmed. The exact legal entity wording,
@@ -78,6 +79,23 @@ export default function SiteFooter() {
             Reimagining the American Dream. A world-class lending team and a
             movement to change the Game of Money.
           </p>
+
+          {/* THE PRE-APPROVAL EVENT, NOT THE PHONE CALL. Somebody who has
+              read the whole page and reached the footer is further along
+              than somebody who clicked the card in the artwork — they are
+              looking for what they can actually borrow, which is the longer
+              appointment with its own intake questions. Same modal, same
+              branded frame; only the event and the words change. */}
+          <CallBooking
+            className={s.ftCta}
+            url={CALENDLY_PREAPPROVAL_URL}
+            label="Book your FREE Loan Consultation"
+            kicker="No cost, no obligation"
+            title="Book your free"
+            accent="loan consultation."
+            lede="Find out what you can actually borrow. Chris takes this one himself — no credit pull to get started, and no obligation at the end of it."
+            source="calendly-preapproval"
+          />
         </div>
         {COLS.map((c) => (
           <div key={c.head}>

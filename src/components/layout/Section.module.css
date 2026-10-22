@@ -125,8 +125,21 @@
 .solid{background:rgba(10,10,10,.93);backdrop-filter:blur(6px);
   border:1px solid var(--mp-line);
   box-shadow:0 30px 80px -40px rgba(0,0,0,.9)}
-.open{background:transparent;border:0;box-shadow:none;
-  padding-left:0;padding-right:0}
+/* NO PANEL MEANS NO PANEL PADDING, VERTICALLY TOO — and that used to be
+   half-done. `.open` zeroed the left and right padding and left .panel's
+   clamp(30px,4.2vw,72px) on the top and bottom, which is inset for a card
+   that is not being drawn. Stacked against the section's own padding it
+   put 257px of empty ground between "Watch the whole library" and The
+   Movement on a laptop: 66 + 63 + 63 + 66, none of it holding anything. */
+.open{background:transparent;border:0;box-shadow:none;padding:0}
+
+/* And the section's own padding comes down to match, but ONLY where the
+   panel is gone. A floating section that still draws glass or a solid card
+   needs the air around it; one sitting straight on the ground does not,
+   because there is no edge for the air to separate. Two of these back to
+   back now leave about 56px between them rather than 257 — the gap reads as
+   one continuous surface, which is the point of the fixed ground. */
+.onGround:has(> .open){padding-block:clamp(16px,1.8vw,28px)}
 
 /* the red panel keeps its colour but now floats like the rest */
 .redPanel{background:linear-gradient(150deg,#FF4438 0%,#EB2933 46%,#A8141C 100%);

@@ -61,12 +61,36 @@ export default function CallBooking({
   className = "",
   children,
   label,
+  url = CALENDLY_URL,
+  kicker = "Talk it through",
+  title = "Schedule a call",
+  accent = "with Chris.",
+  lede = "No pitch and no credit pull. Pick a time that suits you and he’ll call.",
+  source = "calendly-booking",
 }: {
   className?: string;
   /** The trigger's contents. Use this for a hotspot with no text of its own. */
   children?: React.ReactNode;
   /** Convenience for an ordinary labelled button. */
   label?: string;
+  /**
+   * Which Calendly event to open. Defaults to the phone call; the footer's
+   * free consultation passes the pre-approval event instead.
+   *
+   * ONE COMPONENT RATHER THAN TWO. Everything that makes this worth having —
+   * the branded frame, the readiness detection that does not trust the
+   * iframe's load event, the escape hatch, the post back to /api/lead — is
+   * identical whichever event is being booked. Only the URL and the words
+   * above it change, so those are props and the machinery is not duplicated.
+   */
+  url?: string;
+  kicker?: string;
+  title?: string;
+  /** The second line of the heading, set in red. */
+  accent?: string;
+  lede?: string;
+  /** Tags the lead so the two booking types are tellable apart in Backstage. */
+  source?: string;
 }) {
   /* NO `mounted` FLAG GUARDING THE PORTAL, which is the usual shape of this.
      The portal is only reached when `open` is true, and `open` can only
@@ -108,8 +132,8 @@ export default function CallBooking({
       text_color: "17110E",
       background_color: "FBFBFB",
     });
-    return `${CALENDLY_URL}?${q.toString()}`;
-  }, []);
+    return `${url}?${q.toString()}`;
+  }, [url]);
 
   /* Opening is the one place all of this state is set, and it belongs in the
      handler rather than in an effect watching `open`. An effect would be a
@@ -190,7 +214,7 @@ export default function CallBooking({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            intent: "Call booked — Calendly",
+            intent: `Booked via Calendly — ${title} ${accent}`.trim(),
             notes: [
               "Booked directly through the Calendly embed on the home page.",
               "Name, email and phone are on the Calendly invite.",
@@ -199,7 +223,7 @@ export default function CallBooking({
             ]
               .filter(Boolean)
               .join("\n"),
-            source: "calendly-booking",
+            source,
           }),
         }).catch(() => {});
       }
@@ -207,7 +231,9 @@ export default function CallBooking({
 
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [open]);
+    // title and accent are in here because the lead's intent line is built
+    // from them, so a footer booking is tellable apart from a hero one.
+  }, [open, source, title, accent]);
 
   /* The escape hatch appears on a timer rather than on an event, because the
      failure mode here is silence: a privacy extension or a locked-down
@@ -267,15 +293,12 @@ export default function CallBooking({
         ) : (
           <>
             <div className={w.bookHead}>
-              <span className={w.kick}>Talk it through</span>
+              <span className={w.kick}>{kicker}</span>
               <h2 id="cb-title" className={w.title}>
-                Schedule a call
-                <em>with Chris.</em>
+                {title}
+                <em>{accent}</em>
               </h2>
-              <p className={w.lede}>
-                No pitch and no credit pull. Pick a time that suits you and
-                he&rsquo;ll call.
-              </p>
+              <p className={w.lede}>{lede}</p>
             </div>
 
             <div className={w.embedWrap}>
@@ -286,7 +309,7 @@ export default function CallBooking({
                   {failed && (
                     <p className={w.fallback}>
                       Still nothing? Some browsers block embedded calendars.{" "}
-                      <a href={CALENDLY_URL} {...EXTERNAL}>
+                      <a href={url} {...EXTERNAL}>
                         Open it in a new tab instead
                       </a>
                       .

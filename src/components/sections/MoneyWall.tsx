@@ -71,9 +71,13 @@ const COVERS: Tile[] = [
     title: "The American Dream Conference",
   },
   {
-    id: "adc-launch",
-    youtube_id: "bVFf3_B8eUQ",
-    title: "Before This Gets Big",
+    id: "long-game",
+    youtube_id: "o1O8UO7dHo0",
+    // "Homeownership Is the Long Game (And Why Most People Miss It)" on
+    // YouTube. Shortened here for the same reason as the conference tile
+    // above: the full title does not set under a cover without wrapping to
+    // three lines.
+    title: "Homeownership Is the Long Game",
   },
   {
     id: "loan-process",

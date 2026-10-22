@@ -290,6 +290,26 @@
   max-width:1400px;margin:0 auto}
 .ft .logo img{height:52px;width:auto;margin-bottom:20px}
 .blurb{font-size:14px;line-height:1.65;color:#8E8E8E;max-width:36ch;margin:0}
+
+/* The free consultation, in the one place on the page where somebody has
+   read everything and is still here. Red, because it is the only thing in
+   the footer that is an ask rather than a link — everything around it is
+   grey 14px navigation, so this does not have to shout to be found.
+
+   text-align:left and font:inherit because it is a <button> among anchors;
+   a UA stylesheet centres a button's text and gives it its own font, and
+   without these it would not sit with the blurb above it. */
+.ftCta{display:inline-flex;align-items:center;gap:10px;margin-top:20px;
+  border:0;cursor:pointer;text-align:left;font-family:var(--font-body),sans-serif;
+  background:var(--mp-red);color:#fff;border-radius:9px;padding:14px 20px;
+  font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  transition:background .24s,transform .24s cubic-bezier(.16,1,.3,1)}
+.ftCta:hover{background:var(--mp-red-deep);transform:translateY(-2px)}
+.ftCta span{transition:transform .24s cubic-bezier(.16,1,.3,1)}
+.ftCta:hover span{transform:translateX(3px)}
+@media(prefers-reduced-motion:reduce){
+  .ftCta,.ftCta span{transition:background .24s}
+  .ftCta:hover{transform:none}}
 .ft h5{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
   color:var(--mp-red);margin:0 0 16px}
 .ft ul{list-style:none;display:grid;gap:10px;margin:0;padding:0}

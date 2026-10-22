@@ -24,19 +24,27 @@
 .logo{flex:none;line-height:0}
 .logo img{height:clamp(34px,3vw,42px);width:auto;display:block}
 
-/* ONE MARK AT THE TOP OF THE HOME PAGE, NOT TWO.
-   The hero's splat sits directly under this bar on a phone, so the small
-   wordmark here and the big painted one below it read as the same logo
-   printed twice. The splat is the one people react to, so the bar gives way
-   to it — but only on the home page, which is the only page the splat exists
-   on, and only at phone width, where they stack. Everywhere else this is the
-   way back home and it stays.
+/* ONE MARK AT THE TOP OF THE HOME PAGE, NOT TWO — AT EVERY WIDTH.
+   The hero's splat sits directly under this bar, so the small wordmark here
+   and the big painted one below it read as the same logo printed twice. The
+   splat is the one people react to, so the bar gives way to it.
 
-   The CTA takes the left edge in its place rather than leaving a gap: it has
-   margin-left:auto below 900px, so without this it would slide across and sit
-   against the burger. */
+   THIS USED TO BE PHONE-ONLY, on the reasoning that the two marks only
+   collide once they stack. They do not: the splat sits at 6% from the left
+   and about 1.5% down the hero, which on a laptop puts it directly beneath
+   this logo rather than beside it, so the duplication was just as visible
+   there — only wider apart.
+
+   STILL ONLY ON THE HOME PAGE. It is the only page the splat exists on, and
+   everywhere else this is the way back home, so it stays. */
+.logoHome{display:none}
+
+/* Below 900px the links are gone and the CTA has margin-left:auto, so with
+   the logo removed it would slide across and sit against the burger. This
+   gives it the left edge instead. Above that the links are absolutely
+   centred and the CTA holds the right, so the empty left slot costs nothing
+   and needs no correction. */
 @media(max-width:760px){
-  .logoHome{display:none}
   .logoHome ~ .cta{margin-left:0;margin-right:auto}
 }
 
