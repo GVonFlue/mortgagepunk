@@ -109,10 +109,9 @@ export default function MusicPlayer() {
   // Auto-start, once per page load, unless they've said no before.
   useEffect(() => {
     if (inBackstage) return;
-    if (readPref() === "off") {
-      set("paused");
-      return;
-    }
+    // Said no before: stay as we are. "idle" and "paused" look the same, a
+    // speaker to press, so there is nothing to set.
+    if (readPref() === "off") return;
 
     let armed = true;
     const onGesture = (e: Event) => {
