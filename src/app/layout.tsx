@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Anton, Archivo_Black, Inter } from "next/font/google";
 import "./globals.css";
 import ChatLauncher from "@/components/chat/ChatLauncher";
+import MusicPlayer from "@/components/layout/MusicPlayer";
 import { SITE_URL as SITE_ORIGIN } from "@/lib/siteUrl";
 
 /* next/font/google is the only font source in this project. No CDN <link>
@@ -117,6 +118,9 @@ export default function RootLayout({
         {/* Fixed launcher, so it rides every page. The question someone has
             usually arrives while they're reading something else. */}
         <ChatLauncher />
+        {/* Chris's band, under the whole site, with a pause button beside
+            the launcher. See MusicPlayer for when it can and can't start. */}
+        <MusicPlayer />
       </body>
     </html>
   );

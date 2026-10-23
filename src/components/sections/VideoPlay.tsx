@@ -88,7 +88,13 @@ export default function VideoPlay({
     <button
       type="button"
       className={v.btn}
-      onClick={() => setPlaying(true)}
+      onClick={() => {
+        // The site's background song stops for a video — see MusicPlayer.
+        window.dispatchEvent(new CustomEvent("mp:media-play"));
+        setPlaying(true);
+      }}
+      // A tap here must not be the tap that starts the song.
+      data-no-music=""
       aria-label={`Play: ${title}`}
     >
       <span className={`${v.box} ${frameClassName}`}>

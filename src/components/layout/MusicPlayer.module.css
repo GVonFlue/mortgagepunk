@@ -1,0 +1,58 @@
+/*
+  MusicPlayer.module.css
+
+  Sits immediately left of the chat launcher, vertically centred on it, a
+  size smaller so the chat stays the primary button. Same cut-paper language
+  as the launcher: a square with a hand-placed tilt and a hard offset shadow,
+  but black, so the one red square on the screen is still the chat.
+
+  The launcher's geometry is copied, not shared: right/bottom offsets and its
+  clamp(52px,4.4vw,62px) size come from .fab in chat/ChatPaper.module.css.
+  Move that and this has to move with it.
+
+  z-index 100: above the page and the nav (70), below the chat sheet's scrim
+  (110) so an open conversation covers it, and below the phone menu (120).
+*/
+.btn{position:fixed;z-index:100;
+  --fab:clamp(52px,4.4vw,62px);
+  --size:clamp(42px,3.5vw,48px);
+  right:calc(clamp(14px,2vw,28px) + var(--fab) + 12px + env(safe-area-inset-right,0px));
+  bottom:calc(clamp(14px,2vw,28px) + (var(--fab) - var(--size)) / 2 + env(safe-area-inset-bottom,0px));
+  width:var(--size);height:var(--size);display:grid;place-items:center;
+  background:#17110E;color:#fff;border:2px solid #17110E;border-radius:12px;
+  cursor:pointer;transform:rotate(2deg);
+  box-shadow:3px 4px 0 rgba(23,17,14,.34), 0 10px 22px -10px rgba(0,0,0,.6);
+  transition:transform .18s cubic-bezier(.16,1,.3,1), background .18s ease}
+.btn:hover{background:#2A201C;transform:rotate(2deg) translateY(-2px)}
+.btn:active{transform:rotate(2deg) translateY(1px)}
+.btn:focus-visible{outline:3px solid #CF0A22;outline-offset:3px}
+.btn svg{position:relative;z-index:1;width:54%;height:54%;stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn svg.fill{fill:currentColor;stroke:none}
+
+/* Playing: a red edge and two rings breathing out from the button. */
+.on{border-color:#CF0A22}
+.on::before,.on::after{content:'';position:absolute;inset:-2px;border-radius:12px;
+  border:2px solid #EB2933;opacity:0;pointer-events:none}
+@media(prefers-reduced-motion:no-preference){
+  .on::before{animation:ring 2.2s ease-out infinite}
+  .on::after{animation:ring 2.2s ease-out 1.1s infinite}
+  /* Sound is waiting on a tap: the speaker nudges for attention. */
+  .waiting{animation:nudge 1.8s ease-in-out infinite}
+}
+@keyframes ring{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(1.55)}}
+@keyframes nudge{0%,100%{transform:rotate(2deg) scale(1)}50%{transform:rotate(-3deg) scale(1.08)}}
+.waiting{background:#CF0A22;border-color:#17110E}
+
+/* A label on hover, wide screens only — same treatment as the chat's. It
+   sits above the button rather than beside it, because beside it is the
+   chat launcher. */
+.label{position:fixed;z-index:100;pointer-events:none;
+  right:calc(clamp(14px,2vw,28px) + clamp(52px,4.4vw,62px) + 12px + env(safe-area-inset-right,0px));
+  bottom:calc(clamp(14px,2vw,28px) + clamp(52px,4.4vw,62px) + 12px + env(safe-area-inset-bottom,0px));
+  background:#17110E;color:#fff;border-radius:7px;padding:6px 10px;
+  font-family:var(--font-body),sans-serif;font-size:13px;font-weight:600;
+  white-space:nowrap;opacity:0;transform:translateY(6px);
+  transition:opacity .18s ease, transform .18s ease}
+.btn:hover + .label,.btn:focus-visible + .label{opacity:1;transform:none}
+@media(max-width:860px){.label{display:none}}
