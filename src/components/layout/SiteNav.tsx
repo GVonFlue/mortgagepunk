@@ -207,16 +207,18 @@ export default function SiteNav() {
         ))}
       </ul>
 
-      <a href={APPLY_URL} {...EXTERNAL} className={n.cta}>
+      <a href={APPLY_URL} {...EXTERNAL} className={`${n.cta} ${onHome ? n.ctaHome : ""}`}>
+        {/* Same torn red label as before, re-lettered "Apply Now" — the
+            words people expect on the button that starts an application. */}
         <Image
-          src="/brand/nav-get-approved.png"
+          src="/brand/nav-apply-now.png"
           alt=""
           width={528}
           height={141}
           className={n.ctaArt}
           priority
         />
-        <span className={n.srOnly}>Get Approved</span>
+        <span className={n.srOnly}>Apply Now</span>
       </a>
 
       <MobileNav />

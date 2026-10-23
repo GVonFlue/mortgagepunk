@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import s from "./CompStage.module.css";
+import { APPLY_URL, EXTERNAL } from "@/lib/links";
 
 /**
  * The hero, as the approved mockup with working buttons on top — and moving.
@@ -13,10 +14,9 @@ import s from "./CompStage.module.css";
  * sharp at any size. It also does not look like the comp, and the comp is
  * what has to ship.
  *
- * The old Hero is untouched on disk. Restoring it is a one-line swap in
- * page.tsx, which is deliberate: this is a stopgap and should be easy to
- * reverse the moment the real assets exist. See CompStage.module.css for
- * what that costs in the meantime.
+ * The old typeset Hero and its Backstage editor were removed on 23 October
+ * 2026 — nothing had rendered it since this replaced it. See
+ * CompStage.module.css for what the flat comp costs in the meantime.
  *
  * ---------------------------------------------------------------------------
  * THE MOTION, AND WHY IT IS BUILT THIS WAY
@@ -289,6 +289,23 @@ export default function CompHero() {
             sizes="46vw"
           />
         </span>
+
+        {/* Phone only: Apply Now beside the splat, in the empty black to its
+            right — where Chris marked it on a screenshot. On a laptop the
+            same button sits in the navigation bar instead, and the bar hides
+            its copy on the home page on phones so there is only ever one.
+            Same art and the same glow as the bar's (SiteNav.module.css). */}
+        <a href={APPLY_URL} {...EXTERNAL} className={s.heroApply}>
+          <Image
+            src="/brand/nav-apply-now.png"
+            alt=""
+            width={528}
+            height={141}
+            sizes="46vw"
+            priority
+          />
+          <span className={s.srOnly}>Apply Now</span>
+        </a>
 
         {/* The headline is inside the image, so the page needs a real h1
             somewhere for screen readers and for search. */}

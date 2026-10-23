@@ -102,6 +102,7 @@
 /* Phone-only layer — see the phone hero block at the foot of this file. The
    desktop plate has this lettering painted in, so it must not render here. */
 .heroPromptM{display:none}
+.heroApply{display:none}
 
 /* Phone-only — the first half of the Ask comp. See the phone Ask block below. */
 .askPaneA{display:none}
@@ -542,7 +543,33 @@
      rather than stretching off it. */
   .heroAsk{left:7%;top:42%;width:42%;height:9.3%}
   .heroAsk::after{inset:-14px -10px}
+
+  /* Apply Now, centred on the splat's own height (3% + 9.3%/2 = 7.65%) in
+     the black to its right. Width 43% of the plate puts it at 1:3.74, the
+     art's own ratio: 43% x (1200/2800) / 3.74 = 4.93% of the plate tall. */
+  .heroApply{display:block;position:absolute;z-index:3;
+    left:50%;top:5.2%;width:43%;height:4.93%;isolation:isolate;
+    animation:applyIn .7s cubic-bezier(.2,1.3,.4,1) .9s both}
+  .heroApply img{position:relative;z-index:1;display:block;width:100%;height:100%}
+  .heroApply::before{content:'';position:absolute;z-index:0;inset:-40% -10%;
+    background:radial-gradient(closest-side,rgba(235,41,51,.95),rgba(235,41,51,.45) 55%,rgba(235,41,51,0));
+    filter:blur(9px);opacity:.4;pointer-events:none}
+  .heroApply::after{content:'';position:absolute;z-index:2;inset:0;pointer-events:none;
+    -webkit-mask:url("/brand/nav-apply-now.png") center/100% 100% no-repeat;
+            mask:url("/brand/nav-apply-now.png") center/100% 100% no-repeat;
+    background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%) no-repeat;
+    background-size:250% 100%;background-position:120% 0;opacity:0}
 }
+/* Lands just after the splat punches in, so the eye goes splat, then button. */
+@keyframes applyIn{from{opacity:0;transform:scale(.6) rotate(-4deg)}to{opacity:1;transform:none}}
+@media(max-width:760px) and (prefers-reduced-motion:no-preference){
+  .heroApply::before{animation:applyGlow 2.4s ease-in-out infinite}
+  .heroApply::after{animation:applySweep 4.8s cubic-bezier(.45,0,.2,1) 2s infinite}
+}
+@media(max-width:760px) and (prefers-reduced-motion:reduce){.heroApply{animation:none}}
+@keyframes applyGlow{0%,100%{opacity:.3;transform:scale(.94)}50%{opacity:.9;transform:scale(1.05)}}
+@keyframes applySweep{0%{opacity:1;background-position:120% 0}
+  28%{opacity:1;background-position:-20% 0}29%,100%{opacity:0;background-position:-20% 0}}
 
 /* ---------- the phone Ask section ----------
    SAME PROBLEM, DIFFERENT SOLUTION. The Ask comp is 2600x1477, so at 390px it

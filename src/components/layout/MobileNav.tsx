@@ -96,7 +96,7 @@ export default function MobileNav() {
 
           <div className={m.sheetFoot}>
             <a href={APPLY_URL} {...EXTERNAL} className={m.apply}>
-              Get approved <span aria-hidden="true">&rarr;</span>
+              Apply now <span aria-hidden="true">&rarr;</span>
             </a>
             <Link href="/book" className={m.secondary} onClick={() => setOpen(false)}>
               Book Chris

@@ -56,14 +56,24 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return CONFERENCE_DOMAINS.map((host) => ({
+    return [
+      /* mortgagepunk.com/apply is printed in Chris's email signature, so it
+         has to land somewhere. He wants it on the home page, where the Apply
+         Now button is the first thing on screen.
+
+         Temporary (307), not permanent. Browsers cache a permanent redirect
+         indefinitely, so if /apply is ever given a page of its own, everyone
+         who had clicked the old link would keep being sent home. */
+      { source: "/apply", destination: "/", permanent: false },
+      ...CONFERENCE_DOMAINS.map((host) => ({
       /* Every path, not just the root. A QR code printed with a deep link
          still has somewhere to land. */
       source: "/:path*",
       has: [{ type: "host" as const, value: host }],
       destination: "https://mortgagepunk.com/movement",
       permanent: true,
-    }));
+      })),
+    ];
   },
 };
 
