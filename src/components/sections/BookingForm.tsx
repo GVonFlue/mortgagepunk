@@ -31,7 +31,7 @@ import { REQUEST_TYPES, type RequestKey } from "@/lib/booking";
  * still be invisible in the sheet.
  */
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sending" | "sent" | "missing" | "error";
 
 export default function BookingForm({
   talks,
@@ -63,7 +63,7 @@ export default function BookingForm({
 
   async function submit() {
     if (!f.first.trim() || !f.email.trim() || !f.phone.trim()) {
-      setStatus("error");
+      setStatus("missing");
       return;
     }
     setStatus("sending");
@@ -212,10 +212,15 @@ export default function BookingForm({
           <span aria-hidden="true">&rarr;</span>
         </button>
       </div>
+      {status === "missing" && (
+        <p className={s.disc} style={{ color: "#EB2933" }}>
+          Name, email and mobile are required.
+        </p>
+      )}
       {status === "error" && (
         <p className={s.disc} style={{ color: "#EB2933" }}>
-          Name, email and mobile are required. If it still won&rsquo;t go through,
-          try again in a minute.
+          That didn&rsquo;t go through on our end. Give it a minute and try
+          again.
         </p>
       )}
       <p className={s.disc}>

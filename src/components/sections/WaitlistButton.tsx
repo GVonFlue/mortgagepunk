@@ -31,7 +31,7 @@ import { TICKET_PRICE } from "@/lib/event";
  * trapped by it rather than covering the page.
  */
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sending" | "sent" | "missing" | "error";
 
 export default function WaitlistButton({
   className = "",
@@ -75,7 +75,7 @@ export default function WaitlistButton({
 
   async function submit() {
     if (!f.first.trim() || !f.email.trim() || !f.phone.trim()) {
-      setStatus("error");
+      setStatus("missing");
       return;
     }
     setStatus("sending");
@@ -206,10 +206,15 @@ export default function WaitlistButton({
               <span aria-hidden="true">&rarr;</span>
             </button>
 
+            {status === "missing" && (
+              <p className={w.err}>
+                Name, email and mobile are required.
+              </p>
+            )}
             {status === "error" && (
               <p className={w.err}>
-                Name, email and mobile are required. If it still won&rsquo;t go
-                through, try again in a minute.
+                That didn&rsquo;t go through on our end. Give it a minute and try
+                again.
               </p>
             )}
             <p className={w.disc}>

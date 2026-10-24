@@ -58,6 +58,15 @@ async function post(name: string, url: string, payload: LeadPayload) {
       body: JSON.stringify(payload),
     });
     if (!r.ok) throw new Error(`${r.status}`);
+    /* Apps Script answers 200 even when the script itself failed, with
+       {"ok":false} in the body, so a 200 alone doesn't prove it landed. */
+    const text = await r.text().catch(() => "");
+    try {
+      if (JSON.parse(text)?.ok === false) throw new Error(`refused: ${text.slice(0, 160)}`);
+    } catch (e) {
+      if (e instanceof Error && e.message.startsWith("refused")) throw e;
+      // Not JSON: a plain webhook that said 200. That's a yes.
+    }
     return { name, ok: true };
   } catch (e) {
     const detail = e instanceof Error ? e.message : String(e);

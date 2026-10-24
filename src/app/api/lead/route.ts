@@ -25,15 +25,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
 
-  const first = String(body.first ?? "").trim();
-  const email = String(body.email ?? "").trim();
-  const phone = String(body.phone ?? "").trim();
+  const source = String(body.source ?? "site");
 
-  if (!first || !email || !phone) {
-    return NextResponse.json({ ok: false, error: "missing required" }, { status: 400 });
-  }
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-    return NextResponse.json({ ok: false, error: "bad email" }, { status: 400 });
+  /* A Calendly booking arrives as a pointer, not a contact: the name, email
+     and phone stay inside Calendly (see CallBooking). It used to be refused
+     here for missing them, so no booking was ever recorded. It gets a
+     placeholder name and blank contact fields instead. */
+  const isBooking = source === "calendly-booking";
+
+  const first = String(body.first ?? "").trim() || (isBooking ? "Calendly booking" : "");
+  const email = String(body.email ?? "").trim();
+  /* Any phone number at all, exactly as typed: +1 (316) 555-0100, 316.555.0100,
+     an international number, an extension. The only check is that something
+     is there. Formatting it for the visitor was never this form's job, and a
+     strict check turns a real lead away over punctuation. */
+  const phone = String(body.phone ?? "").trim().slice(0, 40);
+
+  if (!isBooking) {
+    if (!first || !email || !phone) {
+      return NextResponse.json({ ok: false, error: "missing required" }, { status: 400 });
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return NextResponse.json({ ok: false, error: "bad email" }, { status: 400 });
+    }
   }
 
   const payload = {
@@ -41,30 +55,34 @@ export async function POST(req: Request) {
     first,
     email,
     phone,
-    source: String(body.source ?? "site"),
+    source,
     receivedAt: new Date().toISOString(),
     userAgent: req.headers.get("user-agent") ?? "",
   };
 
-  // Write to the database first so the lead shows in /backstage, but never
-  // let a database failure stop the sheet + inbox delivery below.
-  await createLead({
+  // The database is what Backstage → Leads reads.
+  const saved = await createLead({
     first,
     last: String(body.last ?? ""),
     email,
     phone,
     intent: String(body.intent ?? ""),
     notes: String(body.notes ?? ""),
-    source: String(body.source ?? "site"),
+    source,
   });
 
-  /* Fans out to the sheet and, when it is configured, the CRM. See lib/leads:
-     the legs settle independently, so a CRM outage cannot cost the sheet copy.
-     ok is true if any leg landed. */
+  /* Fans out to the sheet + inbox and, when it is configured, the CRM. See
+     lib/leads: the legs settle independently. */
   const delivery = await deliverLead(payload);
-  if (!delivery.ok) {
-    // Fail loudly in logs, quietly to the visitor — never lose a lead silently.
-    return NextResponse.json({ ok: false, error: "delivery failed" }, { status: 502 });
+
+  /* SAVED ANYWHERE COUNTS AS SAVED. This used to fail whenever the email leg
+     failed, even with the lead safely in the database, so the visitor was
+     told to try again, and the error message blamed their name, email or
+     phone. That is the likeliest reason a +1 phone number looked like the
+     problem on 24 October 2026: nothing here ever checked the number. Only when nothing at all kept it does the visitor see
+     an error. */
+  if (!saved && !delivery.ok) {
+    return NextResponse.json({ ok: false, error: "not saved" }, { status: 502 });
   }
   return NextResponse.json({ ok: true });
 }
