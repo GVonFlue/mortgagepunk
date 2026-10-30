@@ -165,7 +165,12 @@ export default function SiteNav() {
 
   return (
     <nav
-      className={`${n.nav} ${scrolled ? n.navSolid : ""} ${
+      /* SOLID ON EVERY PAGE BUT THE HOME PAGE. The labels are white
+         artwork, and the bar used to stay see-through until you scrolled,
+         which only works over the home page's black hero. Over a light page
+         (/movement) or a light photo it was white on white and the menu all
+         but disappeared. The home page keeps the clear bar over its hero. */
+      className={`${n.nav} ${scrolled || !onHome ? n.navSolid : ""} ${
         hidden ? n.navHidden : ""
       }`}
     >

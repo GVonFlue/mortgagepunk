@@ -18,7 +18,7 @@
 .navHidden{transform:translateY(-105%)}
 @media(prefers-reduced-motion:reduce){.nav{transition:background .3s}
   .navHidden{transform:none}}
-.navSolid{background:rgba(10,10,10,.82);backdrop-filter:blur(10px);
+.navSolid{background:rgba(10,10,10,.93);backdrop-filter:blur(10px);
   border-bottom-color:var(--mp-line)}
 
 .logo{flex:none;line-height:0}
