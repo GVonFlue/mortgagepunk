@@ -124,7 +124,7 @@ export default async function Movement() {
           </div>
 
           <p className={c.tagline}>
-            Two days. <em>Everything they never taught you</em> about money.
+            One day. <em>Everything they never taught you</em> about money.
           </p>
 
           <div className={c.heroBtns}>

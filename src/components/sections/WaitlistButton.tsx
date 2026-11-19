@@ -140,7 +140,7 @@ export default function WaitlistButton({
               <em>The list is.</em>
             </h2>
             <p className={w.lede}>
-              Two days on the Game of Money. Waitlist gets first access before
+              One day on the Game of Money. Waitlist gets first access before
               tickets go public, and the price when they do is{" "}
               <strong>{TICKET_PRICE}</strong>.
             </p>
