@@ -1,0 +1,197 @@
+/* The live-drawing wheel (/wheel). Everything is nested under .mpw so none of
+   it can leak into the rest of the site, and the keyframes carry an mpw-
+   prefix for the same reason. Colours are the brand's: red, black, bone. */
+.mpw{
+  --blue:#B81F27; --blue-lite:#EB2933; --ice:#EB2933; --ice-2:#FF6069; --frost:#EDEBE8;
+  --mid:#1C1C1C; --deep:#141414; --ink:#0A0A0A; --near:#050505;
+  --o:#EB2933; --o-deep:#B81F27; --muted:#A8A6A3; --txt:#EDEBE8;
+  --disp:var(--font-body), system-ui, sans-serif;
+  --body:var(--font-body), system-ui, sans-serif;
+  --block:var(--font-display), Impact, "Arial Narrow", sans-serif;
+  color-scheme:dark; box-sizing:border-box; position:relative; flex:1; min-height:100vh; min-height:100dvh;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  background:var(--near); color:var(--txt); font:400 16px/1.5 var(--body); overflow-x:hidden;
+
+
+*,*::before,*::after{box-sizing:inherit}
+
+/* ---------- arena atmosphere ---------- */
+.fx{position:fixed;inset:0;pointer-events:none;z-index:0}
+.fx-ice{background:
+  radial-gradient(120% 80% at 50% -10%, rgba(235,41,51,.26), transparent 60%),
+  radial-gradient(80% 60% at 70% 55%, rgba(184,31,39,.45), transparent 65%),
+  radial-gradient(70% 60% at 5% 20%, rgba(235,41,51,.32), transparent 62%),
+  linear-gradient(180deg,#1A0A0B,#0A0A0A 60%,#050505);
+  animation:mpw-drift 24s ease-in-out infinite alternate}
+
+.fx-aurora{inset:-20% -10% auto -10%;height:70%;filter:blur(48px);opacity:.5;
+  background:conic-gradient(from 120deg at 50% 40%, rgba(235,41,51,0), rgba(235,41,51,.55), rgba(184,31,39,0), rgba(255,96,105,.5), rgba(235,41,51,0));
+  animation:mpw-aurora 18s ease-in-out infinite}
+
+.fx-beams{height:90%;opacity:.5;mix-blend-mode:screen;transform-origin:50% 0;
+  background:
+    conic-gradient(from 90deg at 20% -10%, transparent 0 8deg, rgba(255,96,105,.16) 9deg 11deg, transparent 12deg 20deg),
+    conic-gradient(from 90deg at 55% -10%, transparent 0 6deg, rgba(235,41,51,.18) 7deg 9deg, transparent 10deg 18deg),
+    conic-gradient(from 90deg at 85% -10%, transparent 0 8deg, rgba(255,96,105,.14) 9deg 11deg, transparent 12deg 20deg);
+  animation:mpw-beams 12s ease-in-out infinite alternate}
+
+.fx-cracks{inset:auto 0 0 0;height:60%;opacity:.12;
+  background-image:
+    linear-gradient(115deg, transparent 49.6%, rgba(237,235,232,.6) 49.8%, transparent 50%),
+    linear-gradient(65deg, transparent 49.7%, rgba(237,235,232,.5) 49.85%, transparent 50%),
+    linear-gradient(160deg, transparent 49.7%, rgba(237,235,232,.4) 49.9%, transparent 50%);
+  background-size:220px 220px,300px 300px,180px 180px;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000);mask-image:linear-gradient(180deg,transparent,#000)}
+.fx-frost{background:
+  radial-gradient(60% 45% at 0% 0%, rgba(255,96,105,.20), transparent 70%),
+  radial-gradient(60% 45% at 100% 0%, rgba(255,96,105,.20), transparent 70%),
+  radial-gradient(60% 45% at 0% 100%, rgba(255,96,105,.16), transparent 70%),
+  radial-gradient(60% 45% at 100% 100%, rgba(255,96,105,.16), transparent 70%)}
+.fx-vignette{background:radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(5,5,5,.8) 100%)}
+.snow i{position:absolute;top:-6%;border-radius:50%;background:radial-gradient(circle,#FF8A90,rgba(235,41,51,.12));opacity:.7;animation:mpw-fall linear infinite}
+
+#bolts{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;mix-blend-mode:screen}
+
+/* ---------- layout ---------- */
+.page{position:relative;z-index:2;min-height:100%;overflow-x:clip;display:grid;grid-template-rows:1fr auto}
+main{min-height:calc(100vh - 70px);display:grid;grid-template-columns:400px minmax(0,1fr);gap:clamp(20px,3vw,48px);
+  max-width:1480px;width:100%;margin:0 auto;padding:22px clamp(16px,3vw,40px) 8px;align-items:center}
+
+/* ---------- side panel ---------- */
+aside{display:flex;flex-direction:column;gap:14px}
+.lockup{display:flex;justify-content:flex-start}
+.lockup img{display:block;width:min(260px,62%);height:auto;transform:rotate(-4deg);filter:drop-shadow(0 0 22px rgba(235,41,51,.55)) drop-shadow(0 4px 0 #000)}
+.kicker{font:700 12px/1.3 var(--disp);letter-spacing:.24em;text-transform:uppercase;color:var(--ice);margin:0}
+.kicker b{color:var(--frost);font-weight:700}
+h1{margin:6px 0 0;font:400 clamp(46px,4.6vw,76px)/.9 var(--block);text-transform:uppercase;letter-spacing:.005em;transform:skewX(-7deg);transform-origin:left}
+.icy{background:linear-gradient(180deg,#fff 0%,#EDEBE8 38%,#C9C7C4 52%,#ffffff 64%,#EDEBE8 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 #0A0A0A) drop-shadow(0 0 18px rgba(235,41,51,.55))}
+.hot{color:var(--o);filter:drop-shadow(0 2px 0 #0A0A0A) drop-shadow(0 0 20px rgba(235,41,51,.6))}
+.panel{background:rgba(22,22,22,.5);border:1px solid rgba(255,96,105,.24);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-radius:20px;padding:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 50px rgba(0,0,0,.4)}
+label{display:flex;justify-content:space-between;align-items:baseline;font:700 11px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+label span{letter-spacing:.04em;text-transform:none;font:600 13px/1 var(--body);color:var(--frost)}
+textarea{width:100%;height:min(22vh,210px);resize:vertical;padding:12px 14px;background:rgba(5,5,5,.6);color:var(--frost);
+  border:1px solid rgba(255,96,105,.22);border-radius:12px;font:500 15px/1.5 var(--body)}
+.dupes{margin:8px 0 0;font-size:13px;color:var(--o)}
+.dupes:empty{display:none}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:700 14px/1 var(--body);border-radius:999px;padding:12px 16px;cursor:pointer;border:1px solid rgba(255,96,105,.3);background:rgba(235,41,51,.08);color:var(--frost);transition:.2s}
+.btn:hover{border-color:var(--ice);background:rgba(235,41,51,.18)}
+.btn-go{flex:1 1 100%;border:0;background:var(--o);color:#fff;padding:18px;font:400 26px/1 var(--block);letter-spacing:.06em;text-transform:uppercase;
+  box-shadow:0 10px 30px rgba(235,41,51,.45)}
+.btn-go:hover{background:var(--o-deep);transform:translateY(-2px);box-shadow:0 16px 44px rgba(235,41,51,.6)}
+.btn-go:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn:focus-visible,.puck:focus-visible,textarea:focus-visible{outline:3px solid var(--ice-2);outline-offset:3px}
+.drawn h2{margin:0 0 10px;font:700 11px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.drawn ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;max-height:22vh;overflow:auto}
+.drawn li{display:flex;gap:10px;align-items:center;font:600 15px/1.2 var(--body);color:var(--frost)}
+.drawn li em{font:400 18px/1 var(--block);font-style:normal;color:var(--o);min-width:26px}
+.drawn .empty{margin:0;font-size:14px;color:var(--muted)}
+
+/* stage mode hides the editing tools for projecting */
+
+
+/* ---------- wheel ---------- */
+.stageWrap{display:flex;justify-content:center;align-items:center}
+.stage{position:relative;width:min(100%, calc(100vh - 150px), 900px);aspect-ratio:1;margin-top:3%}
+.halo{position:absolute;inset:-4%;border-radius:50%;
+  background:radial-gradient(circle, rgba(235,41,51,.35) 50%, rgba(235,41,51,0) 70%);filter:blur(18px);animation:mpw-pulse 3.2s ease-in-out infinite}
+.stage.spinning .halo{animation-duration:.7s}
+
+#wheel{position:absolute;inset:0;width:100%;height:100%}
+.pointer{position:absolute;left:50%;top:-4.5%;width:10.5%;transform:translateX(-50%);transform-origin:50% 14%;z-index:3;
+  filter:drop-shadow(0 0 12px rgba(235,41,51,.85)) drop-shadow(0 6px 8px rgba(0,0,0,.6));transition:transform .07s ease-out}
+.pointer.kick{transform:translateX(-50%) rotate(-16deg)}
+.puck{position:absolute;left:50%;top:50%;width:20%;aspect-ratio:1;transform:translate(-50%,-54%);border-radius:50%;z-index:2;cursor:pointer;border:0;
+  background:radial-gradient(circle at 38% 30%, #3a4652 0%, #151b21 38%, #05080b 72%);
+  box-shadow:0 7px 0 #000, 0 7px 0 3px rgba(255,96,105,.35), 0 0 0 3px rgba(255,96,105,.55), 0 14px 30px rgba(0,0,0,.7), 0 0 40px rgba(235,41,51,.45);
+  color:var(--frost);font:400 clamp(20px,3.2vw,40px)/1 var(--block);letter-spacing:.08em;transition:transform .15s, box-shadow .2s}
+.puck::after{content:"";position:absolute;inset:11%;border-radius:50%;border:1.5px solid rgba(255,96,105,.35)}
+.puck:hover:not(:disabled){transform:translate(-50%,-57%);box-shadow:0 10px 0 #000, 0 10px 0 3px rgba(255,96,105,.35), 0 0 0 3px var(--ice), 0 18px 34px rgba(0,0,0,.7), 0 0 60px rgba(235,41,51,.8)}
+.puck:disabled{cursor:default}
+.puck span{position:relative;z-index:1;text-shadow:0 0 14px rgba(235,41,51,.8)}
+
+/* ---------- marquee ---------- */
+.marquee{position:relative;z-index:2;background:linear-gradient(90deg,#B81F27,#EB2933 50%,#B81F27);color:#fff;padding:12px 0;overflow:hidden;
+  transform:rotate(-1deg) scale(1.04);margin:6px 0 18px;border-top:1px solid rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.18);box-shadow:0 0 40px rgba(235,41,51,.45)}
+.track{display:flex;width:max-content;animation:mpw-scroll 38s linear infinite;font:400 18px/1 var(--block);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.track span{padding:0 18px}
+.track b{color:var(--o);font-weight:400}
+
+
+/* ---------- winner reveal ---------- */
+#flash{position:fixed;inset:0;background:#FFFFFF;opacity:0;pointer-events:none;z-index:20}
+#flash.on2{animation:mpw-flash2 1.1s ease-out}
+
+#flash.on{animation:mpw-flash .7s ease-out}
+
+#win{position:fixed;inset:0;z-index:15;display:none;place-items:center;padding:20px;background:rgba(5,5,5,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#win.show{display:grid}
+.card{position:relative;text-align:center;max-width:860px;width:100%;padding:44px 30px 32px;border-radius:26px;
+  background:radial-gradient(120% 90% at 50% 0%, rgba(235,41,51,.28), transparent 60%), linear-gradient(180deg,#1C1C1C,#0A0A0A);
+  border:2px solid var(--ice-2);
+  box-shadow:0 0 0 1px #050505,0 0 60px rgba(235,41,51,.6),0 0 140px rgba(235,41,51,.25),inset 0 0 40px rgba(235,41,51,.2);
+  animation:mpw-slam .55s cubic-bezier(.2,1.5,.35,1)}
+
+.card .kicker{font-size:14px;color:var(--ice-2)}
+.card .mini{display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:18px}
+.card .mini img{display:block;width:170px;height:auto;transform:rotate(-4deg);filter:drop-shadow(0 0 18px rgba(235,41,51,.6))}
+#winName{margin:12px 0 8px;font:400 clamp(56px,11vw,140px)/.92 var(--block);text-transform:uppercase;overflow-wrap:anywhere;transform:skewX(-7deg)}
+.bar{width:min(340px,60%);height:6px;margin:6px auto 26px;border-radius:99px;background:linear-gradient(90deg,transparent,var(--o),transparent);box-shadow:0 0 20px rgba(235,41,51,.8)}
+.card .btns{justify-content:center}
+.card .btn-go{flex:0 1 auto;font-size:22px;padding:16px 26px}
+
+/* goal celebration */
+#goal{position:fixed;inset:0;pointer-events:none;z-index:14;opacity:0;mix-blend-mode:screen;
+  background:conic-gradient(from 0deg at 50% 50%, rgba(255,40,20,.55), transparent 16%, transparent 50%, rgba(255,40,20,.55) 50%, transparent 66%, transparent)}
+#goal.on{animation:mpw-goalspin 3.4s linear}
+
+#goalEdge{position:fixed;inset:0;pointer-events:none;z-index:14;opacity:0;box-shadow:inset 0 0 160px 40px rgba(255,60,30,.75)}
+#goalEdge.on{animation:mpw-edge .42s ease-in-out 8}
+
+.page.shake{animation:mpw-shake .7s cubic-bezier(.36,.07,.19,.97)}
+
+.shock{position:fixed;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;pointer-events:none;z-index:13;
+  border:6px solid #FFD0D3;box-shadow:0 0 40px #EB2933,inset 0 0 30px #EB2933;animation:mpw-shock .9s cubic-bezier(.1,.7,.3,1) forwards}
+.shock.o{border-color:#EB2933;box-shadow:0 0 40px #EB2933,inset 0 0 30px #EB2933}
+
+.card.hype{animation:mpw-slam .55s cubic-bezier(.2,1.5,.35,1), mpw-hype 1.1s ease-in-out .6s infinite}
+
+#winName.pop{animation:mpw-namepop .7s cubic-bezier(.2,1.8,.3,1) .15s both}
+
+@media (prefers-reduced-motion:reduce){#goal.on,#goalEdge.on,.page.shake,.shock,.card.hype,#winName.pop{animation:none}}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:17}
+
+@media (max-width:960px){
+  main{grid-template-columns:1fr}
+  .stage{width:min(100%,600px)}
+  h1{font-size:56px}
+}
+@media (prefers-reduced-motion:reduce){
+  .fx-ice,.fx-aurora,.fx-beams,.halo,.track,.snow i{animation:none}
+  .snow{display:none}
+  .card{animation:none}
+  #flash.on{animation:none}
+}
+}
+
+/* stage mode hides the editing tools for projecting */
+body.stagemode .mpw .edit{display:none}
+
+@keyframes mpw-drift{to{transform:scale(1.08) translate3d(0,-10px,0)}}
+@keyframes mpw-aurora{0%,100%{transform:translateX(-6%) rotate(0)}50%{transform:translateX(6%) translateY(3%) rotate(4deg)}}
+@keyframes mpw-beams{0%{transform:translateX(-2%)}100%{transform:translateX(2%) scaleY(1.05)}}
+@keyframes mpw-fall{0%{transform:translate3d(0,-10vh,0);opacity:0}10%{opacity:.85}100%{transform:translate3d(14px,110vh,0);opacity:0}}
+@keyframes mpw-pulse{50%{opacity:.55;transform:scale(.98)}}
+@keyframes mpw-scroll{to{transform:translateX(-50%)}}
+@keyframes mpw-flash2{0%{opacity:1}8%{opacity:.1}16%{opacity:.85}26%{opacity:.15}36%{opacity:.6}100%{opacity:0}}
+@keyframes mpw-flash{0%{opacity:.9}12%{opacity:.2}22%{opacity:.7}100%{opacity:0}}
+@keyframes mpw-slam{0%{transform:scale(1.6);opacity:0;filter:blur(8px)}100%{transform:none;opacity:1;filter:none}}
+@keyframes mpw-goalspin{0%{opacity:0;transform:rotate(0) scale(2)}6%{opacity:1}85%{opacity:.9}100%{opacity:0;transform:rotate(1440deg) scale(2)}}
+@keyframes mpw-edge{50%{opacity:1}}
+@keyframes mpw-shake{10%,90%{transform:translate3d(-3px,2px,0)}20%,80%{transform:translate3d(6px,-4px,0)}30%,50%,70%{transform:translate3d(-12px,6px,0)}40%,60%{transform:translate3d(12px,-6px,0)}}
+@keyframes mpw-shock{0%{transform:scale(.2);opacity:1}100%{transform:scale(40);opacity:0;border-width:1px}}
+@keyframes mpw-hype{50%{box-shadow:0 0 0 1px #050505,0 0 110px rgba(235,41,51,.9),0 0 220px rgba(235,41,51,.45),inset 0 0 60px rgba(235,41,51,.35)}}
+@keyframes mpw-namepop{0%{transform:skewX(-7deg) scale(.3);opacity:0}100%{transform:skewX(-7deg) scale(1);opacity:1}}

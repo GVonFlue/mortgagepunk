@@ -31,7 +31,9 @@ import p from "./ChatPaper.module.css";
  */
 export default function ChatLauncher() {
   const pathname = usePathname();
-  const inBackstage = pathname?.startsWith("/backstage") ?? false;
+  // Also off on /wheel: that page is projected at live drawings, where a chat
+  // bubble or the band starting up would be in the way.
+  const inBackstage = (pathname?.startsWith("/backstage") || pathname === "/wheel") ?? false;
 
   const chat = useChatThread();
   const [claimed, setClaimed] = useState(false);

@@ -55,7 +55,9 @@ function writePref(v: "on" | "off") {
 
 export default function MusicPlayer() {
   const pathname = usePathname();
-  const inBackstage = pathname?.startsWith("/backstage") ?? false;
+  // Also off on /wheel: that page is projected at live drawings, where a chat
+  // bubble or the band starting up would be in the way.
+  const inBackstage = (pathname?.startsWith("/backstage") || pathname === "/wheel") ?? false;
   const audio = useRef<HTMLAudioElement | null>(null);
   const [state, setState] = useState<State>("idle");
   const stateRef = useRef<State>("idle");
