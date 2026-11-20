@@ -36,7 +36,7 @@ export function initWheel(root) {
 
   /* marquee + snow */
   const words = ['Mortgage Punk','Live drawing','Reimagining the American Dream','American Dream Conference','Backstage Pass','Somebody is winning tonight'];
-  const run = words.map(w => '<span>'+w+'</span><span><b>ϟ</b></span>').join('');
+  const run = words.map(w => '<span>'+w+'</span><span><b>//</b></span>').join('');
   $('track').innerHTML = run + run + run + run;
   if(!reduce){
     const s = $('snow');
