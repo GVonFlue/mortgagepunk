@@ -6,7 +6,7 @@ import WheelStage from "./WheelStage";
    the public to land on, so it stays out of search and out of the sitemap.
    It has no site nav or footer on purpose: it gets projected. */
 export const metadata: Metadata = {
-  title: "Live Drawing · Mortgage Punk",
+  title: "Live Drawing",
   description: "The Mortgage Punk live drawing wheel.",
   robots: { index: false, follow: false },
 };
