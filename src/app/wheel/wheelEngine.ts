@@ -274,35 +274,65 @@ export function initWheel(root) {
       sub.connect(sg); sg.connect(o); sub.start(t); sub.stop(t + 1);
     }catch(e){}
   }
-  // big arena goal horn: low brassy chord, slight scoop up, long sustain, crowd roar underneath
-  function horn(){
+  // winner sting: an original three-chord punk riff made in code (no recording, so
+  // nothing to license). Fast downstroked power chords, bass, kick/snare/hat, then
+  // one big ringing chord with a crash. It replaced the arena goal horn, which
+  // belongs to the hockey wheel this engine was ported from.
+  function punkRiff(){
     try{
-      const a = ac(), t = a.currentTime, o = out(), dur = 3.6;
-      const shaper = a.createWaveShaper(), curve = new Float32Array(1024);
-      for(let i=0;i<1024;i++){ const x = i/512 - 1; curve[i] = Math.tanh(x*2.6); }
-      shaper.curve = curve;
-      const tone = a.createBiquadFilter(); tone.type = 'lowpass'; tone.frequency.value = 2200; tone.Q.value = 1.2;
-      const body = a.createBiquadFilter(); body.type = 'peaking'; body.frequency.value = 420; body.gain.value = 6; body.Q.value = 1;
-      const hg = a.createGain();
-      hg.gain.setValueAtTime(.0001, t); hg.gain.exponentialRampToValueAtTime(.55, t + .09);
-      hg.gain.setValueAtTime(.55, t + dur - .35); hg.gain.exponentialRampToValueAtTime(.0001, t + dur);
-      shaper.connect(tone); tone.connect(body); body.connect(hg); hg.connect(o);
-      [116.5, 146.8, 174.6, 233.1].forEach(fr => {
-        [-5, 5].forEach(cents => {
-          ['sawtooth','square'].forEach(type => {
+      const a = ac(), t0 = a.currentTime + .02, o = out();
+      const e8 = 60/184/2;                               // one eighth note at 184 bpm
+      const shaper = a.createWaveShaper(), curve = new Float32Array(2048);
+      for(let i=0;i<2048;i++){ const x = i/1024 - 1; curve[i] = Math.tanh(x*7); }
+      shaper.curve = curve; shaper.oversample = '4x';
+      const cab = a.createBiquadFilter(); cab.type = 'lowpass'; cab.frequency.value = 3400; cab.Q.value = .8;
+      const mid = a.createBiquadFilter(); mid.type = 'peaking'; mid.frequency.value = 900; mid.gain.value = 5; mid.Q.value = .9;
+      const gtr = a.createGain(); gtr.gain.value = .2;
+      shaper.connect(cab); cab.connect(mid); mid.connect(gtr); gtr.connect(o);
+      const bassOut = a.createGain(); bassOut.gain.value = .22; bassOut.connect(o);
+      const drums = a.createGain(); drums.gain.value = .65; drums.connect(o);
+
+      function chord(root, at, len, ring){
+        [1, 1.5, 2].forEach((mult, i) => {
+          [-7, 7].forEach(cents => {
             const osc = a.createOscillator(), g = a.createGain();
-            osc.type = type; osc.detune.value = cents;
-            osc.frequency.setValueAtTime(fr*0.94, t); osc.frequency.exponentialRampToValueAtTime(fr, t + .12);
-            g.gain.value = type === 'square' ? .05 : .08;
-            osc.connect(g); g.connect(shaper); osc.start(t); osc.stop(t + dur + .05);
+            osc.type = 'sawtooth'; osc.frequency.value = root*mult; osc.detune.value = cents;
+            g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(i === 2 ? .12 : .2, at + .006);
+            g.gain.exponentialRampToValueAtTime(ring ? .0001 : .05, at + len);
+            osc.connect(g); g.connect(shaper); osc.start(at); osc.stop(at + len + .02);
           });
         });
+        const bo = a.createOscillator(), bg = a.createGain(), bf = a.createBiquadFilter();
+        bo.type = 'square'; bo.frequency.value = root/2; bf.type = 'lowpass'; bf.frequency.value = 500;
+        bg.gain.setValueAtTime(.0001, at); bg.gain.exponentialRampToValueAtTime(1, at + .005);
+        bg.gain.exponentialRampToValueAtTime(ring ? .0001 : .3, at + len);
+        bo.connect(bf); bf.connect(bg); bg.connect(bassOut); bo.start(at); bo.stop(at + len + .02);
+      }
+      function kick(at){
+        const k = a.createOscillator(), g = a.createGain();
+        k.type = 'sine'; k.frequency.setValueAtTime(160, at); k.frequency.exponentialRampToValueAtTime(42, at + .11);
+        g.gain.setValueAtTime(1, at); g.gain.exponentialRampToValueAtTime(.0001, at + .16);
+        k.connect(g); g.connect(drums); k.start(at); k.stop(at + .18);
+      }
+      function noiseHit(at, len, type, freq, level){
+        const n = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+        n.buffer = noiseBuf(len); f.type = type; f.frequency.value = freq;
+        g.gain.setValueAtTime(level, at); g.gain.exponentialRampToValueAtTime(.0001, at + len);
+        n.connect(f); f.connect(g); g.connect(drums); n.start(at);
+      }
+      // E5 x8, G5 x4, A5 x4, then let E5 ring
+      const E = 82.41, G = 98, A = 110;
+      const riff = [E,E,E,E,E,E,E,E, G,G,G,G, A,A,A,A];
+      riff.forEach((root, i) => {
+        const at = t0 + i*e8;
+        chord(root, at, e8*.92, false);
+        noiseHit(at, .04, 'highpass', 7000, .18);              // hat on every eighth
+        if(i % 4 === 0) kick(at);
+        if(i % 4 === 2) noiseHit(at, .14, 'bandpass', 1900, .7);  // snare on the backbeat
       });
-      const roar = a.createBufferSource(), rf = a.createBiquadFilter(), rg = a.createGain();
-      roar.buffer = noiseBuf(5); rf.type = 'bandpass'; rf.frequency.value = 900; rf.Q.value = .6;
-      rg.gain.setValueAtTime(.0001, t); rg.gain.exponentialRampToValueAtTime(.35, t + .6);
-      rg.gain.setValueAtTime(.35, t + 3.2); rg.gain.exponentialRampToValueAtTime(.0001, t + 5);
-      roar.connect(rf); rf.connect(rg); rg.connect(o); roar.start(t);
+      const end = t0 + riff.length*e8;
+      chord(E, end, 1.9, true); kick(end);
+      noiseHit(end, 1.8, 'highpass', 5200, .45);               // crash
     }catch(e){}
   }
 
@@ -341,7 +371,7 @@ export function initWheel(root) {
     const name = names[winnerIdx];
     const wn = $('winName'); wn.textContent = name;
     drawn.push(name); renderDrawn();
-    if(reduce){ horn(); $('win').classList.add('show'); $('removeBtn').focus(); return; }
+    if(reduce){ punkRiff(); $('win').classList.add('show'); $('removeBtn').focus(); return; }
     const r = stage.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
     // wave 1: strike the wheel
     addBolt(cx + (rand01()-.5)*80, -20, cx, r.top + r.height*.06, 2.6);
@@ -353,7 +383,7 @@ export function initWheel(root) {
     thunder();
     // wave 2: goal
     setTimeout(() => {
-      horn();
+      punkRiff();
       ['goal','goalEdge'].forEach(id => { const g = $(id); g.classList.remove('on'); void g.offsetWidth; g.classList.add('on'); });
       const card = document.querySelector('.card'); card.classList.remove('hype'); void card.offsetWidth; card.classList.add('hype');
       wn.classList.remove('pop'); void wn.offsetWidth; wn.classList.add('pop');
